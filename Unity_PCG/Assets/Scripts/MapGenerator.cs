@@ -9,6 +9,8 @@ public class MapGenerator : MonoBehaviour
     public DrawMode DrawMode;
     public const int MapChunkSize = 241;   //gives nice values for LOD of 2, 4, 6, 8, 10, 12
 
+    public Noise.NormalizeMode normalizeMode;
+
     [Range(0, 6)]
     public int EditorPreviewLOD;
 
@@ -60,7 +62,11 @@ public class MapGenerator : MonoBehaviour
 
     void MeshDataThread(MapData mapData, int lod, Action<MeshData> callback)
     {
-        MeshData meshData = MeshGenerator.GenerateTerrainMesh(mapData.heightMap, MeshHeightMultiplier, MeshHeightCurve, lod);
+        MeshData meshData = MeshGenerator.GenerateTerrainMesh(
+            mapData.heightMap, 
+            MeshHeightMultiplier, 
+            MeshHeightCurve, 
+            lod);
         lock (MeshDataThreadInfoQueue)
         {
             MeshDataThreadInfoQueue.Enqueue(new MapThreadInfo<MeshData>(callback, meshData));
@@ -89,7 +95,16 @@ public class MapGenerator : MonoBehaviour
 
     MapData GenerateMapData(Vector2 centre)
     {
-        float[,] noiseMap = Noise.GenerateMap(MapChunkSize, MapChunkSize, Seed, NoiseScale, Octaves, Persistance, Lacunarity, centre + Offset);
+        float[,] noiseMap = Noise.GenerateMap(
+            MapChunkSize, 
+            MapChunkSize, 
+            Seed, 
+            NoiseScale, 
+            Octaves, 
+            Persistance, 
+            Lacunarity, 
+            centre + Offset,
+            normalizeMode);
 
         Color[] colorMap = new Color[MapChunkSize * MapChunkSize];
         for (int y = 0; y < MapChunkSize; y++)
@@ -99,9 +114,12 @@ public class MapGenerator : MonoBehaviour
                 float currentHeight = noiseMap[x, y];
                 for (int i = 0; i < Regions.Length; i++)
                 {
-                    if (currentHeight <= Regions[i].Height)
+                    if (currentHeight >= Regions[i].Height)
                     {
                         colorMap[y * MapChunkSize + x] = Regions[i].Color;
+                    }
+                    else
+                    {
                         break;
                     }
                 }
