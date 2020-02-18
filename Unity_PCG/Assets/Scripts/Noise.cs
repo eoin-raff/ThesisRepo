@@ -13,7 +13,7 @@ public static class Noise
         for (int i = 0; i < octaves; i++)
         {
             float offsetX = prng.Next(-100000, 100000) + offset.x;
-            float offsetY = prng.Next(-100000, 100000) + offset.y;
+            float offsetY = prng.Next(-100000, 100000) - offset.y;
             octaveOffsets[i] = new Vector2(offsetX, offsetY);
         }
         if (scale <= 0f)
@@ -37,8 +37,14 @@ public static class Noise
 
                 for (int i = 0; i < octaves; i++)
                 {
-                    float sampleX = (x - halfWidth) / scale * frequency + octaveOffsets[i].x;
-                    float sampleY = (y - halfHeight) / scale * frequency + octaveOffsets[i].y;
+                    // Applying the offsets at the end causes overall shape to change when adjusting offset.
+                    // This is a good effect for clouds, but not for terrain.
+                    
+                    //float sampleX = (x - halfWidth) / scale * frequency + octaveOffsets[i].x;
+                    //float sampleY = (y - halfHeight) / scale * frequency + octaveOffsets[i].y;
+
+                    float sampleX = (x - halfWidth + octaveOffsets[i].x) / scale * frequency;
+                    float sampleY = (y - halfHeight + octaveOffsets[i].y) / scale * frequency;
 
                     float perlinValue = Mathf.PerlinNoise(sampleX, sampleY) * 2 - 1;
                     
