@@ -16,6 +16,7 @@ public class NoiseData : UpdateableData
     public int Seed;
     public Vector2 Offset;
 
+#if UNITY_EDITOR
     protected override void OnValidate()
     {
         base.OnValidate();
@@ -29,4 +30,5 @@ public class NoiseData : UpdateableData
             Octaves = 0;
         }
     }
+#endif
 }
