@@ -51,29 +51,37 @@
 		{
 			return saturate(( value - a ) / ( b - a ));
 		}
+		float3 triplanar ( float3 worldPos, float scale, float3 blendAxes, int textureIndex )
+		{
+			//tri planar mapping
+			float3 scaledWorldPos = worldPos / scale;
 
+			float3 xProjecection = UNITY_SAMPLE_TEX2DARRAY ( baseTextures, float3( scaledWorldPos.y, scaledWorldPos.z, textureIndex )) * blendAxes.x;
+			float3 yProjecection = UNITY_SAMPLE_TEX2DARRAY ( baseTextures, float3( scaledWorldPos.x, scaledWorldPos.z, textureIndex )) * blendAxes.y;
+			float3 zProjecection = UNITY_SAMPLE_TEX2DARRAY ( baseTextures, float3( scaledWorldPos.x, scaledWorldPos.y, textureIndex )) * blendAxes.z;
+			
+			return xProjecection + yProjecection + zProjecection;
+		}
         void surf (Input IN, inout SurfaceOutputStandard o)
         {
 			float heightPercent = inverseLerp ( minHeight, maxHeight, IN.worldPos.y );
+			float3 blendAxes = abs ( IN.worldNormal );
+			blendAxes /= blendAxes.x + blendAxes.y + blendAxes.z;
+
 			for ( int i = 0; i < layerCount; i++ )
 			{
 				float drawStrength = inverseLerp ( 
 					-baseBlends[i] / 2 - epsilon, 
 					baseBlends[i] / 2, 
 					heightPercent - baseStartHeights[i] );
-				o.Albedo = o.Albedo * ( 1 - drawStrength ) + baseColors[i] * drawStrength;
+
+				float3 baseColor = baseColors[i] * baseColorStrengths[i];
+				float3 textureColor = triplanar ( IN.worldPos, baseTextureScales[i], blendAxes, i ) * (1 - baseColorStrengths[i]);
+				o.Albedo = o.Albedo * ( 1 - drawStrength ) + ( baseColor + textureColor ) * drawStrength;
 				
 			}
-			//tri planar mapping
-			float3 scaledWorldPos = IN.worldPos / TestScale;
-			float3 blendAxes = abs ( IN.worldNormal );
-			blendAxes /= blendAxes.x + blendAxes.y + blendAxes.z;
 
-			float3 xProjecection = tex2D ( TestTexture, scaledWorldPos.yz / TestScale ) * blendAxes.x;
-			float3 yProjecection = tex2D ( TestTexture, scaledWorldPos.xz / TestScale ) * blendAxes.y;
-			float3 zProjecection = tex2D ( TestTexture, scaledWorldPos.xy / TestScale ) * blendAxes.z;
 
-			//o.Albedo = xProjecection + yProjecection + zProjecection;
 
         }
         ENDCG
