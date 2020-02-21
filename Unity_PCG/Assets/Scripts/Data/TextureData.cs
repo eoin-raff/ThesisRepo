@@ -5,6 +5,8 @@ using System.Linq;
 [CreateAssetMenu()]
 public class TextureData : UpdateableData
 {
+    const int textureSize = 512;
+    const TextureFormat textureFormat = TextureFormat.RGB565;
     public Layer[] Layers;
 
     float savedMinHeight;
@@ -18,6 +20,9 @@ public class TextureData : UpdateableData
         material.SetFloatArray("baseBlends", Layers.Select(x => x.BlendStrength).ToArray());
         material.SetFloatArray("baseColorStrengths", Layers.Select(x => x.TintStrength).ToArray());
         material.SetFloatArray("baseTextureScales", Layers.Select(x => x.TextureScale).ToArray());
+        Texture2DArray texturesArray = GenerateTextureArray(Layers.Select(x => x.Texture).ToArray());
+        material.SetTexture("baseTextures", texturesArray);
+
         UpdateMeshHeights(material, savedMinHeight, savedMaxHeight);
     }
 
@@ -33,10 +38,27 @@ public class TextureData : UpdateableData
         material.SetFloat("maxHeight", maxHeight);
     }
 
+    Texture2DArray GenerateTextureArray(Texture2D[] textures)
+    {
+        Texture2DArray textureArray = new Texture2DArray(
+            textureSize,
+            textureSize,
+            textures.Length,
+            textureFormat,
+            true
+            );
+        for (int i = 0; i < textures.Length; i++)
+        {
+            textureArray.SetPixels(textures[i].GetPixels(), i);
+        }
+        textureArray.Apply() ;
+        return textureArray;
+    }
+
     [System.Serializable]
     public class Layer
     {
-        public Texture Texture;
+        public Texture2D Texture;
         public Color Tint;
         [Range(0,1)]
         public float TintStrength;

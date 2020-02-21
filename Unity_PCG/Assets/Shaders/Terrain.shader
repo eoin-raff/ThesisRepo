@@ -32,7 +32,7 @@
 
 		sampler2D TestTexture;
 		float TestScale;
-
+		UNITY_DECLARE_TEX2DARRAY ( baseTextures );
         struct Input
         {
 			float3 worldPos;
