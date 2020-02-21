@@ -17,22 +17,6 @@ public class MapGenerator : MonoBehaviour
     [Range(0, 6)]
     public int EditorPreviewLOD;
 
-
-    public bool AutoUpdate;
-
-    float[,] falloffMap;
-
-    void OnValuesUpdated()
-    {
-        if (!Application.isPlaying)
-        {
-            DrawMapInEditor();
-        }
-    }
-    void OnTextureValuesUpdated()
-    {
-        TextureData.ApplyToMaterial(TerrainMaterial);
-    }
     public int MapChunkSize
     {
         /*
@@ -55,8 +39,33 @@ public class MapGenerator : MonoBehaviour
         }
     }
 
+    public bool AutoUpdate;
+
+    float[,] falloffMap;
+
+
     Queue<MapThreadInfo<MapData>> MapDataThreadInfoQueue = new Queue<MapThreadInfo<MapData>>();
     Queue<MapThreadInfo<MeshData>> MeshDataThreadInfoQueue = new Queue<MapThreadInfo<MeshData>>();
+
+    private void Awake()
+    {
+        //not correct if using falloff
+        TextureData.ApplyToMaterial(TerrainMaterial);
+        TextureData.UpdateMeshHeights(TerrainMaterial, TerrainData.MinHeight, TerrainData.MaxHeight);
+
+    }
+
+    void OnValuesUpdated()
+    {
+        if (!Application.isPlaying)
+        {
+            DrawMapInEditor();
+        }
+    }
+    void OnTextureValuesUpdated()
+    {
+        TextureData.ApplyToMaterial(TerrainMaterial);
+    }
 
     public void RequestMapData(Vector2 centre, Action<MapData> callback)
     {
@@ -150,15 +159,14 @@ public class MapGenerator : MonoBehaviour
                 }
             }
         }
-        //not correct if using falloff
-        TextureData.ApplyToMaterial(TerrainMaterial);
-        TextureData.UpdateMeshHeights(TerrainMaterial, TerrainData.MinHeight, TerrainData.MaxHeight);
 
         return new MapData(noiseMap);
     }
 
     public void DrawMapInEditor()
     {
+        TextureData.UpdateMeshHeights(TerrainMaterial, TerrainData.MinHeight, TerrainData.MaxHeight);
+
         MapData mapData = GenerateMapData(Vector2.zero);
         MapDisplay display = FindObjectOfType<MapDisplay>();
         if (DrawMode == DrawMode.NoiseMap)
