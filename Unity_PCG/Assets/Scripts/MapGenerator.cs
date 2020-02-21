@@ -8,8 +8,12 @@ public class MapGenerator : MonoBehaviour
 {
     public DrawMode DrawMode;
 
-    public TerrainData TerrainData;
     public NoiseData NoiseData;
+    public TerrainData TerrainData;
+    public TextureData TextureData;
+
+    public Material TerrainMaterial;
+
     [Range(0, 6)]
     public int EditorPreviewLOD;
 
@@ -25,7 +29,10 @@ public class MapGenerator : MonoBehaviour
             DrawMapInEditor();
         }
     }
-
+    void OnTextureValuesUpdated()
+    {
+        TextureData.ApplyToMaterial(TerrainMaterial);
+    }
     public int MapChunkSize
     {
         /*
