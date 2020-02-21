@@ -7,7 +7,8 @@ using System.Threading;
 public class MapGenerator : MonoBehaviour
 {
     public DrawMode DrawMode;
-    public const int MapChunkSize = 241;   //gives nice values for LOD of 2, 4, 6, 8, 10, 12
+    public const int MapChunkSize = 239;    //241 gives nice values for LOD of 2, 4, 6, 8, 10, 12
+                                            //239 allows for 2 to be added for the border later
 
     public Noise.NormalizeMode normalizeMode;
 
@@ -103,8 +104,8 @@ public class MapGenerator : MonoBehaviour
     MapData GenerateMapData(Vector2 centre)
     {
         float[,] noiseMap = Noise.GenerateMap(
-            MapChunkSize, 
-            MapChunkSize, 
+            MapChunkSize + 2, //adds border
+            MapChunkSize + 2, //adds border
             Seed, 
             NoiseScale, 
             Octaves, 
