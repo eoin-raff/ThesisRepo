@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu()]
-public class NoiseData : ScriptableObject
+public class NoiseData : UpdateableData
 {
     public Noise.NormalizeMode normalizeMode;
     public float NoiseScale;
@@ -16,8 +16,10 @@ public class NoiseData : ScriptableObject
     public int Seed;
     public Vector2 Offset;
 
-    private void OnValidate()
+    protected override void OnValidate()
     {
+        base.OnValidate();
+
         if (Lacunarity < 1)
         {
             Lacunarity = 1;

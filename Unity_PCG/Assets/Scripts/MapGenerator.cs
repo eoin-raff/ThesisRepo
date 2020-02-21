@@ -25,6 +25,14 @@ public class MapGenerator : MonoBehaviour
         falloffMap = FalloffGenerator.GenerateFalloffMap(MapChunkSize);
     }
 
+    void OnValuesUpdated()
+    {
+        if (!Application.isPlaying)
+        {
+            DrawMapInEditor();
+        }
+    }
+
     public static int MapChunkSize
     {
         /*
@@ -180,6 +188,17 @@ public class MapGenerator : MonoBehaviour
 
     private void OnValidate()
     {
+        if (TerrainData != null)
+        {
+            TerrainData.OnValuesUpdated -= OnValuesUpdated; //if not subscribed, then this does nothing. If you are subscribed, it stops multiple calls being made
+            TerrainData.OnValuesUpdated += OnValuesUpdated;
+        }
+        if (NoiseData != null)
+        {
+            NoiseData.OnValuesUpdated -= OnValuesUpdated;
+            NoiseData.OnValuesUpdated += OnValuesUpdated;
+        }
+
         falloffMap = FalloffGenerator.GenerateFalloffMap(MapChunkSize);
     }
 
