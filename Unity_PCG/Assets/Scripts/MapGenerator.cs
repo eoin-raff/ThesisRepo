@@ -14,7 +14,13 @@ public class MapGenerator : MonoBehaviour
 
     public Material TerrainMaterial;
 
-    [Range(0, 6)]
+    [Range(0, MeshGenerator.NumSupportedChunkSizes-1)]
+    public int ChunkSizeIndex;
+
+    [Range(0, MeshGenerator.NumSupportedFlatshadedChunkSizes-1)]
+    public int FlatShadedChunkSizeIndex;
+
+    [Range(0, MeshGenerator.NumSupportedLODs-1)]
     public int EditorPreviewLOD;
 
     public int MapChunkSize
@@ -30,11 +36,11 @@ public class MapGenerator : MonoBehaviour
         {
             if (TerrainData.UseFlatShading)
             {
-                return 95;
+                return MeshGenerator.SupportedFlatshadedChunkSizes[FlatShadedChunkSizeIndex] - 1;
             }
             else
             {
-                return 239;
+                return MeshGenerator.SupportedChunkSizes[ChunkSizeIndex] - 1;
             }
         }
     }
