@@ -187,6 +187,11 @@ public class MapGenerator : MonoBehaviour
             NoiseData.OnValuesUpdated -= OnValuesUpdated;
             NoiseData.OnValuesUpdated += OnValuesUpdated;
         }
+        if (TextureData != null)
+        {
+            TextureData.OnValuesUpdated -= OnTextureValuesUpdated;
+            TextureData.OnValuesUpdated += OnTextureValuesUpdated;
+        }
     }
 
     struct MapThreadInfo<T>
