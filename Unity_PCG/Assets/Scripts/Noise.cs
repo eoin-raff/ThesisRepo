@@ -108,6 +108,7 @@ public static class Noise
         return noiseMap;
     }
 }
+
 [System.Serializable]
 public class NoiseSettings
 {

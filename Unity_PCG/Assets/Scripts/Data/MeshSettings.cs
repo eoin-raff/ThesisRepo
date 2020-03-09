@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 [CreateAssetMenu()]
 public class MeshSettings : UpdateableData
@@ -25,6 +23,7 @@ public class MeshSettings : UpdateableData
             return SupportedChunkSizes[(UseFlatShading ? FlatShadedChunkSizeIndex : ChunkSizeIndex)] + 5;
         }
     }
+
     public float MeshWorldSize
     {
         get

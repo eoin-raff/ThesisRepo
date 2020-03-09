@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -32,7 +31,6 @@ public class ThreadedDataRequester : MonoBehaviour
         }
     }
 
-
     private void Update()
     {
         if (DataQueue.Count > 0)
@@ -43,7 +41,6 @@ public class ThreadedDataRequester : MonoBehaviour
                 threadInfo.Callback(threadInfo.parameter);
             }
         }
-
     }
 
     struct ThreadInfo
