@@ -13,10 +13,10 @@ public static class TextureGenerator
         texture.Apply();
         return texture;
     }
-    public static Texture2D TextureFromHeightmap(float[,] heightMap)
+    public static Texture2D TextureFromHeightmap(HeightMap heightMap)
     {
-        int width = heightMap.GetLength(0);
-        int height = heightMap.GetLength(1);
+        int width = heightMap.Values.GetLength(0);
+        int height = heightMap.Values.GetLength(1);
 
         Color[] colorMap = new Color[width * height];
 
@@ -24,7 +24,7 @@ public static class TextureGenerator
         {
             for (int x = 0; x < width; x++)
             {
-                colorMap[y * width + x] = Color.Lerp(Color.black, Color.white, heightMap[x, y]);
+                colorMap[y * width + x] = Color.Lerp(Color.black, Color.white, Mathf.InverseLerp(heightMap.MinValue, heightMap.MaxValue, heightMap.Values[x, y]));
             }
         }
 
