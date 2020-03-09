@@ -16,43 +16,25 @@ public static class Noise
         Fixed,
         Rolling
     }
-    //Overload methods to make Offset & Normalize modes optional parameters (defaults to NormalizeMode.Global and OffsetMode.Fixed)
-    public static float[,] GenerateMap(int mapWidth, int mapHeight, int seed, float scale, int octaves, float persistance, float lacunarity, Vector2 offset)
-    {
-        return GenerateMap(mapWidth, mapHeight, seed, scale, octaves, persistance, lacunarity, offset, NormalizeMode.Global, OffsetMode.Fixed);
-    }
-    public static float[,] GenerateMap(int mapWidth, int mapHeight, int seed, float scale, int octaves, float persistance, float lacunarity, Vector2 offset, OffsetMode offsetMode)
-    {
-        return GenerateMap(mapWidth, mapHeight, seed, scale, octaves, persistance, lacunarity, offset, NormalizeMode.Global, offsetMode);
-    }
-    public static float[,] GenerateMap(int mapWidth, int mapHeight, int seed, float scale, int octaves, float persistance, float lacunarity, Vector2 offset, NormalizeMode normalizeMode)
-    {
-        return GenerateMap(mapWidth, mapHeight, seed, scale, octaves, persistance, lacunarity, offset, normalizeMode, OffsetMode.Fixed);
-    }
-    public static float[,] GenerateMap(int mapWidth, int mapHeight, int seed, float scale, int octaves, float persistance, float lacunarity, Vector2 offset, NormalizeMode normalizeMode, OffsetMode offsetMode)
+    public static float[,] GenerateNoiseMap(int mapWidth, int mapHeight, NoiseSettings settings, Vector2 sampleCentre)
     {
         float[,] noiseMap = new float[mapWidth, mapHeight];
 
-        System.Random prng = new System.Random(seed);
-        Vector2[] octaveOffsets = new Vector2[octaves];
+        System.Random prng = new System.Random(settings.Seed);
+        Vector2[] octaveOffsets = new Vector2[settings.Octaves];
 
         float maxPossibleHeight = 0;
         float frequency = 1f;
         float amplitude = 1f;
 
-        for (int i = 0; i < octaves; i++)
+        for (int i = 0; i < settings.Octaves; i++)
         {
-            float offsetX = prng.Next(-100000, 100000) + offset.x;
-            float offsetY = prng.Next(-100000, 100000) - offset.y;
+            float offsetX = prng.Next(-100000, 100000) + settings.Offset.x + sampleCentre.x;
+            float offsetY = prng.Next(-100000, 100000) - settings.Offset.y - sampleCentre.y;
             octaveOffsets[i] = new Vector2(offsetX, offsetY);
 
             maxPossibleHeight += amplitude;
-            amplitude *= persistance;
-        }
-
-        if (scale <= 0f)
-        {
-            scale = 0.0001f;
+            amplitude *= settings.Persistance;
         }
 
         float maxLocalNoiseHeight = float.MinValue;
@@ -69,21 +51,21 @@ public static class Noise
                 amplitude = 1f;
                 float noiseHeight = 0f;
 
-                for (int i = 0; i < octaves; i++)
+                for (int i = 0; i < settings.Octaves; i++)
                 {
                     // Applying the offsets at the end causes overall shape to change when adjusting offset.
                     // This is a good effect for clouds, but not for terrain.
                     float sampleX = 0;
                     float sampleY = 0;
-                    if (offsetMode == OffsetMode.Fixed)
+                    if (settings.OffsetMode == OffsetMode.Fixed)
                     {
-                        sampleX = (x - halfWidth + octaveOffsets[i].x) / scale * frequency;
-                        sampleY = (y - halfHeight + octaveOffsets[i].y) / scale * frequency;
+                        sampleX = (x - halfWidth + octaveOffsets[i].x) / settings.Scale * frequency;
+                        sampleY = (y - halfHeight + octaveOffsets[i].y) / settings.Scale * frequency;
                     }
                     else //Rolling offset (good for clouds, maybe?)
                     {
-                        sampleX = (x - halfWidth) / scale * frequency + octaveOffsets[i].x;
-                        sampleY = (y - halfHeight) / scale * frequency + octaveOffsets[i].y;
+                        sampleX = (x - halfWidth) / settings.Scale * frequency + octaveOffsets[i].x;
+                        sampleY = (y - halfHeight) / settings.Scale * frequency + octaveOffsets[i].y;
                     }
 
 
@@ -91,38 +73,62 @@ public static class Noise
                     
                     noiseHeight += perlinValue * amplitude;
 
-                    amplitude *= persistance;
-                    frequency *= lacunarity;
+                    amplitude *= settings.Persistance;
+                    frequency *= settings.Lacunarity;
                 }
 
                 if (noiseHeight > maxLocalNoiseHeight)
                 {
                     maxLocalNoiseHeight = noiseHeight;
                 }
-                else if (noiseHeight < minLocalNoiseHeight)
+
+                if (noiseHeight < minLocalNoiseHeight)
                 {
                     minLocalNoiseHeight = noiseHeight;
                 }
                 noiseMap[x, y] = noiseHeight;
+                if (settings.NormalizeMode == NormalizeMode.Global)
+                {
+                    float normalizedHeight = (noiseMap[x, y] + 1) / (2f * maxPossibleHeight / MaxHeightReduction); //Magic Number is an estimate to reduce MaxPossibleHeight to a more likely to occur value
+                    noiseMap[x, y] = Mathf.Clamp(normalizedHeight, 0, int.MaxValue);
+                }
             }
         }
-
-        for (int y = 0; y < mapHeight; y++)
+        if (settings.NormalizeMode == NormalizeMode.Local)
         {
-            for (int x = 0; x < mapWidth; x++)
+            for (int y = 0; y < mapHeight; y++)
             {
-                if (normalizeMode == NormalizeMode.Local)
+            for (int x = 0; x < mapWidth; x++)
                 {
                     noiseMap[x, y] = Mathf.InverseLerp(minLocalNoiseHeight, maxLocalNoiseHeight, noiseMap[x, y]);
-                }
-                else
-                {
-                    float normalizedHeight = (noiseMap[x, y] + 1) / (2f * maxPossibleHeight/ MaxHeightReduction); //Magic Number is an estimate to reduce MaxPossibleHeight to a more likely to occur value
-                    noiseMap[x, y] = Mathf.Clamp(normalizedHeight, 0, int.MaxValue);
                 }
             }
         }
 
         return noiseMap;
+    }
+}
+[System.Serializable]
+public class NoiseSettings
+{
+    public Noise.NormalizeMode NormalizeMode;
+    public Noise.OffsetMode OffsetMode;
+    public float Scale = 50;
+
+    public int Octaves = 6;
+    [Range(0, 1)]
+    public float Persistance = 0.6f;
+    public float Lacunarity = 2;
+
+    public int Seed;
+    public Vector2 Offset;
+
+    public void ValidateValues()
+    {
+        Scale = Mathf.Max(Scale, 0.01f);
+        Octaves = Mathf.Max(Octaves, 1);
+        Lacunarity = Mathf.Max(Lacunarity, 1f);
+        Persistance = Mathf.Clamp01(Persistance);
+        
     }
 }
