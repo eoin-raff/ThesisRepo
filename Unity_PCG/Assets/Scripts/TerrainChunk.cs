@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System;
+using System.Collections.Generic;
+using UnityEngine;
 
 
 public class TerrainChunk
@@ -84,6 +86,7 @@ public class TerrainChunk
 
         UpdateTerrainChunk();
     }
+
     Vector2 viewerPosition
     {
         get
@@ -140,6 +143,11 @@ public class TerrainChunk
                 }
             }
         }
+    }
+
+    public List<Vector2> PopulateFoliage(TreeSettings treeSettings)
+    {
+        return PoissonDiscSampling.GeneratePoints(treeSettings.Radius, new Vector2(bounds.extents.x, bounds.extents.z), treeSettings.RejectionSamples);
     }
 
     public void UpdateCollisionMesh()

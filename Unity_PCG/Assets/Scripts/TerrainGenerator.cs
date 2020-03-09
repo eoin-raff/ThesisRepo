@@ -8,13 +8,13 @@ public class TerrainGenerator : MonoBehaviour
     const float viewerMoveThresholdForChunkUpdate = 25f;
     const float SquareThresholdForChunkUpdate = viewerMoveThresholdForChunkUpdate * viewerMoveThresholdForChunkUpdate;
 
-
     public int ColliderLODIndex;
     public LODInfo[] DetailLevels;
 
     public MeshSettings MeshSettings;
     public HeightMapSettings HeightMapSettings;
     public TextureData TextureSettings;
+    public TreeSettings TreeSettings;
 
     public Transform Viewer;
     public Material TerrainMaterial;
@@ -26,6 +26,7 @@ public class TerrainGenerator : MonoBehaviour
 
     Dictionary<Vector2, TerrainChunk> terrainChunkDictionary = new Dictionary<Vector2, TerrainChunk>();
     List<TerrainChunk> visibleTerrainChunks = new List<TerrainChunk>();
+    private List<Vector3> TreePoints;
 
     private void Start()
     {
@@ -97,10 +98,25 @@ public class TerrainGenerator : MonoBehaviour
                         terrainChunkDictionary.Add(viewedChunkCoord, newChunk);
                         newChunk.OnVisibilityChanged += OnTerrainChunkVisibilityChanged;
                         newChunk.Load();
+                        TreePoints = VerticalToHorizontal(newChunk.PopulateFoliage(TreeSettings));
                     }
                 }
             }
         }
+    }
+
+    public List<Vector3> VerticalToHorizontal(List<Vector2> points)
+    {
+        List<Vector3> output = new List<Vector3>();
+        foreach (Vector2 samplePoint in points)
+        {
+            output.Add(new Vector3(
+                samplePoint.x,
+                0, //heightMap.Values[(int)samplePoint.x, (int)samplePoint.y],
+                samplePoint.y
+                ));
+        }
+        return output;
     }
 
     void OnTerrainChunkVisibilityChanged(TerrainChunk chunk, bool isVisible)
@@ -112,6 +128,17 @@ public class TerrainGenerator : MonoBehaviour
         else
         {
             visibleTerrainChunks.Remove(chunk);
+        }
+    }
+
+    private void OnDrawGizmos()
+    {
+        if (TreePoints != null)
+        {
+            foreach (Vector3 point in TreePoints)
+            {
+                Gizmos.DrawSphere(point, 1f);
+            }
         }
     }
 }
