@@ -4,12 +4,32 @@ using UnityEngine;
 
 public static class Noise
 {
+    private const float MaxHeightReduction = 1.9f;
+
     public enum NormalizeMode
     {
         Local,
         Global
     }
+    public enum OffsetMode
+    {
+        Fixed,
+        Rolling
+    }
+    //Overload methods to make Offset & Normalize modes optional parameters (defaults to NormalizeMode.Global and OffsetMode.Fixed)
+    public static float[,] GenerateMap(int mapWidth, int mapHeight, int seed, float scale, int octaves, float persistance, float lacunarity, Vector2 offset)
+    {
+        return GenerateMap(mapWidth, mapHeight, seed, scale, octaves, persistance, lacunarity, offset, NormalizeMode.Global, OffsetMode.Fixed);
+    }
+    public static float[,] GenerateMap(int mapWidth, int mapHeight, int seed, float scale, int octaves, float persistance, float lacunarity, Vector2 offset, OffsetMode offsetMode)
+    {
+        return GenerateMap(mapWidth, mapHeight, seed, scale, octaves, persistance, lacunarity, offset, NormalizeMode.Global, offsetMode);
+    }
     public static float[,] GenerateMap(int mapWidth, int mapHeight, int seed, float scale, int octaves, float persistance, float lacunarity, Vector2 offset, NormalizeMode normalizeMode)
+    {
+        return GenerateMap(mapWidth, mapHeight, seed, scale, octaves, persistance, lacunarity, offset, normalizeMode, OffsetMode.Fixed);
+    }
+    public static float[,] GenerateMap(int mapWidth, int mapHeight, int seed, float scale, int octaves, float persistance, float lacunarity, Vector2 offset, NormalizeMode normalizeMode, OffsetMode offsetMode)
     {
         float[,] noiseMap = new float[mapWidth, mapHeight];
 
@@ -53,12 +73,19 @@ public static class Noise
                 {
                     // Applying the offsets at the end causes overall shape to change when adjusting offset.
                     // This is a good effect for clouds, but not for terrain.
-                    
-                    //float sampleX = (x - halfWidth) / scale * frequency + octaveOffsets[i].x;
-                    //float sampleY = (y - halfHeight) / scale * frequency + octaveOffsets[i].y;
+                    float sampleX = 0;
+                    float sampleY = 0;
+                    if (offsetMode == OffsetMode.Fixed)
+                    {
+                        sampleX = (x - halfWidth + octaveOffsets[i].x) / scale * frequency;
+                        sampleY = (y - halfHeight + octaveOffsets[i].y) / scale * frequency;
+                    }
+                    else //Rolling offset (good for clouds, maybe?)
+                    {
+                        sampleX = (x - halfWidth) / scale * frequency + octaveOffsets[i].x;
+                        sampleY = (y - halfHeight) / scale * frequency + octaveOffsets[i].y;
+                    }
 
-                    float sampleX = (x - halfWidth + octaveOffsets[i].x) / scale * frequency;
-                    float sampleY = (y - halfHeight + octaveOffsets[i].y) / scale * frequency;
 
                     float perlinValue = Mathf.PerlinNoise(sampleX, sampleY) * 2 - 1;
                     
@@ -90,7 +117,7 @@ public static class Noise
                 }
                 else
                 {
-                    float normalizedHeight = (noiseMap[x, y] + 1) / (2f * maxPossibleHeight/2f); //Magic Number is an estimate to reduce MaxPossibleHeight to a more likely to occur value
+                    float normalizedHeight = (noiseMap[x, y] + 1) / (2f * maxPossibleHeight/ MaxHeightReduction); //Magic Number is an estimate to reduce MaxPossibleHeight to a more likely to occur value
                     noiseMap[x, y] = Mathf.Clamp(normalizedHeight, 0, int.MaxValue);
                 }
             }
