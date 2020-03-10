@@ -10,35 +10,35 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2237e2ad567fa0649ad1f788bae3375b, type: 3}
-  m_Name: Default Height Map Settings
+  m_Name: Mountain_Valleys_HM
   m_EditorClassIdentifier: 
-  AutoUpdate: 0
+  AutoUpdate: 1
   NoiseSettings:
     NormalizeMode: 1
     OffsetMode: 0
-    Scale: 30
+    Scale: 50
     Octaves: 10
-    Persistance: 0.405
-    Lacunarity: 2.42
+    Persistance: 0.35
+    Lacunarity: 3
     Seed: 0
     Offset: {x: 0, y: 0}
   UseFalloff: 0
-  HeightMultiplier: 15
+  HeightMultiplier: 10
   HeightCurve:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
       time: 0
       value: 0
-      inSlope: 2
-      outSlope: 2
+      inSlope: 1.024389
+      outSlope: 1.024389
       tangentMode: 0
       weightedMode: 0
       inWeight: 0
-      outWeight: 0
+      outWeight: 0.08321673
     - serializedVersion: 3
-      time: 0.6532294
-      value: 0.39841798
+      time: 0.67393696
+      value: 0.40200865
       inSlope: 1.5442746
       outSlope: 1.5442746
       tangentMode: 0

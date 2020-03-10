@@ -9,11 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1ad47bed0cc33e64b9b0779a308106c4, type: 3}
-  m_Name: Default Mesh Settings
+  m_Script: {fileID: 11500000, guid: 1052800197c12a947948c46599244a32, type: 3}
+  m_Name: Marshes_TD
   m_EditorClassIdentifier: 
-  AutoUpdate: 1
-  MeshScale: 0.5
-  UseFlatShading: 0
-  ChunkSizeIndex: 8
-  FlatShadedChunkSizeIndex: 2
+  AutoUpdate: 0
+  Layers: []
