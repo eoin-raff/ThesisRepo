@@ -21,9 +21,9 @@ public static class PoissonDiscSampling
         {
             //convert to vector3
             Vector3 newPoint = new Vector3(
-                vector2.x + centre.x,
-                0, //heightmap.Values[(int)(vector2.x - centre.x), (int)(vector2.y - centre.y)],
-                vector2.y + centre.y);
+                vector2.x + (centre.x) - heightmap.Values.GetLength(0)/2,
+                0,
+                vector2.y + (centre.y) - heightmap.Values.GetLength(1)/2);
             points3D.Add(newPoint);
         }
         return points3D;

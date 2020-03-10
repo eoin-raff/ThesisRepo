@@ -186,8 +186,9 @@ public class TerrainChunk
             //            (int)(spawnPoint.x - sampleCentre.x),
             //            (int)(spawnPoint.z - sampleCentre.y)],
             //    spawnPoint.y);
+            int idx = UnityEngine.Random.Range(0, treeSettings.Prefabs.Length - 1);
             GameObject.Instantiate(
-                GameObject.CreatePrimitive(PrimitiveType.Cube),
+                treeSettings.Prefabs[idx],
                 spawnPoint,// + new Vector3(sampleCentre.x, 0, sampleCentre.y),
                 Quaternion.identity,
                 meshObject.transform);

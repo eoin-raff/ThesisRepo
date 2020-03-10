@@ -12,5 +12,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1052800197c12a947948c46599244a32, type: 3}
   m_Name: Marshes_TD
   m_EditorClassIdentifier: 
-  AutoUpdate: 0
-  Layers: []
+  AutoUpdate: 1
+  Layers:
+  - Texture: {fileID: 2800000, guid: 324fe9e7d140df74cafe2c0b4c2eb649, type: 3}
+    Tint: {r: 0.09251513, g: 0.292429, b: 0.5943396, a: 0}
+    TintStrength: 0.725
+    StartHeight: 0
+    BlendStrength: 0
+    TextureScale: 5
+  - Texture: {fileID: 2800000, guid: f8c772e01a0486c45ad016b514d66475, type: 3}
+    Tint: {r: 0.4339623, g: 0.38669014, b: 0.24768601, a: 0.99215686}
+    TintStrength: 0.756
+    StartHeight: 0.001
+    BlendStrength: 0.012
+    TextureScale: 5
+  - Texture: {fileID: 2800000, guid: f8c772e01a0486c45ad016b514d66475, type: 3}
+    Tint: {r: 0.4670086, g: 0.49056602, b: 0.31701672, a: 0}
+    TintStrength: 0.729
+    StartHeight: 0.072
+    BlendStrength: 0.063
+    TextureScale: 5

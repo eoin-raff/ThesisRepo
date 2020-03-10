@@ -10,20 +10,20 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2237e2ad567fa0649ad1f788bae3375b, type: 3}
-  m_Name: Mountain_Valleys_HM
+  m_Name: Marshes_HM
   m_EditorClassIdentifier: 
   AutoUpdate: 1
   NoiseSettings:
     NormalizeMode: 1
     OffsetMode: 0
-    Scale: 50
-    Octaves: 10
-    Persistance: 0.35
-    Lacunarity: 3
+    Scale: 20
+    Octaves: 5
+    Persistance: 1
+    Lacunarity: 1
     Seed: 0
     Offset: {x: 0, y: 0}
   UseFalloff: 0
-  HeightMultiplier: 10
+  HeightMultiplier: 5
   HeightCurve:
     serializedVersion: 2
     m_Curve:

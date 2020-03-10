@@ -83,14 +83,6 @@ public class TerrainGenerator : MonoBehaviour
                     if (terrainChunkDictionary.ContainsKey(viewedChunkCoord))
                     {
                         terrainChunkDictionary[viewedChunkCoord].UpdateTerrainChunk();
-                        /*foreach (Vector3 spawnPoint in spawnPointsDictionary[terrainChunkDictionary[viewedChunkCoord]])
-                        {
-                            Instantiate(
-                                GameObject.CreatePrimitive(PrimitiveType.Cube),
-                                spawnPoint,
-                                Quaternion.identity,
-                                transform);
-                        }*/
                     }
                     else
                     {
@@ -106,37 +98,12 @@ public class TerrainGenerator : MonoBehaviour
                             TerrainMaterial);
 
                         terrainChunkDictionary.Add(viewedChunkCoord, newChunk);
-
-                        //List<Vector3> spawnPoints = newChunk.PopulateFoliage(TreeSettings);
-                        //spawnPointsDictionary.Add(newChunk, spawnPoints/*TREE GENERATION ALGORTIHM*/ );
-                        //bool validList = spawnPoints != null;
-                        //Debug.Assert(validList, "No Spawn Points", this);
-                        //if (validList)
-                        {
-
-
-                        }
                         newChunk.OnVisibilityChanged += OnTerrainChunkVisibilityChanged;
                         newChunk.Load();
-                        //TreePoints = VerticalToHorizontal(newChunk.PopulateFoliage(TreeSettings));
                     }
                 }
             }
         }
-    }
-
-    public List<Vector3> VerticalToHorizontal(List<Vector2> points)
-    {
-        List<Vector3> output = new List<Vector3>();
-        foreach (Vector2 samplePoint in points)
-        {
-            output.Add(new Vector3(
-                samplePoint.x,
-                0, //heightMap.Values[(int)samplePoint.x, (int)samplePoint.y],
-                samplePoint.y
-                ));
-        }
-        return output;
     }
 
     void OnTerrainChunkVisibilityChanged(TerrainChunk chunk, bool isVisible)
