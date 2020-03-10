@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 
@@ -167,7 +166,10 @@ public class TerrainChunk
     {
         HasForest = true;
         TreeSpawnPoints = (List<Vector3>)obj;
-        PopulateFoliage();
+        if (hasSetCollider)
+        {
+            PopulateFoliage();
+        }
     }
 
     public void PopulateFoliage()
@@ -175,24 +177,35 @@ public class TerrainChunk
         HeightMap heightMap = this.heightMap;
         float radius = treeSettings.Radius;
         int rejectionSamples = treeSettings.RejectionSamples;
-
-        foreach (Vector3 spawnPoint in TreeSpawnPoints)
+        List<Vector3> unusedPoints = new List<Vector3>();
+        foreach (Vector3 point in TreeSpawnPoints)
         {
-            //Debug.Log("Offset point X: " + (int)(spawnPoint.x - sampleCentre.x) + " Range: " + heightMap.Values.GetLength(0));
-            //Debug.Log("Offset point Y: " + (int)(spawnPoint.z - sampleCentre.y) + " Range: " + heightMap.Values.GetLength(1));
-            //Vector3 heightSpawnPoint = new Vector3(
-            //    spawnPoint.x,
-            //    heightMap.Values[
-            //            (int)(spawnPoint.x - sampleCentre.x),
-            //            (int)(spawnPoint.z - sampleCentre.y)],
-            //    spawnPoint.y);
+            Vector3 spawnPoint;
+            RaycastHit hit;
+            Ray ray = new Ray(point, Vector3.down);
+            if (Physics.Raycast(ray, out hit, heightMap.MaxValue + 2))
+            {
+                spawnPoint = hit.point;
+            }
+            else
+            {
+                unusedPoints.Add(point);
+                continue;
+            }
+
+
             int idx = UnityEngine.Random.Range(0, treeSettings.Prefabs.Length - 1);
             GameObject.Instantiate(
                 treeSettings.Prefabs[idx],
-                spawnPoint,// + new Vector3(sampleCentre.x, 0, sampleCentre.y),
+                spawnPoint,
                 Quaternion.identity,
                 meshObject.transform);
         }
+        foreach (Vector3 point in unusedPoints)
+        {
+            TreeSpawnPoints.Remove(point);
+        }
+        unusedPoints.Clear();
 
     }
 
@@ -218,6 +231,7 @@ public class TerrainChunk
             {
                 meshCollider.sharedMesh = lodMeshes[colliderLODIndex].Mesh;
                 hasSetCollider = true;
+                PopulateFoliage();
             }
         }
     }

@@ -22,7 +22,7 @@ public static class PoissonDiscSampling
             //convert to vector3
             Vector3 newPoint = new Vector3(
                 vector2.x + (centre.x) - heightmap.Values.GetLength(0)/2,
-                0,
+                heightmap.MaxValue + 1,
                 vector2.y + (centre.y) - heightmap.Values.GetLength(1)/2);
             points3D.Add(newPoint);
         }
