@@ -25,6 +25,7 @@ public class TerrainGenerator : MonoBehaviour
     int chunksVisibleInViewDistance;
 
     Dictionary<Vector2, TerrainChunk> terrainChunkDictionary = new Dictionary<Vector2, TerrainChunk>();
+    Dictionary<TerrainChunk, List<Vector3>> spawnPointsDictionary = new Dictionary<TerrainChunk, List<Vector3>>();
     List<TerrainChunk> visibleTerrainChunks = new List<TerrainChunk>();
     private List<Vector3> TreePoints;
 
@@ -36,7 +37,7 @@ public class TerrainGenerator : MonoBehaviour
 
         float maxViewDistance = DetailLevels[DetailLevels.Length - 1].VisibleDistanceThreshold;
         chunkSize = MeshSettings.MeshWorldSize;
-        chunksVisibleInViewDistance = Mathf.RoundToInt( maxViewDistance / chunkSize);
+        chunksVisibleInViewDistance = Mathf.RoundToInt(maxViewDistance / chunkSize);
 
         UpdateVisibleChunks();
 
@@ -52,10 +53,10 @@ public class TerrainGenerator : MonoBehaviour
                 terrainChunk.UpdateCollisionMesh();
             }
         }
-        if ((viewerPositionOld - viewerPosition).sqrMagnitude > SquareThresholdForChunkUpdate )
+        if ((viewerPositionOld - viewerPosition).sqrMagnitude > SquareThresholdForChunkUpdate)
         {
             viewerPositionOld = viewerPosition;
-            UpdateVisibleChunks(); 
+            UpdateVisibleChunks();
         }
     }
 
@@ -82,23 +83,42 @@ public class TerrainGenerator : MonoBehaviour
                     if (terrainChunkDictionary.ContainsKey(viewedChunkCoord))
                     {
                         terrainChunkDictionary[viewedChunkCoord].UpdateTerrainChunk();
+                        /*foreach (Vector3 spawnPoint in spawnPointsDictionary[terrainChunkDictionary[viewedChunkCoord]])
+                        {
+                            Instantiate(
+                                GameObject.CreatePrimitive(PrimitiveType.Cube),
+                                spawnPoint,
+                                Quaternion.identity,
+                                transform);
+                        }*/
                     }
                     else
                     {
                         TerrainChunk newChunk = new TerrainChunk(
-                            viewedChunkCoord, 
-                            HeightMapSettings, 
+                            viewedChunkCoord,
+                            HeightMapSettings,
                             MeshSettings,
+                            TreeSettings,
                             DetailLevels,
                             ColliderLODIndex,
-                            transform, 
+                            transform,
                             Viewer.transform,
                             TerrainMaterial);
 
                         terrainChunkDictionary.Add(viewedChunkCoord, newChunk);
+
+                        //List<Vector3> spawnPoints = newChunk.PopulateFoliage(TreeSettings);
+                        //spawnPointsDictionary.Add(newChunk, spawnPoints/*TREE GENERATION ALGORTIHM*/ );
+                        //bool validList = spawnPoints != null;
+                        //Debug.Assert(validList, "No Spawn Points", this);
+                        //if (validList)
+                        {
+
+
+                        }
                         newChunk.OnVisibilityChanged += OnTerrainChunkVisibilityChanged;
                         newChunk.Load();
-                        TreePoints = VerticalToHorizontal(newChunk.PopulateFoliage(TreeSettings));
+                        //TreePoints = VerticalToHorizontal(newChunk.PopulateFoliage(TreeSettings));
                     }
                 }
             }

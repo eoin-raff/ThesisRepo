@@ -134,7 +134,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 100006, guid: c6453f8e1f814744d8b94e5a6d1f9942, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 400002, guid: c6453f8e1f814744d8b94e5a6d1f9942, type: 3}
       propertyPath: m_LocalPosition.x
@@ -194,7 +194,6 @@ GameObject:
   - component: {fileID: 519156654}
   - component: {fileID: 519156655}
   - component: {fileID: 519156656}
-  - component: {fileID: 519156652}
   m_Layer: 0
   m_Name: MapGenerator
   m_TagString: Untagged
@@ -202,20 +201,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 4294967295
   m_IsActive: 1
---- !u!114 &519156652
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 519156651}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0da9cc7159045a048a083efd76f24fff, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  meshSettings: {fileID: 11400000, guid: 67e9ab6d89ca7804799b47983b247fe9, type: 2}
-  heightMapSettings: {fileID: 11400000, guid: 077a2950a45d0f249a636f37e8298dec, type: 2}
 --- !u!4 &519156654
 Transform:
   m_ObjectHideFlags: 0
@@ -257,8 +242,8 @@ MonoBehaviour:
   MeshSettings: {fileID: 11400000, guid: 67e9ab6d89ca7804799b47983b247fe9, type: 2}
   HeightMapSettings: {fileID: 11400000, guid: 077a2950a45d0f249a636f37e8298dec, type: 2}
   TextureSettings: {fileID: 11400000, guid: 22c37501f2b57004b9cd6c7789a191a5, type: 2}
-  TreeSettings: {fileID: 0}
-  Viewer: {fileID: 571470990}
+  TreeSettings: {fileID: 11400000, guid: 83389de7ac4b2fa4e83a0274f6d3ac67, type: 2}
+  Viewer: {fileID: 1752727006}
   TerrainMaterial: {fileID: 2100000, guid: dd6cd55d19252304a8a9e58c5c5027e7, type: 2}
 --- !u!114 &519156656
 MonoBehaviour:
@@ -851,6 +836,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cb1a28de07130864e8cc33aa75ba9df4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!4 &1752727006 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 400002, guid: c6453f8e1f814744d8b94e5a6d1f9942,
+    type: 3}
+  m_PrefabInstance: {fileID: 494415903}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1902015545
 GameObject:
   m_ObjectHideFlags: 0

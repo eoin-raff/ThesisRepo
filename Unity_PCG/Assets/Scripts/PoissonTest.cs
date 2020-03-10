@@ -11,22 +11,23 @@ public class PoissonTest : MonoBehaviour
 
     List<Vector2> points;
 
-    private void OnValidate()
+    private void Awake()
     {
-        Debug.Log("Generating Poisson Points");
-        points = PoissonDiscSampling.GeneratePoints(Radius, regionSize, rejectionSamples);
+        //points = PoissonDiscSampling.GeneratePoints(Radius, regionSize, rejectionSamples);
     }
 
-    private void OnDrawGizmos()
+    private void Start()
     {
-        Gizmos.DrawWireCube(regionSize / 2, regionSize);
-        Debug.Assert(points != null, "No Points");
+        Debug.Assert(points != null, "No Points", this);
         if (points!=null)
         {
-            Debug.Log(points.Count);
             foreach (Vector2 point in points)
             {
-                Gizmos.DrawSphere(point, displayRadius);
+                Instantiate(
+                    GameObject.CreatePrimitive(PrimitiveType.Sphere),
+                    new Vector3(point.x, 0, point.y),
+                    Quaternion.identity,
+                    transform);
             }
         }
     }

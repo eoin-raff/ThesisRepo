@@ -16,6 +16,7 @@ public class TerrainChunk
     MeshRenderer meshRenderer;
     MeshFilter meshFilter;
     MeshCollider meshCollider;
+    TreeSettings treeSettings;
 
     LODInfo[] detailLevels;
     LODMesh[] lodMeshes;
@@ -31,14 +32,18 @@ public class TerrainChunk
     HeightMapSettings heightMapSettings;
     MeshSettings meshSettings;
     Transform viewer;
+    private bool HasForest;
+    public List<Vector3> TreeSpawnPoints;
+    private bool HasRequestedForest;
 
-    public TerrainChunk(Vector2 coord, HeightMapSettings heightMapSettings, MeshSettings meshSettings, LODInfo[] detailLevels, int colliderLODIndex, Transform parent, Transform viewer, Material material)
+    public TerrainChunk(Vector2 coord, HeightMapSettings heightMapSettings, MeshSettings meshSettings, TreeSettings treeSettings, LODInfo[] detailLevels, int colliderLODIndex, Transform parent, Transform viewer, Material material)
     {
         Coordinate = coord;
         this.detailLevels = detailLevels;
         this.colliderLODIndex = colliderLODIndex;
         this.heightMapSettings = heightMapSettings;
         this.meshSettings = meshSettings;
+        this.treeSettings = treeSettings;
         this.viewer = viewer;
 
         sampleCentre = coord * meshSettings.MeshWorldSize / meshSettings.MeshScale;
@@ -68,6 +73,7 @@ public class TerrainChunk
 
         maxViewDistance = detailLevels[detailLevels.Length - 1].VisibleDistanceThreshold;
 
+        TreeSpawnPoints = new List<Vector3>();
 
     }
 
@@ -142,12 +148,51 @@ public class TerrainChunk
                     OnVisibilityChanged(this, visibile);
                 }
             }
+            if (!HasRequestedForest)
+            {
+                RequestPoisson(heightMap, treeSettings);
+            }
         }
     }
 
-    public List<Vector2> PopulateFoliage(TreeSettings treeSettings)
+    public void RequestPoisson(HeightMap heightMap, TreeSettings treeSettings)
     {
-        return PoissonDiscSampling.GeneratePoints(treeSettings.Radius, new Vector2(bounds.extents.x, bounds.extents.z), treeSettings.RejectionSamples);
+        HasRequestedForest = true;
+        ThreadedDataRequester.RequestData(
+            () => ForestGenerator.GenerateForestSpawnPoints(sampleCentre, heightMap, treeSettings),
+            OnForestDataReceived);
+    }
+
+    private void OnForestDataReceived(object obj)
+    {
+        HasForest = true;
+        TreeSpawnPoints = (List<Vector3>)obj;
+        PopulateFoliage();
+    }
+
+    public void PopulateFoliage()
+    {
+        HeightMap heightMap = this.heightMap;
+        float radius = treeSettings.Radius;
+        int rejectionSamples = treeSettings.RejectionSamples;
+
+        foreach (Vector3 spawnPoint in TreeSpawnPoints)
+        {
+            //Debug.Log("Offset point X: " + (int)(spawnPoint.x - sampleCentre.x) + " Range: " + heightMap.Values.GetLength(0));
+            //Debug.Log("Offset point Y: " + (int)(spawnPoint.z - sampleCentre.y) + " Range: " + heightMap.Values.GetLength(1));
+            //Vector3 heightSpawnPoint = new Vector3(
+            //    spawnPoint.x,
+            //    heightMap.Values[
+            //            (int)(spawnPoint.x - sampleCentre.x),
+            //            (int)(spawnPoint.z - sampleCentre.y)],
+            //    spawnPoint.y);
+            GameObject.Instantiate(
+                GameObject.CreatePrimitive(PrimitiveType.Cube),
+                spawnPoint,// + new Vector3(sampleCentre.x, 0, sampleCentre.y),
+                Quaternion.identity,
+                meshObject.transform);
+        }
+
     }
 
     public void UpdateCollisionMesh()
@@ -216,4 +261,6 @@ class LODMesh
             () => MeshGenerator.GenerateTerrainMesh(heightMap.Values, meshSettings, lod),
             OnMeshDataReceived);
     }
+
+
 }
