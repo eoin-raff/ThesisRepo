@@ -13,14 +13,19 @@ public class CustomTerrainEditor : Editor
 
     // properties
     SerializedProperty randomHeightRange;
+    SerializedProperty heightMapScale;
+    SerializedProperty heightMapImage;
 
     // foldouts
     bool showRandom = false;
+    bool showLoadHeights = false;
 
 
     void OnEnable()
     {
         randomHeightRange = serializedObject.FindProperty("randomHeightRange");
+        heightMapScale = serializedObject.FindProperty("heightMapScale");
+        heightMapImage = serializedObject.FindProperty("heightMapImage");
     }
 
     public override void OnInspectorGUI() 
@@ -42,10 +47,24 @@ public class CustomTerrainEditor : Editor
                 terrain.RandomTerrain();
             }
         }
+
+        showLoadHeights = EditorGUILayout.Foldout(showLoadHeights, "Load Heights");
+        if (showLoadHeights)
+        {
+            HLine();
+            GUILayout.Label("Set Heights From Image", EditorStyles.boldLabel);
+            EditorGUILayout.PropertyField(heightMapScale);
+            EditorGUILayout.PropertyField(heightMapImage);
+            if (GUILayout.Button("Load Texture"))
+            {
+                terrain.LoadTexture();
+            }
+        }
+
         HLine();
         if (GUILayout.Button("Reset"))
         {
-            terrain.Reset();
+            terrain.ResetTerrain();
         }
 
         // Apply changes to Custom Terrain

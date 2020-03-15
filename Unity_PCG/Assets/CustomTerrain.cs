@@ -8,6 +8,9 @@ using System.Linq;
 public class CustomTerrain : MonoBehaviour
 {
     public Vector2 randomHeightRange = new Vector2(0, 0.1f);
+    public Texture2D heightMapImage;
+    public Vector3 heightMapScale = Vector3.one;
+
     public Terrain terrain;
     public TerrainData terrainData;
 
@@ -49,7 +52,24 @@ public class CustomTerrain : MonoBehaviour
         this.gameObject.tag = "Terrain";
     }
 
-    public void Reset()
+    public void LoadTexture()
+    {
+        float[,] heightMap;
+        heightMap = new float[terrainData.heightmapResolution, terrainData.heightmapResolution];
+
+        for (int x = 0; x < terrainData.heightmapResolution; x++)
+        {
+            for (int y = 0; y < terrainData.heightmapResolution; y++)
+            {
+                heightMap[x, y] = heightMapImage.GetPixel((int)(x * heightMapScale.x), 
+                                                          (int)(y * heightMapScale.z)).grayscale
+                                                          * heightMapScale.y;
+            }
+        }
+        terrainData.SetHeights(0, 0, heightMap);
+    }
+
+    public void ResetTerrain()
     {
         float[,] heightMap = new float[terrainData.heightmapResolution, terrainData.heightmapResolution];
 
