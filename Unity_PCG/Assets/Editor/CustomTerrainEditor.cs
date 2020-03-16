@@ -32,6 +32,8 @@ public class CustomTerrainEditor : Editor
     SerializedProperty voronoiDropOff;
     SerializedProperty voronoiMinHeight;
     SerializedProperty voronoiMaxHeight;
+    SerializedProperty voronoiType;
+    
 
 
     // foldouts
@@ -65,6 +67,7 @@ public class CustomTerrainEditor : Editor
         voronoiDropOff = serializedObject.FindProperty("voronoiDropOff");
         voronoiMinHeight = serializedObject.FindProperty("voronoiMinHeight");
         voronoiMaxHeight = serializedObject.FindProperty("voronoiMaxHeight");
+        voronoiType = serializedObject.FindProperty("voronoiType");
     }
 
     public override void OnInspectorGUI() 
@@ -146,6 +149,7 @@ public class CustomTerrainEditor : Editor
         showVoroni = EditorGUILayout.Foldout(showVoroni, "Voronoi");
         if (showVoroni)
         {
+            EditorGUILayout.PropertyField(voronoiType);
             EditorGUILayout.IntSlider(voronoiPeakCount, 0, 50, new GUIContent("Peak Count"));
             EditorGUILayout.Slider(voronoiFallOff, 0, 5, new GUIContent("Fall Off"));
             EditorGUILayout.Slider(voronoiDropOff, 0, 5, new GUIContent("Drop Off"));
