@@ -53,6 +53,14 @@ public class CustomTerrain : MonoBehaviour
     public VoronoiType voronoiType = VoronoiType.Linear;
 
     #endregion
+
+    #region Midpoint Displacement
+    public float MPminHeight;
+    public float MPmaxHeight;
+    public float MProughness;
+    public float MPheightDampener;
+    #endregion
+
     public Terrain terrain;
     public TerrainData terrainData;
 
@@ -66,6 +74,120 @@ public class CustomTerrain : MonoBehaviour
         {
             return new float[terrainData.heightmapResolution, terrainData.heightmapResolution];
         }
+    }
+
+
+    public void MidpointDisplacement()
+    {
+
+         /*
+          * This function performs Midpoint Displacement using the Diamond Square Algorithm.
+          * 
+          * At any point, this algorithm works with a square of squareSize * squareSize
+          * The bottom left vertex is x, y
+          * the top right is cornerX, cornerY
+          * this means top left is (x, cornerY) and bottom right is (cornerX, y)
+          * the center of the square is (midX, midY)
+          */
+
+        float[,] heightMap = GetHeightMap();
+        int width = terrainData.heightmapResolution - 1;  //return to 512 to be power of 2
+        int squareSize = width;                         //dimensions of working area
+        float heightMin = MPminHeight;
+        float heightMax = MPmaxHeight;
+
+        float heightDampener = (float)Mathf.Pow(MPheightDampener, -1 * MProughness);
+
+        int cornerX, cornerY;                           //top right vertex of working area
+        int midX, midY;                                 //center of working area
+        int pmidXR, pmidXL, pmidYU, pmidYD;             //points opposite edge midpoints for square step
+
+        ////Set Terrain Corners to random heights
+        //heightMap[0, 0] = UnityEngine.Random.Range(0.0f, 0.2f);
+        //heightMap[0, terrainData.heightmapResolution - 2] = UnityEngine.Random.Range(0.0f, 0.2f);
+        //heightMap[terrainData.heightmapResolution - 2, 0] = UnityEngine.Random.Range(0.0f, 0.2f);
+        //heightMap[terrainData.heightmapResolution - 2, terrainData.heightmapResolution - 2] = UnityEngine.Random.Range(0.0f, 0.2f);
+
+        while (squareSize > 0)
+        {
+            //Diamond Step. Set the mid point of each square to the average height of the surrouning corners
+            for (int x = 0; x < width; x += squareSize)
+            {
+                for (int y = 0; y < width; y += squareSize)
+                {
+                    cornerX = (x + squareSize);
+                    cornerY = (y + squareSize);
+
+                    midX = (int)(x + squareSize / 2.0f);
+                    midY = (int)(y + squareSize / 2.0f);
+
+                    heightMap[midX, midY] = (float)((heightMap[x, y]
+                                                   + heightMap[x, cornerY]
+                                                   + heightMap[cornerX, y]
+                                                   + heightMap[cornerX, cornerY]) / 4.0f)
+                                                    + UnityEngine.Random.Range(heightMin, heightMax);
+                }
+            }
+
+            //Square step. Set the height of edge midpoints based on surrounding vertices
+            for (int x = 0; x < width; x += squareSize)
+            {
+                for (int y = 0; y < width; y += squareSize)
+                {
+                    cornerX = (x + squareSize);
+                    cornerY = (y + squareSize);
+
+                    midX = (int)(x + squareSize / 2.0f);
+                    midY = (int)(y + squareSize / 2.0f);
+
+                    pmidXR = (int)(midX + squareSize);
+                    pmidYU = (int)(midY + squareSize);
+                    pmidXL = (int)(midX - squareSize);
+                    pmidYD = (int)(midY - squareSize);
+
+
+                    if (pmidXL <= 0 || pmidYD <= 0 || pmidXR >= width-1 || pmidYU >= width - 1)
+                    {
+                        continue; //ignore edges where external points would cause out of bounds error
+                    }
+
+                    //bottom edge midpoint height
+                    heightMap[midX, y] = (float)((heightMap[midX, midY]
+                                                   + heightMap[x, y]
+                                                   + heightMap[midX, pmidYD]
+                                                   + heightMap[cornerX, y]) / 4.0f)
+                                                    + UnityEngine.Random.Range(heightMin, heightMax);
+
+                    //top edge midpoint height
+                    heightMap[midX, cornerY] = (float)((heightMap[x, cornerY]
+                                                   + heightMap[midX, midY]
+                                                   + heightMap[cornerX, cornerY]
+                                                   + heightMap[midX, pmidYU]) / 4.0f)
+                                                    + UnityEngine.Random.Range(heightMin, heightMax);
+
+                    //left edge midpoint height
+                    heightMap[x, midY] = (float)((heightMap[midX, midY]
+                                                   + heightMap[x, y]
+                                                   + heightMap[pmidXL, midY]
+                                                   + heightMap[x, cornerY]) / 4.0f)
+                                                    + UnityEngine.Random.Range(heightMin, heightMax);
+
+                    //right edge midpoint height
+                    heightMap[cornerX, midY] = (float)((heightMap[midX, midY]
+                                                   + heightMap[cornerX, cornerY]
+                                                   + heightMap[pmidXR, midY]
+                                                   + heightMap[cornerX, y]) / 4.0f)
+                                                    + UnityEngine.Random.Range(heightMin, heightMax);
+                }
+            }
+
+            //reduce square
+            squareSize = (int)(squareSize / 2.0f);
+            heightMin *= heightDampener;
+            heightMax *= heightDampener;
+        }
+        terrainData.SetHeights(0, 0, heightMap);
+
     }
 
     public void Voronoi()
@@ -144,7 +266,6 @@ public class CustomTerrain : MonoBehaviour
         }
         terrainData.SetHeights(0, 0, heightMap);
     }
-
     public void MultiplePerlinTerrain()
     {
         float[,] heightMap = GetHeightMap();
@@ -164,7 +285,6 @@ public class CustomTerrain : MonoBehaviour
         }
         terrainData.SetHeights(0, 0, heightMap);
     }
-
     public void AddNewPerlin()
     {
         perlinParameters.Add(new PerlinParameters());
@@ -191,7 +311,6 @@ public class CustomTerrain : MonoBehaviour
         // set list to kept list
         perlinParameters = keptPerlinParameters;
     }
-
     public void RandomTerrain()
     {
         float[,] heightMap = GetHeightMap();
@@ -206,7 +325,6 @@ public class CustomTerrain : MonoBehaviour
         terrainData.SetHeights(0, 0, heightMap);
 
     }
-
     public void LoadTexture()
     {
         float[,] heightMap = GetHeightMap();
