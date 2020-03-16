@@ -9,19 +9,39 @@ public class CustomTerrain : MonoBehaviour
 {
     public Vector2 randomHeightRange = new Vector2(0, 0.1f);
     public Texture2D heightMapImage;
-    public Vector3 heightMapScale = Vector3.one;
+    public Vector3 heightMapScale = new Vector3(2, 0.5f, 2);
 
-    public bool resetTerrain = false;
+    public bool resetTerrain = true;
 
     #region Perlin Noise
-    public float perlinScaleX = 0.01f;
-    public float perlinScaleY = 0.01f;
+    public float perlinScaleX = 0.001f;
+    public float perlinScaleY = 0.001f;
     public int perlinOffsetX = 0;
     public int perlinOffsetY = 0;
     public int perlinOctaves = 3;
     public float perlinPersistance = 0.5f;
-    public float perlinHeightScale;
-    #endregion
+    public float perlinHeightScale = 0.5f;
+    #endregion    
+
+    #region Multiple Perlin Noise
+    [System.Serializable]
+    public class PerlinParameters 
+    {
+        public float xScale = 0.001f;
+        public float yScale = 0.001f;
+        public int xOffset = 0;
+        public int yOffset = 0;
+        public int octaves = 3;
+        public float persistance = 0.5f;
+        public float heightScale = 0.9f;
+        public bool remove = false;
+    }
+    public List<PerlinParameters> perlinParameters = new List<PerlinParameters>()
+    {
+        new PerlinParameters()
+    };
+
+#endregion
 
     public Terrain terrain;
     public TerrainData terrainData;
@@ -56,6 +76,53 @@ public class CustomTerrain : MonoBehaviour
         terrainData.SetHeights(0, 0, heightMap);
     }
 
+    public void MultiplePerlinTerrain()
+    {
+        float[,] heightMap = GetHeightMap();
+        for (int y = 0; y < terrainData.heightmapResolution; y++)
+        {
+            for (int x = 0; x < terrainData.heightmapResolution; x++)
+            {
+                foreach (PerlinParameters parameters in perlinParameters)
+                {
+                    heightMap[x, y] += Utils.fBM(
+                        (x + parameters.xOffset) * parameters.xScale,
+                        (y + parameters.yOffset) * parameters.yScale,
+                        parameters.octaves,
+                        parameters.persistance) * parameters.heightScale;
+                }
+            }
+        }
+        terrainData.SetHeights(0, 0, heightMap);
+    }
+
+    public void AddNewPerlin()
+    {
+        perlinParameters.Add(new PerlinParameters());
+    }
+    public void RemovePerlin()
+    {
+        // New list for parameters that should be kept
+        List<PerlinParameters> keptPerlinParameters = new List<PerlinParameters>();
+
+        // Loop through current parameters, and check if they should be removed or not
+        for (int i = 0; i < perlinParameters.Count; i++)
+        {
+            if (!perlinParameters[i].remove)
+            {
+                //if they should not be removed, add them to the kepy list
+                keptPerlinParameters.Add(perlinParameters[i]);
+            }
+        }
+        if (keptPerlinParameters.Count == 0)
+        {
+            //if none are to be kept, then add at least 1 item to the kept list so the table will work
+            keptPerlinParameters.Add(perlinParameters[0]);
+        }
+        // set list to kept list
+        perlinParameters = keptPerlinParameters;
+    }
+
     public void RandomTerrain()
     {
         float[,] heightMap = GetHeightMap();
@@ -70,28 +137,7 @@ public class CustomTerrain : MonoBehaviour
         terrainData.SetHeights(0, 0, heightMap);
 
     }
-    void OnEnable()
-    {
-        Debug.Log("Initialising Terrain Data");
-        terrain = this.GetComponent<Terrain>();
-        terrainData = Terrain.activeTerrain.terrainData;
-    }
-    void Awake()
-    {
-        SerializedObject tagManager = new SerializedObject(
-            AssetDatabase.LoadAllAssetsAtPath("ProjectSettings/TagManager.asset")[0]);
-        SerializedProperty tagsProp = tagManager.FindProperty("tags");
 
-        AddTag(tagsProp, "Terrain");
-        AddTag(tagsProp, "Cloud");
-        AddTag(tagsProp, "Shore");
-
-        // update tags DB
-        tagManager.ApplyModifiedProperties();
-
-        // tag this object
-        this.gameObject.tag = "Terrain";
-    }
     public void LoadTexture()
     {
         float[,] heightMap = GetHeightMap();
@@ -143,6 +189,28 @@ public class CustomTerrain : MonoBehaviour
         }
     }
 
+    void OnEnable()
+    {
+        Debug.Log("Initialising Terrain Data");
+        terrain = this.GetComponent<Terrain>();
+        terrainData = Terrain.activeTerrain.terrainData;
+    }
+    void Awake()
+    {
+        SerializedObject tagManager = new SerializedObject(
+            AssetDatabase.LoadAllAssetsAtPath("ProjectSettings/TagManager.asset")[0]);
+        SerializedProperty tagsProp = tagManager.FindProperty("tags");
+
+        AddTag(tagsProp, "Terrain");
+        AddTag(tagsProp, "Cloud");
+        AddTag(tagsProp, "Shore");
+
+        // update tags DB
+        tagManager.ApplyModifiedProperties();
+
+        // tag this object
+        this.gameObject.tag = "Terrain";
+    }
     // Start is called before the first frame update
     void Start()
     {

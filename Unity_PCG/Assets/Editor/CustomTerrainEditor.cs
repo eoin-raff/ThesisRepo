@@ -24,15 +24,19 @@ public class CustomTerrainEditor : Editor
     SerializedProperty perlinHeightScale;
     SerializedProperty resetTerrain;
 
+    GUITableState perlinParameterTable;
+    SerializedProperty perlinParameters; 
+
     // foldouts
     bool showRandom = false;
     bool showLoadHeights = false;
     bool showPerlin = false;
-
+    bool showMultiplePerlin = false;
 
     void OnEnable()
     {
         resetTerrain = serializedObject.FindProperty("resetTerrain");
+
         randomHeightRange = serializedObject.FindProperty("randomHeightRange");
         heightMapScale = serializedObject.FindProperty("heightMapScale");
         heightMapImage = serializedObject.FindProperty("heightMapImage");
@@ -43,6 +47,10 @@ public class CustomTerrainEditor : Editor
         perlinOctaves = serializedObject.FindProperty("perlinOctaves");
         perlinPersistance = serializedObject.FindProperty("perlinPersistance");
         perlinHeightScale = serializedObject.FindProperty("perlinHeightScale");
+
+        perlinParameterTable = new GUITableState("perlinParameterTable");
+        perlinParameters = serializedObject.FindProperty("perlinParameters");
+
     }
 
     public override void OnInspectorGUI() 
@@ -97,6 +105,29 @@ public class CustomTerrainEditor : Editor
             }
         }
 
+        showMultiplePerlin = EditorGUILayout.Foldout(showMultiplePerlin, "Multiple Perlin");
+        if (showMultiplePerlin)
+        {
+            HLine();
+            GUILayout.Label("Multiple Perlin Noise", EditorStyles.boldLabel);
+            perlinParameterTable = GUITableLayout.DrawTable(perlinParameterTable,
+                serializedObject.FindProperty("perlinParameters"));
+            EditorGUILayout.Space(20);
+            EditorGUILayout.BeginHorizontal();
+            if (GUILayout.Button("+"))
+            {
+                terrain.AddNewPerlin();
+            }
+            if (GUILayout.Button("-"))
+            {
+                terrain.RemovePerlin();
+            }
+            EditorGUILayout.EndHorizontal();
+            if (GUILayout.Button("Apply Multiple Perlin"))
+            {
+                terrain.MultiplePerlinTerrain();
+            }
+        }
 
         HLine();
         if (GUILayout.Button("Reset"))
