@@ -22,10 +22,17 @@ public class CustomTerrainEditor : Editor
     SerializedProperty perlinOctaves;
     SerializedProperty perlinPersistance;
     SerializedProperty perlinHeightScale;
-    SerializedProperty resetTerrain;
 
     GUITableState perlinParameterTable;
     SerializedProperty perlinParameters; 
+    SerializedProperty resetTerrain;
+
+    SerializedProperty voronoiPeakCount;
+    SerializedProperty voronoiFallOff;
+    SerializedProperty voronoiDropOff;
+    SerializedProperty voronoiMinHeight;
+    SerializedProperty voronoiMaxHeight;
+
 
     // foldouts
     bool showRandom = false;
@@ -41,6 +48,7 @@ public class CustomTerrainEditor : Editor
         randomHeightRange = serializedObject.FindProperty("randomHeightRange");
         heightMapScale = serializedObject.FindProperty("heightMapScale");
         heightMapImage = serializedObject.FindProperty("heightMapImage");
+
         perlinScaleX = serializedObject.FindProperty("perlinScaleX");
         perlinScaleY = serializedObject.FindProperty("perlinScaleY");
         perlinOffsetX = serializedObject.FindProperty("perlinOffsetX");
@@ -52,6 +60,11 @@ public class CustomTerrainEditor : Editor
         perlinParameterTable = new GUITableState("perlinParameterTable");
         perlinParameters = serializedObject.FindProperty("perlinParameters");
 
+        voronoiPeakCount = serializedObject.FindProperty("voronoiPeakCount");
+        voronoiFallOff = serializedObject.FindProperty("voronoiFallOff");
+        voronoiDropOff = serializedObject.FindProperty("voronoiDropOff");
+        voronoiMinHeight = serializedObject.FindProperty("voronoiMinHeight");
+        voronoiMaxHeight = serializedObject.FindProperty("voronoiMaxHeight");
     }
 
     public override void OnInspectorGUI() 
@@ -112,7 +125,7 @@ public class CustomTerrainEditor : Editor
             HLine();
             GUILayout.Label("Multiple Perlin Noise", EditorStyles.boldLabel);
             perlinParameterTable = GUITableLayout.DrawTable(perlinParameterTable,
-                serializedObject.FindProperty("perlinParameters"));
+                perlinParameters);
             EditorGUILayout.Space(20);
             EditorGUILayout.BeginHorizontal();
             if (GUILayout.Button("+"))
@@ -133,6 +146,18 @@ public class CustomTerrainEditor : Editor
         showVoroni = EditorGUILayout.Foldout(showVoroni, "Voronoi");
         if (showVoroni)
         {
+            EditorGUILayout.IntSlider(voronoiPeakCount, 0, 50, new GUIContent("Peak Count"));
+            EditorGUILayout.Slider(voronoiFallOff, 0, 5, new GUIContent("Fall Off"));
+            EditorGUILayout.Slider(voronoiDropOff, 0, 5, new GUIContent("Drop Off"));
+            float minValue = voronoiMinHeight.floatValue;
+            float maxValue = voronoiMaxHeight.floatValue;
+            EditorGUILayout.LabelField("Peak Height Range");
+            EditorGUILayout.LabelField("Min: " + minValue);
+            EditorGUILayout.LabelField("Max: " + maxValue);
+            EditorGUILayout.MinMaxSlider(ref minValue, ref maxValue, 0, 1);
+            voronoiMaxHeight.floatValue = maxValue;
+            voronoiMinHeight.floatValue = minValue;
+
             if (GUILayout.Button("Voronoi"))
             {
                 terrain.Voronoi();
