@@ -127,10 +127,10 @@ namespace UnityStandardAssets.Characters.FirstPerson
 
         private void Update()
         {
-            if (Input.GetKeyDown(KeyCode.Escape))
-            {
-                Debug.Break();
-            }
+            //if (Input.GetKeyDown(KeyCode.Escape))
+            //{
+            //    Debug.Break();
+            //}
 
             RotateView();
 
