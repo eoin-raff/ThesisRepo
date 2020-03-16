@@ -247,7 +247,7 @@ MonoBehaviour:
   randomHeightRange: {x: 0, y: 0.005}
   heightMapImage: {fileID: 2800000, guid: 899b2d450cd2b624b9141f7c14321f13, type: 3}
   heightMapScale: {x: 2, y: 0.5, z: 2}
-  resetTerrain: 0
+  resetTerrain: 1
   perlinScaleX: 0.015
   perlinScaleY: 0.005
   perlinOffsetX: 0
@@ -278,6 +278,10 @@ MonoBehaviour:
   voronoiMinHeight: 0.08017337
   voronoiMaxHeight: 0.35764825
   voronoiType: 2
+  MPminHeight: -1
+  MPmaxHeight: 1
+  MProughness: 2
+  MPheightDampener: 1.5
   terrain: {fileID: 29482990}
   terrainData: {fileID: 15600000, guid: 2a158fba47a64d44092107bef6194558, type: 2}
 --- !u!154 &29482989

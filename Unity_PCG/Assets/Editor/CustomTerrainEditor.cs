@@ -182,17 +182,23 @@ public class CustomTerrainEditor : Editor
         showMidpointDisplacement = EditorGUILayout.Foldout(showMidpointDisplacement, "Midpoint Displacement");
         if (showMidpointDisplacement)
         {
+
+            EditorGUILayout.LabelField("Height Range");
+            EditorGUILayout.PropertyField(MPminHeight, new GUIContent("Min Height"));
+            EditorGUILayout.PropertyField(MPmaxHeight, new GUIContent("Max Height"));
+            
             float minValue = MPminHeight.floatValue;
             float maxValue = MPmaxHeight.floatValue;
-            EditorGUILayout.LabelField("Height Range");
-            EditorGUILayout.LabelField("Min: " + minValue);
-            EditorGUILayout.LabelField("Max: " + maxValue);
-            EditorGUILayout.MinMaxSlider(ref minValue, ref maxValue, -10, 10);
+            EditorGUILayout.MinMaxSlider(ref minValue, ref maxValue, -1, 1);
+           
+
             MPmaxHeight.floatValue = maxValue;
             MPminHeight.floatValue = minValue;
 
-            EditorGUILayout.PropertyField(MProughness, new GUIContent("Roughness"));
-            EditorGUILayout.PropertyField(MPheightDampener, new GUIContent("Height Dampener"));
+            //EditorGUILayout.PropertyField(MProughness, new GUIContent("Roughness"));
+            EditorGUILayout.Slider(MProughness, 1.0f, 5.0f, new GUIContent("Roughness"));
+            EditorGUILayout.Slider(MPheightDampener, 1.0f, 5.0f, new GUIContent("Height Damener"));
+            //EditorGUILayout.PropertyField(MPheightDampener, new GUIContent("Height Dampener"));
 
             if (GUILayout.Button("MPD"))
             {
