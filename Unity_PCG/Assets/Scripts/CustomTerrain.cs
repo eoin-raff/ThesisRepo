@@ -16,6 +16,9 @@ public class CustomTerrain : MonoBehaviour
     public float perlinScaleY = 0.01f;
     public int perlinOffsetX = 0;
     public int perlinOffsetY = 0;
+    public int perlinOctaves = 3;
+    public float perlinPersistance = 0.5f;
+    public float perlinHeightScale;
     #endregion
 
     public Terrain terrain;
@@ -23,12 +26,18 @@ public class CustomTerrain : MonoBehaviour
 
     public void Perlin()
     {
-        float[,] heightMap = new float[terrainData.heightmapResolution, terrainData.heightmapResolution];
+        float[,] heightMap = terrainData.GetHeights(0, 0, terrainData.heightmapResolution, terrainData.heightmapResolution); 
+
         for (int y = 0; y < terrainData.heightmapResolution; y++)
         {
             for (int x = 0; x < terrainData.heightmapResolution; x++)
             {
-                heightMap[x, y] = Mathf.PerlinNoise((x + perlinOffsetX) * perlinScaleX, (y + perlinOffsetY) * perlinScaleY);
+                heightMap[x, y] = Utils.fBM(
+                        (x + perlinOffsetX) * perlinScaleX,
+                        (y + perlinOffsetY) * perlinScaleY,
+                        perlinOctaves,
+                        perlinPersistance) 
+                    * perlinHeightScale;
             }
         }
         terrainData.SetHeights(0, 0, heightMap);
@@ -71,7 +80,6 @@ public class CustomTerrain : MonoBehaviour
         // tag this object
         this.gameObject.tag = "Terrain";
     }
-
     public void LoadTexture()
     {
         float[,] heightMap;
@@ -88,7 +96,6 @@ public class CustomTerrain : MonoBehaviour
         }
         terrainData.SetHeights(0, 0, heightMap);
     }
-
     public void ResetTerrain()
     {
         float[,] heightMap = new float[terrainData.heightmapResolution, terrainData.heightmapResolution];
@@ -102,7 +109,6 @@ public class CustomTerrain : MonoBehaviour
         }
         terrainData.SetHeights(0, 0, heightMap);
     }
-
     private void AddTag(SerializedProperty tagsProp, string newTag)
     {
         bool found = false;
