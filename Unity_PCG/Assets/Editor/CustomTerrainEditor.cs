@@ -33,6 +33,11 @@ public class CustomTerrainEditor : Editor
     SerializedProperty voronoiMinHeight;
     SerializedProperty voronoiMaxHeight;
     SerializedProperty voronoiType;
+
+    SerializedProperty MPminHeight;
+    SerializedProperty MPmaxHeight;
+    SerializedProperty MProughness;
+    SerializedProperty MPheightDampener;
     
 
 
@@ -42,6 +47,7 @@ public class CustomTerrainEditor : Editor
     bool showPerlin = false;
     bool showMultiplePerlin = false;
     bool showVoroni = false;
+    bool showMidpointDisplacement = false;
 
     void OnEnable()
     {
@@ -68,6 +74,11 @@ public class CustomTerrainEditor : Editor
         voronoiMinHeight = serializedObject.FindProperty("voronoiMinHeight");
         voronoiMaxHeight = serializedObject.FindProperty("voronoiMaxHeight");
         voronoiType = serializedObject.FindProperty("voronoiType");
+
+        MPminHeight = serializedObject.FindProperty("MPminHeight");
+        MPmaxHeight = serializedObject.FindProperty("MPmaxHeight");
+        MProughness = serializedObject.FindProperty("MProughness");
+        MPheightDampener = serializedObject.FindProperty("MPheightDampener");
     }
 
     public override void OnInspectorGUI() 
@@ -165,6 +176,27 @@ public class CustomTerrainEditor : Editor
             if (GUILayout.Button("Voronoi"))
             {
                 terrain.Voronoi();
+            }
+        }
+
+        showMidpointDisplacement = EditorGUILayout.Foldout(showMidpointDisplacement, "Midpoint Displacement");
+        if (showMidpointDisplacement)
+        {
+            float minValue = MPminHeight.floatValue;
+            float maxValue = MPmaxHeight.floatValue;
+            EditorGUILayout.LabelField("Height Range");
+            EditorGUILayout.LabelField("Min: " + minValue);
+            EditorGUILayout.LabelField("Max: " + maxValue);
+            EditorGUILayout.MinMaxSlider(ref minValue, ref maxValue, -10, 10);
+            MPmaxHeight.floatValue = maxValue;
+            MPminHeight.floatValue = minValue;
+
+            EditorGUILayout.PropertyField(MProughness, new GUIContent("Roughness"));
+            EditorGUILayout.PropertyField(MPheightDampener, new GUIContent("Height Dampener"));
+
+            if (GUILayout.Button("MPD"))
+            {
+                terrain.MidpointDisplacement();
             }
         }
 
