@@ -22,6 +22,7 @@ public class CustomTerrainEditor : Editor
     SerializedProperty perlinOctaves;
     SerializedProperty perlinPersistance;
     SerializedProperty perlinHeightScale;
+    SerializedProperty resetTerrain;
 
     // foldouts
     bool showRandom = false;
@@ -31,6 +32,7 @@ public class CustomTerrainEditor : Editor
 
     void OnEnable()
     {
+        resetTerrain = serializedObject.FindProperty("resetTerrain");
         randomHeightRange = serializedObject.FindProperty("randomHeightRange");
         heightMapScale = serializedObject.FindProperty("heightMapScale");
         heightMapImage = serializedObject.FindProperty("heightMapImage");
@@ -49,7 +51,7 @@ public class CustomTerrainEditor : Editor
         serializedObject.Update();
 
         CustomTerrain terrain = (CustomTerrain)target;
-
+        EditorGUILayout.PropertyField(resetTerrain);
 
         showRandom = EditorGUILayout.Foldout(showRandom, "Random");
         if (showRandom)
