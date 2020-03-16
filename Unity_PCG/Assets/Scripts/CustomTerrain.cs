@@ -25,7 +25,7 @@ public class CustomTerrain : MonoBehaviour
 
     #region Multiple Perlin Noise
     [System.Serializable]
-    public class PerlinParameters 
+    public class PerlinParameters
     {
         public float xScale = 0.001f;
         public float yScale = 0.001f;
@@ -41,7 +41,7 @@ public class CustomTerrain : MonoBehaviour
         new PerlinParameters()
     };
 
-#endregion
+    #endregion
 
     public Terrain terrain;
     public TerrainData terrainData;
@@ -58,6 +58,43 @@ public class CustomTerrain : MonoBehaviour
         }
     }
 
+    public void Voronoi()
+    {
+        float[,] heightMap = GetHeightMap();
+        float fallOff = 0.5f;
+        float dropOff = 0.5f;
+        // Central peak for debugging
+        Vector3 peak = new Vector3(
+             terrainData.heightmapResolution / 2,
+             0.5f,
+             terrainData.heightmapResolution / 2);
+        
+        //// Random Peak
+        //Vector3 peak = new Vector3(
+        //     UnityEngine.Random.Range(0, terrainData.heightmapResolution),
+        //     UnityEngine.Random.Range(0.0f, 1.0f),
+        //     UnityEngine.Random.Range(0, terrainData.heightmapResolution));
+
+        heightMap[(int)peak.x, (int)peak.z] += peak.y;
+
+        Vector2 peakLocation = new Vector2(peak.x, peak.z);
+        float maxDistance = Vector2.Distance(Vector2.zero, new Vector2(terrainData.heightmapResolution, terrainData.heightmapResolution));
+
+        for (int y = 0; y < terrainData.heightmapResolution; y++)
+        {
+            for (int x = 0; x < terrainData.heightmapResolution; x++)
+            {
+                if (!(x == peakLocation.x && y==peakLocation.y))
+                {
+                    float distanceToPeak = Vector2.Distance(peakLocation, new Vector2(x, y))/maxDistance; //linear interpolate distance
+                    float h = peak.y - distanceToPeak * fallOff - Mathf.Pow(distanceToPeak, dropOff) ;
+                    heightMap[x, y] = h;
+                }
+            }
+        }
+
+        terrainData.SetHeights(0, 0, heightMap);
+    }
     public void Perlin()
     {
         float[,] heightMap = GetHeightMap();
@@ -69,7 +106,7 @@ public class CustomTerrain : MonoBehaviour
                         (x + perlinOffsetX) * perlinScaleX,
                         (y + perlinOffsetY) * perlinScaleY,
                         perlinOctaves,
-                        perlinPersistance) 
+                        perlinPersistance)
                     * perlinHeightScale;
             }
         }
@@ -146,7 +183,7 @@ public class CustomTerrain : MonoBehaviour
         {
             for (int y = 0; y < terrainData.heightmapResolution; y++)
             {
-                heightMap[x, y] += heightMapImage.GetPixel((int)(x * heightMapScale.x), 
+                heightMap[x, y] += heightMapImage.GetPixel((int)(x * heightMapScale.x),
                                                           (int)(y * heightMapScale.z)).grayscale
                                                           * heightMapScale.y;
             }
@@ -214,12 +251,12 @@ public class CustomTerrain : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 }
