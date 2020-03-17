@@ -278,8 +278,8 @@ public class CustomTerrain : MonoBehaviour
 
     public void Smooth()
     {
-        // Smooth the terrain with a mean filter
-        float[,] heightMap = GetHeightMap();
+        // Don't use GetHeights() in case ResetTerrain is true;
+        float[,] heightMap = terrainData.GetHeights(0, 0, terrainData.heightmapResolution, terrainData.heightmapResolution);
 
         float smoothProgress = 0;
 #if UNITY_EDITOR
