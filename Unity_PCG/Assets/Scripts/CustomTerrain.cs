@@ -280,6 +280,11 @@ public class CustomTerrain : MonoBehaviour
     {
         // Smooth the terrain with a mean filter
         float[,] heightMap = GetHeightMap();
+
+        float smoothProgress = 0;
+#if UNITY_EDITOR
+        EditorUtility.DisplayProgressBar("Smoothing Terrain", "Progress", smoothProgress);
+#endif
         for (int i = 0; i < smoothAmount; i++)
         {
             for (int y = 0; y < terrainData.heightmapResolution; y++)
@@ -295,9 +300,16 @@ public class CustomTerrain : MonoBehaviour
 
                     heightMap[x, y] = avgHeight / ((float)neighbors.Count + 1);
                 }
-            } 
+            }
+            smoothProgress++;
+#if UNITY_EDITOR
+            EditorUtility.DisplayProgressBar("Smoothing Terrain", "Progress", smoothProgress/smoothAmount);
+#endif
         }
         terrainData.SetHeights(0, 0, heightMap);
+#if UNITY_EDITOR
+        EditorUtility.ClearProgressBar();
+#endif
     }
 
     public void Perlin()
