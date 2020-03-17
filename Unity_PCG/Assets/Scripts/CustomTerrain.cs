@@ -416,6 +416,7 @@ public class CustomTerrain : MonoBehaviour
         }
         terrainData.SetHeights(0, 0, heightMap);
     }
+#if UNITY_EDITOR
     private void AddTag(SerializedProperty tagsProp, string newTag)
     {
         bool found = false;
@@ -438,6 +439,7 @@ public class CustomTerrain : MonoBehaviour
             newTagProp.stringValue = newTag;
         }
     }
+#endif
 
     void OnEnable()
     {
@@ -447,6 +449,7 @@ public class CustomTerrain : MonoBehaviour
     }
     void Awake()
     {
+#if UNITY_EDITOR
         SerializedObject tagManager = new SerializedObject(
             AssetDatabase.LoadAllAssetsAtPath("ProjectSettings/TagManager.asset")[0]);
         SerializedProperty tagsProp = tagManager.FindProperty("tags");
@@ -460,6 +463,7 @@ public class CustomTerrain : MonoBehaviour
 
         // tag this object
         this.gameObject.tag = "Terrain";
+#endif
     }
     // Start is called before the first frame update
     void Start()
