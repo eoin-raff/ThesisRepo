@@ -70,8 +70,11 @@ public class CustomTerrain : MonoBehaviour
         public Texture2D texture = null;
         public float minHeight = 0.1f;
         public float maxHeight = 0.2f;
-        public Vector2 tileOffset;
-        public Vector2 tileSize;
+        public Vector2 tileOffset = Vector2.zero;
+        public Vector2 tileSize = Vector2.one * 50  ;
+        public float blendOffset = 0.01f;
+        public Vector2 blendNoiseScale = Vector2.one * 0.1f;
+        public float blendNoiseScalar = 0.1f;
         public bool remove = false;
     }
     public List<SplatHeight> splatHeights = new List<SplatHeight>()
@@ -149,8 +152,12 @@ public class CustomTerrain : MonoBehaviour
                 float[] splat = new float[terrainData.alphamapLayers];
                 for (int i = 0; i < splatHeights.Count; i++)
                 {
-                    float thisHeightStart = splatHeights[i].minHeight;
-                    float thisHeightStop = splatHeights[i].maxHeight;
+                    float noise = Mathf.PerlinNoise(x * splatHeights[i].blendNoiseScale.x,
+                                                    y * splatHeights[i].blendNoiseScale.y)
+                                                    * splatHeights[i].blendNoiseScalar;
+                    float offset = splatHeights[i].blendOffset + noise;
+                    float thisHeightStart = splatHeights[i].minHeight - offset;
+                    float thisHeightStop = splatHeights[i].maxHeight + offset;
                     if ((heightMap[x, y] >= thisHeightStart && heightMap[x, y] <= thisHeightStop))
                     {
                         splat[i] = 1;
