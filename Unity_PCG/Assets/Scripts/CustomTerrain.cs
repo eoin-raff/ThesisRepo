@@ -142,7 +142,44 @@ public class CustomTerrain : MonoBehaviour
                                            terrainData.alphamapResolution, 
                                            terrainData.alphamapLayers];
 
+        for (int y = 0; y < terrainData.alphamapResolution; y++)
+        {
+            for (int x = 0; x < terrainData.alphamapResolution; x++)
+            {
+                float[] splat = new float[terrainData.alphamapLayers];
+                for (int i = 0; i < splatHeights.Count; i++)
+                {
+                    float thisHeightStart = splatHeights[i].minHeight;
+                    float thisHeightStop = splatHeights[i].maxHeight;
+                    if ((heightMap[x, y] >= thisHeightStart && heightMap[x, y] <= thisHeightStop))
+                    {
+                        splat[i] = 1;
+                    }
+                }
+                NormalizeVector(ref splat);
+                for (int z = 0; z < splatHeights.Count; z++)
+                {
+                    splatmapData[x, y, z] = splat[z];
+                }
+            }
+        }
+        terrainData.SetAlphamaps(0, 0, splatmapData);
+
     }
+
+    private void NormalizeVector(ref float[] v) //try with / without ref
+    {
+        float total = 0;
+        for (int i = 0; i < v.Length; i++)
+        {
+            total += v[i];
+        }
+        for (int i = 0; i < v.Length; i++)
+        {
+            v[i] /= total;
+        }
+    }
+
     public void MidpointDisplacement()
     {
 
