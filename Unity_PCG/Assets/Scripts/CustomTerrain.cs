@@ -24,7 +24,7 @@ public class CustomTerrain : MonoBehaviour
     #endregion    
 
     #region Multiple Perlin Noise
-    [System.Serializable]
+    [Serializable]
     public class PerlinParameters
     {
         public float xScale = 0.001f;
@@ -63,6 +63,23 @@ public class CustomTerrain : MonoBehaviour
 
     public int smoothAmount = 1;
 
+    #region SplatMaps
+    [Serializable]
+    public class SplatHeight
+    {
+        public Texture2D texture = null;
+        public float minHeight = 0.1f;
+        public float maxHeight = 0.2f;
+        public Vector2 tileOffset;
+        public Vector2 tileSize;
+        public bool remove = false;
+    }
+    public List<SplatHeight> splatHeights = new List<SplatHeight>()
+    {
+        new SplatHeight()
+    };
+    #endregion
+
     public Terrain terrain;
     public TerrainData terrainData;
 
@@ -78,7 +95,54 @@ public class CustomTerrain : MonoBehaviour
         }
     }
 
+    public void AddNewSplatHeight()
+    {
+        splatHeights.Add(new SplatHeight());
+    }
+    public void RemoveSplatHeight()
+    {
+        List<SplatHeight> keptSplatHeights = new List<SplatHeight>();
+        for (int i = 0; i < splatHeights.Count; i++)
+        {
+            if (!splatHeights[i].remove)
+            {
+                keptSplatHeights.Add(splatHeights[i]);
+            }
+        }
+        if (keptSplatHeights.Count == 0)
+        {
+            keptSplatHeights.Add(splatHeights[0]);
+        }
+        splatHeights = keptSplatHeights;
+    }
+    public void SplatMaps()
+    {
+        TerrainLayer[] newSplatPrototypes;
+        newSplatPrototypes = new TerrainLayer[splatHeights.Count];
+        int spIndex = 0;
+        foreach (SplatHeight splatHeight in splatHeights)
+        {
+            newSplatPrototypes[spIndex] = new TerrainLayer
+            {
+                diffuseTexture = splatHeight.texture,
+                tileOffset = splatHeight.tileOffset,
+                tileSize = splatHeight.tileSize
+            };
+            newSplatPrototypes[spIndex].diffuseTexture.Apply(true);
+            string path = "Assets/New Terrain Layer " + spIndex + ".terrainlayer";
+            AssetDatabase.CreateAsset(newSplatPrototypes[spIndex], path);
+            spIndex++;
+            Selection.activeObject = this.gameObject;
+        }
+        terrainData.terrainLayers = newSplatPrototypes;
 
+        float[,] heightMap = terrainData.GetHeights(0, 0, terrainData.heightmapResolution,
+                                                          terrainData.heightmapResolution);
+        float[,,] splatmapData = new float[terrainData.alphamapResolution, 
+                                           terrainData.alphamapResolution, 
+                                           terrainData.alphamapLayers];
+
+    }
     public void MidpointDisplacement()
     {
 

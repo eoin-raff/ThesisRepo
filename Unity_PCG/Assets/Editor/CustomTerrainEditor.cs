@@ -41,6 +41,8 @@ public class CustomTerrainEditor : Editor
 
     private SerializedProperty smoothAmount;
 
+    private GUITableState splatMapTable;
+    private SerializedProperty splatHeights;
 
     // foldouts
     private bool showRandom = false;
@@ -50,6 +52,7 @@ public class CustomTerrainEditor : Editor
     private bool showVoroni = false;
     private bool showMidpointDisplacement = false;
     private bool showSmoothing = false;
+    private bool showSplatMaps = false;
 
     void OnEnable()
     {
@@ -83,6 +86,9 @@ public class CustomTerrainEditor : Editor
         MPheightDampener = serializedObject.FindProperty("MPheightDampener");
 
         smoothAmount = serializedObject.FindProperty("smoothAmount");
+
+        splatMapTable = new GUITableState("splatMapTable");
+        splatHeights = serializedObject.FindProperty("splatHeights");
     }
 
     public override void OnInspectorGUI() 
@@ -210,6 +216,31 @@ public class CustomTerrainEditor : Editor
             }
         }
 
+        showSplatMaps = EditorGUILayout.Foldout(showSplatMaps, "Splat Maps");
+        if (showSplatMaps)
+        {
+            HLine();
+            GUILayout.Label("Splat Maps", EditorStyles.boldLabel);
+            splatMapTable = GUITableLayout.DrawTable(splatMapTable, splatHeights);
+            EditorGUILayout.Space(20);
+            EditorGUILayout.BeginHorizontal();
+            if (GUILayout.Button("+"))
+            {
+                terrain.AddNewSplatHeight();
+            }
+            if (GUILayout.Button("-"))
+            {
+                terrain.RemoveSplatHeight();
+            }
+            EditorGUILayout.EndHorizontal();
+            if (GUILayout.Button("Apply Splatmaps"))
+            {
+                terrain.SplatMaps();
+            }
+        }
+
+        HLine();
+
         showSmoothing = EditorGUILayout.Foldout(showSmoothing, "Smoothing");
         if (showSmoothing)
         {
@@ -220,7 +251,6 @@ public class CustomTerrainEditor : Editor
             }
         }
 
-        HLine();
         if (GUILayout.Button("Reset"))
         {
             terrain.ResetTerrain();
