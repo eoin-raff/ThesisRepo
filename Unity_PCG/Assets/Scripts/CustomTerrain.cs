@@ -61,6 +61,8 @@ public class CustomTerrain : MonoBehaviour
     public float MPheightDampener;
     #endregion
 
+    public int smoothAmount = 1;
+
     public Terrain terrain;
     public TerrainData terrainData;
 
@@ -278,19 +280,22 @@ public class CustomTerrain : MonoBehaviour
     {
         // Smooth the terrain with a mean filter
         float[,] heightMap = GetHeightMap();
-        for (int y = 0; y < terrainData.heightmapResolution; y++)
+        for (int i = 0; i < smoothAmount; i++)
         {
-            for (int x = 0; x < terrainData.heightmapResolution; x++)
+            for (int y = 0; y < terrainData.heightmapResolution; y++)
             {
-                float avgHeight = heightMap[x, y];
-                List<Vector2> neighbors = GetNeighbors(new Vector2(x, y), terrainData.heightmapResolution, terrainData.heightmapResolution);
-                foreach (Vector2 n in neighbors)
+                for (int x = 0; x < terrainData.heightmapResolution; x++)
                 {
-                    avgHeight += heightMap[(int)n.x, (int)n.y];
-                }
+                    float avgHeight = heightMap[x, y];
+                    List<Vector2> neighbors = GetNeighbors(new Vector2(x, y), terrainData.heightmapResolution, terrainData.heightmapResolution);
+                    foreach (Vector2 n in neighbors)
+                    {
+                        avgHeight += heightMap[(int)n.x, (int)n.y];
+                    }
 
-                heightMap[x, y] = avgHeight / ((float)neighbors.Count + 1);
-            }
+                    heightMap[x, y] = avgHeight / ((float)neighbors.Count + 1);
+                }
+            } 
         }
         terrainData.SetHeights(0, 0, heightMap);
     }

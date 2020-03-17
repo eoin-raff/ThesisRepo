@@ -12,42 +12,44 @@ public class CustomTerrainEditor : Editor
  */
 
     // properties
-    SerializedProperty randomHeightRange;
-    SerializedProperty heightMapScale;
-    SerializedProperty heightMapImage;
-    SerializedProperty perlinScaleX;
-    SerializedProperty perlinScaleY;
-    SerializedProperty perlinOffsetX;
-    SerializedProperty perlinOffsetY;
-    SerializedProperty perlinOctaves;
-    SerializedProperty perlinPersistance;
-    SerializedProperty perlinHeightScale;
+    private SerializedProperty randomHeightRange;
+    private SerializedProperty heightMapScale;
+    private SerializedProperty heightMapImage;
+    private SerializedProperty perlinScaleX;
+    private SerializedProperty perlinScaleY;
+    private SerializedProperty perlinOffsetX;
+    private SerializedProperty perlinOffsetY;
+    private SerializedProperty perlinOctaves;
+    private SerializedProperty perlinPersistance;
+    private SerializedProperty perlinHeightScale;
 
-    GUITableState perlinParameterTable;
-    SerializedProperty perlinParameters; 
-    SerializedProperty resetTerrain;
+    private GUITableState perlinParameterTable;
+    private SerializedProperty perlinParameters;
+    private SerializedProperty resetTerrain;
 
-    SerializedProperty voronoiPeakCount;
-    SerializedProperty voronoiFallOff;
-    SerializedProperty voronoiDropOff;
-    SerializedProperty voronoiMinHeight;
-    SerializedProperty voronoiMaxHeight;
-    SerializedProperty voronoiType;
+    private SerializedProperty voronoiPeakCount;
+    private SerializedProperty voronoiFallOff;
+    private SerializedProperty voronoiDropOff;
+    private SerializedProperty voronoiMinHeight;
+    private SerializedProperty voronoiMaxHeight;
+    private SerializedProperty voronoiType;
 
-    SerializedProperty MPminHeight;
-    SerializedProperty MPmaxHeight;
-    SerializedProperty MProughness;
-    SerializedProperty MPheightDampener;
-    
+    private SerializedProperty MPminHeight;
+    private SerializedProperty MPmaxHeight;
+    private SerializedProperty MProughness;
+    private SerializedProperty MPheightDampener;
+
+    private SerializedProperty smoothAmount;
 
 
     // foldouts
-    bool showRandom = false;
-    bool showLoadHeights = false;
-    bool showPerlin = false;
-    bool showMultiplePerlin = false;
-    bool showVoroni = false;
-    bool showMidpointDisplacement = false;
+    private bool showRandom = false;
+    private bool showLoadHeights = false;
+    private bool showPerlin = false;
+    private bool showMultiplePerlin = false;
+    private bool showVoroni = false;
+    private bool showMidpointDisplacement = false;
+    private bool showSmoothing = false;
 
     void OnEnable()
     {
@@ -79,6 +81,8 @@ public class CustomTerrainEditor : Editor
         MPmaxHeight = serializedObject.FindProperty("MPmaxHeight");
         MProughness = serializedObject.FindProperty("MProughness");
         MPheightDampener = serializedObject.FindProperty("MPheightDampener");
+
+        smoothAmount = serializedObject.FindProperty("smoothAmount");
     }
 
     public override void OnInspectorGUI() 
@@ -205,11 +209,17 @@ public class CustomTerrainEditor : Editor
                 terrain.MidpointDisplacement();
             }
         }
-        HLine();
-        if (GUILayout.Button("Smooth"))
+
+        showSmoothing = EditorGUILayout.Foldout(showSmoothing, "Smoothing");
+        if (showSmoothing)
         {
-            terrain.Smooth();
+            EditorGUILayout.IntSlider(smoothAmount, 1, 10, new GUIContent("Smooth Amount"));
+            if (GUILayout.Button("Smooth"))
+            {
+                terrain.Smooth();
+            }
         }
+
         HLine();
         if (GUILayout.Button("Reset"))
         {
