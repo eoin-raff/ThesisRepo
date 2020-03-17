@@ -250,9 +250,9 @@ public class CustomTerrain : MonoBehaviour
         terrainData.SetHeights(0, 0, heightMap);
     }
     
-    public List<Vector2> GetKernel(Vector2 pos, int width, int height)
+    public List<Vector2> GetNeighbors(Vector2 pos, int width, int height)
     {
-        List<Vector2> kernel = new List<Vector2>();
+        List<Vector2> neighbors = new List<Vector2>();
         for(int y = -1; y < 2; y++)
         {
             for(int x = -1; x < 2; x++)
@@ -264,14 +264,14 @@ public class CustomTerrain : MonoBehaviour
                                                         Mathf.Clamp(pos.y + y, 0, height - 1));
 
                     // If this is not already in the kernel, then add it
-                    if (!kernel.Contains(neighborPos))
+                    if (!neighbors.Contains(neighborPos))
                     {
-                        kernel.Add(neighborPos);
+                        neighbors.Add(neighborPos);
                     }
                 }
             }
         }
-        return kernel;
+        return neighbors;
     }
 
     public void Smooth()
@@ -283,7 +283,7 @@ public class CustomTerrain : MonoBehaviour
             for (int x = 0; x < terrainData.heightmapResolution; x++)
             {
                 float avgHeight = heightMap[x, y];
-                List<Vector2> neighbors = GetKernel(new Vector2(x, y), terrainData.heightmapResolution, terrainData.heightmapResolution);
+                List<Vector2> neighbors = GetNeighbors(new Vector2(x, y), terrainData.heightmapResolution, terrainData.heightmapResolution);
                 foreach (Vector2 n in neighbors)
                 {
                     avgHeight += heightMap[(int)n.x, (int)n.y];
