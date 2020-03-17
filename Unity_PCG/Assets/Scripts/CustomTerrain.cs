@@ -71,7 +71,7 @@ public class CustomTerrain : MonoBehaviour
         public float minHeight = 0.1f;
         public float maxHeight = 0.2f;
         public float minSlope = 0;
-        public float maxSlope = 1.5f;
+        public float maxSlope = 90f;
         public Vector2 tileOffset = Vector2.zero;
         public Vector2 tileSize = Vector2.one * 50  ;
         public float blendOffset = 0.01f;
@@ -175,8 +175,12 @@ public class CustomTerrain : MonoBehaviour
                     float offset = splatHeights[i].blendOffset + noise;
                     float thisHeightStart = splatHeights[i].minHeight - offset;
                     float thisHeightStop = splatHeights[i].maxHeight + offset;
-                    float thisSteepness = GetSteepness(heightMap, x, y,
-                        terrainData.heightmapResolution, terrainData.heightmapResolution);
+                    //float thisSteepness = GetSteepness(heightMap, x, y,
+                    //    terrainData.heightmapResolution, terrainData.heightmapResolution);
+
+                    //alpha and height maps are at 90deg to each other, so swap x and y here
+                    float thisSteepness = terrainData.GetSteepness(y / (float)terrainData.alphamapResolution,
+                                                                   x / (float)terrainData.alphamapResolution);
                     bool isInHeightBand = heightMap[x, y] >= thisHeightStart 
                                             && heightMap[x, y] <= thisHeightStop;
                     bool isInSteepnessBand = thisSteepness >= splatHeights[i].minSlope 
