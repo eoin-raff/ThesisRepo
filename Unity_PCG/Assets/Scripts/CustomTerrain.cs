@@ -70,6 +70,8 @@ public class CustomTerrain : MonoBehaviour
         public Texture2D texture = null;
         public float minHeight = 0.1f;
         public float maxHeight = 0.2f;
+        public float minSlope = 0;
+        public float maxSlope = 1.5f;
         public Vector2 tileOffset = Vector2.zero;
         public Vector2 tileSize = Vector2.one * 50  ;
         public float blendOffset = 0.01f;
@@ -118,6 +120,21 @@ public class CustomTerrain : MonoBehaviour
         }
         splatHeights = keptSplatHeights;
     }
+
+    float GetSteepness(float[,] heightMap, int x, int y, int width, int height)
+    {
+        float h = heightMap[x, y];
+        //if on upper edge, find gradient by going backwards
+        int nx = x + 1 > width - 1 ? x - 1 : x + 1;
+        int ny = y + 1 > height - 1 ? y - 1 : y + 1;
+
+        float dx = heightMap[nx, y] - h;
+        float dy = heightMap[x, ny] - h;
+        Vector2 gradient = new Vector2(dx, dy);
+
+        return gradient.magnitude;
+
+    }
     public void SplatMaps()
     {
         TerrainLayer[] newSplatPrototypes;
@@ -158,7 +175,13 @@ public class CustomTerrain : MonoBehaviour
                     float offset = splatHeights[i].blendOffset + noise;
                     float thisHeightStart = splatHeights[i].minHeight - offset;
                     float thisHeightStop = splatHeights[i].maxHeight + offset;
-                    if ((heightMap[x, y] >= thisHeightStart && heightMap[x, y] <= thisHeightStop))
+                    float thisSteepness = GetSteepness(heightMap, x, y,
+                        terrainData.heightmapResolution, terrainData.heightmapResolution);
+                    bool isInHeightBand = heightMap[x, y] >= thisHeightStart 
+                                            && heightMap[x, y] <= thisHeightStop;
+                    bool isInSteepnessBand = thisSteepness >= splatHeights[i].minSlope 
+                                            && thisSteepness <= splatHeights[i].maxSlope ;
+                    if (isInHeightBand && isInSteepnessBand)
                     {
                         splat[i] = 1;
                     }
