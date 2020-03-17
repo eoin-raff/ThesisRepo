@@ -80,15 +80,15 @@ public class CustomTerrain : MonoBehaviour
     public void MidpointDisplacement()
     {
 
-         /*
-          * This function performs Midpoint Displacement using the Diamond Square Algorithm.
-          * 
-          * At any point, this algorithm works with a square of squareSize * squareSize
-          * The bottom left vertex is x, y
-          * the top right is cornerX, cornerY
-          * this means top left is (x, cornerY) and bottom right is (cornerX, y)
-          * the center of the square is (midX, midY)
-          */
+        /*
+         * This function performs Midpoint Displacement using the Diamond Square Algorithm.
+         * 
+         * At any point, this algorithm works with a square of squareSize * squareSize
+         * The bottom left vertex is x, y
+         * the top right is cornerX, cornerY
+         * this means top left is (x, cornerY) and bottom right is (cornerX, y)
+         * the center of the square is (midX, midY)
+         */
 
         float[,] heightMap = GetHeightMap();
         int width = terrainData.heightmapResolution - 1;  //return to 512 to be power of 2
@@ -146,7 +146,7 @@ public class CustomTerrain : MonoBehaviour
                     pmidYD = (int)(midY - squareSize);
 
 
-                    if (pmidXL <= 0 || pmidYD <= 0 || pmidXR >= width-1 || pmidYU >= width - 1)
+                    if (pmidXL <= 0 || pmidYD <= 0 || pmidXR >= width - 1 || pmidYU >= width - 1)
                     {
                         continue; //ignore edges where external points would cause out of bounds error
                     }
@@ -245,10 +245,56 @@ public class CustomTerrain : MonoBehaviour
                 }
             }
         }
-        
+
 
         terrainData.SetHeights(0, 0, heightMap);
     }
+    
+    public List<Vector2> GetKernel(Vector2 pos, int width, int height)
+    {
+        List<Vector2> kernel = new List<Vector2>();
+        for(int y = -1; y < 2; y++)
+        {
+            for(int x = -1; x < 2; x++)
+            {
+                if (!(x == 0 && y == 0)) //don't include current position, kernel is only focused on neighbors
+                {
+                    //Find neighbors, clamped within boundaries of image
+                    Vector2 neighborPos = new Vector2(Mathf.Clamp(pos.x + x, 0, width - 1),
+                                                        Mathf.Clamp(pos.y + y, 0, height - 1));
+
+                    // If this is not already in the kernel, then add it
+                    if (!kernel.Contains(neighborPos))
+                    {
+                        kernel.Add(neighborPos);
+                    }
+                }
+            }
+        }
+        return kernel;
+    }
+
+    public void Smooth()
+    {
+        // Smooth the terrain with a mean filter
+        float[,] heightMap = GetHeightMap();
+        for (int y = 0; y < terrainData.heightmapResolution; y++)
+        {
+            for (int x = 0; x < terrainData.heightmapResolution; x++)
+            {
+                float avgHeight = heightMap[x, y];
+                List<Vector2> neighbors = GetKernel(new Vector2(x, y), terrainData.heightmapResolution, terrainData.heightmapResolution);
+                foreach (Vector2 n in neighbors)
+                {
+                    avgHeight += heightMap[(int)n.x, (int)n.y];
+                }
+
+                heightMap[x, y] = avgHeight / ((float)neighbors.Count + 1);
+            }
+        }
+        terrainData.SetHeights(0, 0, heightMap);
+    }
+
     public void Perlin()
     {
         float[,] heightMap = GetHeightMap();

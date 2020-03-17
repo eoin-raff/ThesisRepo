@@ -205,7 +205,11 @@ public class CustomTerrainEditor : Editor
                 terrain.MidpointDisplacement();
             }
         }
-
+        HLine();
+        if (GUILayout.Button("Smooth"))
+        {
+            terrain.Smooth();
+        }
         HLine();
         if (GUILayout.Button("Reset"))
         {
