@@ -12,6 +12,7 @@ public class GUID : MonoBehaviour
     {
         guid = System.Guid.NewGuid().ToString();
         display.text = guid;
+        Application.OpenURL("https://docs.google.com/forms/d/e/1FAIpQLSeiNsqd3oWmlIzIBRKKtTuBBtD8sC5ZBHkWa7PCHF21_DSbJg/viewform?usp=pp_url&entry.670940261=" + guid);
     }
 
     // Start is called before the first frame update
