@@ -24,7 +24,7 @@ public class CustomTerrain : MonoBehaviour
     #endregion    
 
     #region Multiple Perlin Noise
-    [System.Serializable]
+    [Serializable]
     public class PerlinParameters
     {
         public float xScale = 0.001f;
@@ -61,6 +61,30 @@ public class CustomTerrain : MonoBehaviour
     public float MPheightDampener;
     #endregion
 
+    public int smoothAmount = 1;
+
+    #region SplatMaps
+    [Serializable]
+    public class SplatHeight
+    {
+        public Texture2D texture = null;
+        public float minHeight = 0.1f;
+        public float maxHeight = 0.2f;
+        public float minSlope = 0;
+        public float maxSlope = 90f;
+        public Vector2 tileOffset = Vector2.zero;
+        public Vector2 tileSize = Vector2.one * 50  ;
+        public float blendOffset = 0.01f;
+        public Vector2 blendNoiseScale = Vector2.one * 0.1f;
+        public float blendNoiseScalar = 0.1f;
+        public bool remove = false;
+    }
+    public List<SplatHeight> splatHeights = new List<SplatHeight>()
+    {
+        new SplatHeight()
+    };
+    #endregion
+
     public Terrain terrain;
     public TerrainData terrainData;
 
@@ -76,6 +100,119 @@ public class CustomTerrain : MonoBehaviour
         }
     }
 
+    public void AddNewSplatHeight()
+    {
+        splatHeights.Add(new SplatHeight());
+    }
+    public void RemoveSplatHeight()
+    {
+        List<SplatHeight> keptSplatHeights = new List<SplatHeight>();
+        for (int i = 0; i < splatHeights.Count; i++)
+        {
+            if (!splatHeights[i].remove)
+            {
+                keptSplatHeights.Add(splatHeights[i]);
+            }
+        }
+        if (keptSplatHeights.Count == 0)
+        {
+            keptSplatHeights.Add(splatHeights[0]);
+        }
+        splatHeights = keptSplatHeights;
+    }
+
+    float GetSteepness(float[,] heightMap, int x, int y, int width, int height)
+    {
+        float h = heightMap[x, y];
+        //if on upper edge, find gradient by going backwards
+        int nx = x + 1 > width - 1 ? x - 1 : x + 1;
+        int ny = y + 1 > height - 1 ? y - 1 : y + 1;
+
+        float dx = heightMap[nx, y] - h;
+        float dy = heightMap[x, ny] - h;
+        Vector2 gradient = new Vector2(dx, dy);
+
+        return gradient.magnitude;
+
+    }
+    public void SplatMaps()
+    {
+        TerrainLayer[] newSplatPrototypes;
+        newSplatPrototypes = new TerrainLayer[splatHeights.Count];
+        int spIndex = 0;
+        foreach (SplatHeight splatHeight in splatHeights)
+        {
+            newSplatPrototypes[spIndex] = new TerrainLayer
+            {
+                diffuseTexture = splatHeight.texture,
+                tileOffset = splatHeight.tileOffset,
+                tileSize = splatHeight.tileSize
+            };
+            newSplatPrototypes[spIndex].diffuseTexture.Apply(true);
+            string path = "Assets/New Terrain Layer " + spIndex + ".terrainlayer";
+            AssetDatabase.CreateAsset(newSplatPrototypes[spIndex], path);
+            spIndex++;
+            Selection.activeObject = this.gameObject;
+        }
+        terrainData.terrainLayers = newSplatPrototypes;
+
+        float[,] heightMap = terrainData.GetHeights(0, 0, terrainData.heightmapResolution,
+                                                          terrainData.heightmapResolution);
+        float[,,] splatmapData = new float[terrainData.alphamapResolution, 
+                                           terrainData.alphamapResolution, 
+                                           terrainData.alphamapLayers];
+
+        for (int y = 0; y < terrainData.alphamapResolution; y++)
+        {
+            for (int x = 0; x < terrainData.alphamapResolution; x++)
+            {
+                float[] splat = new float[terrainData.alphamapLayers];
+                for (int i = 0; i < splatHeights.Count; i++)
+                {
+                    float noise = Mathf.PerlinNoise(x * splatHeights[i].blendNoiseScale.x,
+                                                    y * splatHeights[i].blendNoiseScale.y)
+                                                    * splatHeights[i].blendNoiseScalar;
+                    float offset = splatHeights[i].blendOffset + noise;
+                    float thisHeightStart = splatHeights[i].minHeight - offset;
+                    float thisHeightStop = splatHeights[i].maxHeight + offset;
+                    //float thisSteepness = GetSteepness(heightMap, x, y,
+                    //    terrainData.heightmapResolution, terrainData.heightmapResolution);
+
+                    //alpha and height maps are at 90deg to each other, so swap x and y here
+                    float thisSteepness = terrainData.GetSteepness(y / (float)terrainData.alphamapResolution,
+                                                                   x / (float)terrainData.alphamapResolution);
+                    bool isInHeightBand = heightMap[x, y] >= thisHeightStart 
+                                            && heightMap[x, y] <= thisHeightStop;
+                    bool isInSteepnessBand = thisSteepness >= splatHeights[i].minSlope 
+                                            && thisSteepness <= splatHeights[i].maxSlope ;
+                    if (isInHeightBand && isInSteepnessBand)
+                    {
+                        splat[i] = 1;
+                    }
+                }
+                NormalizeVector(ref splat);
+                for (int z = 0; z < splatHeights.Count; z++)
+                {
+                    splatmapData[x, y, z] = splat[z];
+                }
+            }
+        }
+        terrainData.SetAlphamaps(0, 0, splatmapData);
+
+    }
+
+    private void NormalizeVector(ref float[] v) //try with / without ref
+    {
+        float total = 0;
+        for (int i = 0; i < v.Length; i++)
+        {
+            total += v[i];
+        }
+        for (int i = 0; i < v.Length; i++)
+        {
+            v[i] /= total;
+        }
+    }
 
     public void MidpointDisplacement()
     {
@@ -276,23 +413,38 @@ public class CustomTerrain : MonoBehaviour
 
     public void Smooth()
     {
-        // Smooth the terrain with a mean filter
-        float[,] heightMap = GetHeightMap();
-        for (int y = 0; y < terrainData.heightmapResolution; y++)
-        {
-            for (int x = 0; x < terrainData.heightmapResolution; x++)
-            {
-                float avgHeight = heightMap[x, y];
-                List<Vector2> neighbors = GetNeighbors(new Vector2(x, y), terrainData.heightmapResolution, terrainData.heightmapResolution);
-                foreach (Vector2 n in neighbors)
-                {
-                    avgHeight += heightMap[(int)n.x, (int)n.y];
-                }
+        // Don't use GetHeights() in case ResetTerrain is true;
+        float[,] heightMap = terrainData.GetHeights(0, 0, terrainData.heightmapResolution, terrainData.heightmapResolution);
 
-                heightMap[x, y] = avgHeight / ((float)neighbors.Count + 1);
+        float smoothProgress = 0;
+#if UNITY_EDITOR
+        EditorUtility.DisplayProgressBar("Smoothing Terrain", "Progress", smoothProgress);
+#endif
+        for (int i = 0; i < smoothAmount; i++)
+        {
+            for (int y = 0; y < terrainData.heightmapResolution; y++)
+            {
+                for (int x = 0; x < terrainData.heightmapResolution; x++)
+                {
+                    float avgHeight = heightMap[x, y];
+                    List<Vector2> neighbors = GetNeighbors(new Vector2(x, y), terrainData.heightmapResolution, terrainData.heightmapResolution);
+                    foreach (Vector2 n in neighbors)
+                    {
+                        avgHeight += heightMap[(int)n.x, (int)n.y];
+                    }
+
+                    heightMap[x, y] = avgHeight / ((float)neighbors.Count + 1);
+                }
             }
+            smoothProgress++;
+#if UNITY_EDITOR
+            EditorUtility.DisplayProgressBar("Smoothing Terrain", "Progress", smoothProgress/smoothAmount);
+#endif
         }
         terrainData.SetHeights(0, 0, heightMap);
+#if UNITY_EDITOR
+        EditorUtility.ClearProgressBar();
+#endif
     }
 
     public void Perlin()
@@ -399,6 +551,7 @@ public class CustomTerrain : MonoBehaviour
         }
         terrainData.SetHeights(0, 0, heightMap);
     }
+#if UNITY_EDITOR
     private void AddTag(SerializedProperty tagsProp, string newTag)
     {
         bool found = false;
@@ -421,6 +574,7 @@ public class CustomTerrain : MonoBehaviour
             newTagProp.stringValue = newTag;
         }
     }
+#endif
 
     void OnEnable()
     {
@@ -430,6 +584,7 @@ public class CustomTerrain : MonoBehaviour
     }
     void Awake()
     {
+#if UNITY_EDITOR
         SerializedObject tagManager = new SerializedObject(
             AssetDatabase.LoadAllAssetsAtPath("ProjectSettings/TagManager.asset")[0]);
         SerializedProperty tagsProp = tagManager.FindProperty("tags");
@@ -443,6 +598,7 @@ public class CustomTerrain : MonoBehaviour
 
         // tag this object
         this.gameObject.tag = "Terrain";
+#endif
     }
     // Start is called before the first frame update
     void Start()

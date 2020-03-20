@@ -12,42 +12,51 @@ public class CustomTerrainEditor : Editor
  */
 
     // properties
-    SerializedProperty randomHeightRange;
-    SerializedProperty heightMapScale;
-    SerializedProperty heightMapImage;
-    SerializedProperty perlinScaleX;
-    SerializedProperty perlinScaleY;
-    SerializedProperty perlinOffsetX;
-    SerializedProperty perlinOffsetY;
-    SerializedProperty perlinOctaves;
-    SerializedProperty perlinPersistance;
-    SerializedProperty perlinHeightScale;
+    private SerializedProperty randomHeightRange;
+    private SerializedProperty heightMapScale;
+    private SerializedProperty heightMapImage;
+    private SerializedProperty perlinScaleX;
+    private SerializedProperty perlinScaleY;
+    private SerializedProperty perlinOffsetX;
+    private SerializedProperty perlinOffsetY;
+    private SerializedProperty perlinOctaves;
+    private SerializedProperty perlinPersistance;
+    private SerializedProperty perlinHeightScale;
 
-    GUITableState perlinParameterTable;
-    SerializedProperty perlinParameters; 
-    SerializedProperty resetTerrain;
+    private GUITableState perlinParameterTable;
+    private SerializedProperty perlinParameters;
+    private SerializedProperty resetTerrain;
 
-    SerializedProperty voronoiPeakCount;
-    SerializedProperty voronoiFallOff;
-    SerializedProperty voronoiDropOff;
-    SerializedProperty voronoiMinHeight;
-    SerializedProperty voronoiMaxHeight;
-    SerializedProperty voronoiType;
+    private SerializedProperty voronoiPeakCount;
+    private SerializedProperty voronoiFallOff;
+    private SerializedProperty voronoiDropOff;
+    private SerializedProperty voronoiMinHeight;
+    private SerializedProperty voronoiMaxHeight;
+    private SerializedProperty voronoiType;
 
-    SerializedProperty MPminHeight;
-    SerializedProperty MPmaxHeight;
-    SerializedProperty MProughness;
-    SerializedProperty MPheightDampener;
-    
+    private SerializedProperty MPminHeight;
+    private SerializedProperty MPmaxHeight;
+    private SerializedProperty MProughness;
+    private SerializedProperty MPheightDampener;
 
+    private SerializedProperty smoothAmount;
+
+    private GUITableState splatMapTable;
+    private SerializedProperty splatHeights;
 
     // foldouts
-    bool showRandom = false;
-    bool showLoadHeights = false;
-    bool showPerlin = false;
-    bool showMultiplePerlin = false;
-    bool showVoroni = false;
-    bool showMidpointDisplacement = false;
+    private bool showRandom = false;
+    private bool showLoadHeights = false;
+    private bool showPerlin = false;
+    private bool showMultiplePerlin = false;
+    private bool showVoroni = false;
+    private bool showMidpointDisplacement = false;
+    private bool showSmoothing = false;
+    private bool showSplatMaps = false;
+
+    //scroll bar
+    private Vector2 scrollPos;
+
 
     void OnEnable()
     {
@@ -79,6 +88,11 @@ public class CustomTerrainEditor : Editor
         MPmaxHeight = serializedObject.FindProperty("MPmaxHeight");
         MProughness = serializedObject.FindProperty("MProughness");
         MPheightDampener = serializedObject.FindProperty("MPheightDampener");
+
+        smoothAmount = serializedObject.FindProperty("smoothAmount");
+
+        splatMapTable = new GUITableState("splatMapTable");
+        splatHeights = serializedObject.FindProperty("splatHeights");
     }
 
     public override void OnInspectorGUI() 
@@ -87,6 +101,13 @@ public class CustomTerrainEditor : Editor
         serializedObject.Update();
 
         CustomTerrain terrain = (CustomTerrain)target;
+
+        //Begin Scrollbar
+        Rect r = EditorGUILayout.BeginVertical();
+        scrollPos =
+            EditorGUILayout.BeginScrollView(scrollPos, GUILayout.Width(r.width), GUILayout.Height(r.height));
+        EditorGUI.indentLevel++;
+
         EditorGUILayout.PropertyField(resetTerrain);
 
         showRandom = EditorGUILayout.Foldout(showRandom, "Random");
@@ -205,16 +226,50 @@ public class CustomTerrainEditor : Editor
                 terrain.MidpointDisplacement();
             }
         }
-        HLine();
-        if (GUILayout.Button("Smooth"))
+
+        showSplatMaps = EditorGUILayout.Foldout(showSplatMaps, "Splat Maps");
+        if (showSplatMaps)
         {
-            terrain.Smooth();
+            HLine();
+            GUILayout.Label("Splat Maps", EditorStyles.boldLabel);
+            splatMapTable = GUITableLayout.DrawTable(splatMapTable, splatHeights);
+            EditorGUILayout.Space(20);
+            EditorGUILayout.BeginHorizontal();
+            if (GUILayout.Button("+"))
+            {
+                terrain.AddNewSplatHeight();
+            }
+            if (GUILayout.Button("-"))
+            {
+                terrain.RemoveSplatHeight();
+            }
+            EditorGUILayout.EndHorizontal();
+            if (GUILayout.Button("Apply Splatmaps"))
+            {
+                terrain.SplatMaps();
+            }
         }
+
         HLine();
+
+        showSmoothing = EditorGUILayout.Foldout(showSmoothing, "Smoothing");
+        if (showSmoothing)
+        {
+            EditorGUILayout.IntSlider(smoothAmount, 1, 10, new GUIContent("Smooth Amount"));
+            if (GUILayout.Button("Smooth"))
+            {
+                terrain.Smooth();
+            }
+        }
+
         if (GUILayout.Button("Reset"))
         {
             terrain.ResetTerrain();
         }
+
+        // End Scrollbar
+        EditorGUILayout.EndScrollView();
+        EditorGUILayout.EndVertical();
 
         // Apply changes to Custom Terrain
         serializedObject.ApplyModifiedProperties();
