@@ -262,10 +262,10 @@ MonoBehaviour:
     yOffset: 0
     octaves: 8
     persistance: 0.5
-    heightScale: 0.275
+    heightScale: 0.175
     remove: 0
   - xScale: 0.015
-    yScale: 0.005
+    yScale: 0.015
     xOffset: 0
     yOffset: 0
     octaves: 9
@@ -286,8 +286,8 @@ MonoBehaviour:
   voronoiMinHeight: 0.01461299
   voronoiMaxHeight: 0.14285715
   voronoiType: 2
-  MPminHeight: -1
-  MPmaxHeight: 1
+  MPminHeight: -3
+  MPmaxHeight: 3
   MProughness: 1.79
   MPheightDampener: 1.94
   smoothAmount: 5
@@ -298,21 +298,21 @@ MonoBehaviour:
     minSlope: 0
     maxSlope: 45
     tileOffset: {x: 0, y: 0}
-    tileSize: {x: 50, y: 50}
+    tileSize: {x: 5, y: 5}
     blendOffset: 0.01
-    blendNoiseScale: {x: 0.1, y: 0.1}
-    blendNoiseScalar: 0.1
+    blendNoiseScale: {x: 0.5, y: 0.5}
+    blendNoiseScalar: 0.01
     remove: 0
   - texture: {fileID: 2800000, guid: dd49ed99f55924d13bacefd240626bc5, type: 3}
     minHeight: 0
-    maxHeight: 0.2
+    maxHeight: 0.3
     minSlope: 0
     maxSlope: 60
     tileOffset: {x: 0, y: 0}
-    tileSize: {x: 50, y: 50}
+    tileSize: {x: 5, y: 5}
     blendOffset: 0.01
-    blendNoiseScale: {x: 0.1, y: 0.1}
-    blendNoiseScalar: 0.1
+    blendNoiseScale: {x: 0.5, y: 0.5}
+    blendNoiseScalar: 0.01
     remove: 0
   - texture: {fileID: 2800000, guid: c12fba8bcc2ef4b959d67f60ca59d886, type: 3}
     minHeight: 0
@@ -320,21 +320,21 @@ MonoBehaviour:
     minSlope: 55
     maxSlope: 90
     tileOffset: {x: 0, y: 0}
-    tileSize: {x: 50, y: 50}
-    blendOffset: 0.05
-    blendNoiseScale: {x: 0.1, y: 0.1}
-    blendNoiseScalar: 0.1
+    tileSize: {x: 5, y: 5}
+    blendOffset: 0.01
+    blendNoiseScale: {x: 0.5, y: 0.5}
+    blendNoiseScalar: 0.01
     remove: 0
   - texture: {fileID: 2800000, guid: de70d1ae446e84ee5aa2ea6a420781e8, type: 3}
-    minHeight: 0.25
+    minHeight: 0.3
     maxHeight: 1
     minSlope: 0
     maxSlope: 55
     tileOffset: {x: 0, y: 0}
-    tileSize: {x: 50, y: 50}
-    blendOffset: 0.001
-    blendNoiseScale: {x: 0.1, y: 0.1}
-    blendNoiseScalar: 0.1
+    tileSize: {x: 5, y: 5}
+    blendOffset: 0.01
+    blendNoiseScale: {x: 0.5, y: 0.5}
+    blendNoiseScalar: 0.01
     remove: 0
   terrain: {fileID: 29482990}
   terrainData: {fileID: 15600000, guid: 2a158fba47a64d44092107bef6194558, type: 2}
@@ -492,31 +492,31 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 400002, guid: c6453f8e1f814744d8b94e5a6d1f9942, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 507.45
+      value: 616.1
       objectReference: {fileID: 0}
     - target: {fileID: 400002, guid: c6453f8e1f814744d8b94e5a6d1f9942, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 100
+      value: 166.182
       objectReference: {fileID: 0}
     - target: {fileID: 400002, guid: c6453f8e1f814744d8b94e5a6d1f9942, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 500
+      value: 683.8
       objectReference: {fileID: 0}
     - target: {fileID: 400002, guid: c6453f8e1f814744d8b94e5a6d1f9942, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0
+      value: -0.0066168844
       objectReference: {fileID: 0}
     - target: {fileID: 400002, guid: c6453f8e1f814744d8b94e5a6d1f9942, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 1
+      value: 0.9928448
       objectReference: {fileID: 0}
     - target: {fileID: 400002, guid: c6453f8e1f814744d8b94e5a6d1f9942, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0
+      value: -0.09909909
       objectReference: {fileID: 0}
     - target: {fileID: 400002, guid: c6453f8e1f814744d8b94e5a6d1f9942, type: 3}
       propertyPath: m_LocalRotation.w
-      value: -0.00000016292068
+      value: -0.06629263
       objectReference: {fileID: 0}
     - target: {fileID: 400002, guid: c6453f8e1f814744d8b94e5a6d1f9942, type: 3}
       propertyPath: m_RootOrder
@@ -524,11 +524,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 400002, guid: c6453f8e1f814744d8b94e5a6d1f9942, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
+      value: 11.4
       objectReference: {fileID: 0}
     - target: {fileID: 400002, guid: c6453f8e1f814744d8b94e5a6d1f9942, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
+      value: 187.64
       objectReference: {fileID: 0}
     - target: {fileID: 400002, guid: c6453f8e1f814744d8b94e5a6d1f9942, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
@@ -554,7 +554,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!65 &1788907792
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -623,7 +623,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1788907791}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: 0}
+  m_LocalPosition: {x: 500, y: 200, z: 500}
   m_LocalScale: {x: 1, y: 1.8, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
