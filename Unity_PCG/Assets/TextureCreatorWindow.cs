@@ -58,6 +58,10 @@ public class TextureCreatorWindow : EditorWindow
 
         GUILayout.BeginHorizontal();
         GUILayout.FlexibleSpace();
+
+        float min = float.MaxValue;
+        float max = float.MinValue;
+
         if (GUILayout.Button("Generate", GUILayout.Width(wSize)))
         {
             int w = 513;
@@ -111,11 +115,36 @@ public class TextureCreatorWindow : EditorWindow
                                         perlinPersistance) * perlinHeightScale;
                     }
                     float colValue = pValue;
+                    if (min > colValue)
+                    {
+                        min = colValue;
+                    }
+                    if (max < colValue)
+                    {
+                        max = colValue;
+                    }
                     pixCol = new Color(colValue, colValue, colValue, alphaToggle ? colValue : 1);
                     pTexture.SetPixel(x, y, pixCol);
 
                 }
             }
+            if (mapToggle)
+            {
+                for (int y = 0; y < h; y++)
+                {
+                    for (int x = 0; x < w; x++)
+                    {
+                        pixCol = pTexture.GetPixel(x, y);
+                        float colValue = pixCol.r;
+                        colValue = Utils.Map(colValue, min, max, 0, 1);
+                        pixCol.r = colValue;
+                        pixCol.g = colValue;
+                        pixCol.b = colValue;
+                        pTexture.SetPixel(x, y, pixCol);
+                    }
+                }
+            }
+
             pTexture.Apply(false, false);
         }
         GUILayout.FlexibleSpace();
@@ -131,7 +160,9 @@ public class TextureCreatorWindow : EditorWindow
         GUILayout.FlexibleSpace();
         if (GUILayout.Button("Save", GUILayout.Width(wSize)))
         {
-
+            byte[] bytes = pTexture.EncodeToPNG();
+            System.IO.Directory.CreateDirectory(Application.dataPath + "/SavedTextures");
+            File.WriteAllBytes(Application.dataPath + "/SavedTextures/" + filename + ".png", bytes);
         }
         GUILayout.FlexibleSpace();
         GUILayout.EndHorizontal();
