@@ -68,13 +68,52 @@ public class TextureCreatorWindow : EditorWindow
             {
                 for (int x = 0; x < w; x++)
                 {
-                    pValue = Utils.fBM((x + perlinOffsetX) * perlinXScale,
-                                        (y + perlinOffsetY) * perlinYScale,
+                    if (seamlessToggle)
+                    {
+                        float u = (float)x / (float)w;
+                        float v = (float)y / (float)h;
+
+                        float noise00 = Utils.fBM((x + perlinOffsetX) * perlinXScale,
+                                            (y + perlinOffsetY) * perlinYScale,
                                         perlinOctaves,
                                         perlinPersistance) * perlinHeightScale;
+                        float noise01 = Utils.fBM((x + perlinOffsetX) * perlinXScale,
+                                                    (y + perlinOffsetY + h) * perlinYScale,
+                                                perlinOctaves,
+                                                perlinPersistance) * perlinHeightScale;
+                        float noise10 = Utils.fBM((x + perlinOffsetX + w) * perlinXScale,
+                                                    (y + perlinOffsetY) * perlinYScale,
+                                                perlinOctaves,
+                                                perlinPersistance) * perlinHeightScale;
+                        float noise11 = Utils.fBM((x + perlinOffsetX + w) * perlinXScale,
+                                                    (y + perlinOffsetY + h) * perlinYScale,
+                                                perlinOctaves,
+                                                perlinPersistance) * perlinHeightScale;
+                        float noiseTotal = u * v * noise00
+                            + u * (1 - v) * noise01
+                            + (1 - u) * v * noise10
+                            + (1 - u) * (1 - v) * noise11;
+
+                        // Play with offset values for different effects
+                        float value = (int)(256 * noiseTotal) + 50;
+                        float r = Mathf.Clamp((int)noise00, 0, 255);
+                        float g = Mathf.Clamp(value, 0, 255);
+                        float b = Mathf.Clamp(value + 50, 0, 255);
+
+                        pValue = (r + g + b) / (3 * 255.0f);
+
+                    }
+                    else
+                    {
+                        pValue = Utils.fBM((x + perlinOffsetX) * perlinXScale,
+                                            (y + perlinOffsetY) * perlinYScale,
+                                        perlinOctaves,
+                                        perlinPersistance) * perlinHeightScale;
+                    }
                     float colValue = pValue;
                     pixCol = new Color(colValue, colValue, colValue, alphaToggle ? colValue : 1);
                     pTexture.SetPixel(x, y, pixCol);
+
                 }
             }
             pTexture.Apply(false, false);
