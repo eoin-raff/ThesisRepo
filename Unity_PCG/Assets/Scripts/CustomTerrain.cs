@@ -94,11 +94,20 @@ public class CustomTerrain : MonoBehaviour
     public class VegetationData 
     {
         public GameObject mesh = null;
+        public float pivotOffset = 0.0f;
         public float minHeight = 0.0f;
         public float maxHeight = 1.0f;
         public float minSlope = 0;
         public float maxSlope = 90f;
-
+        public float minScale = 0.7f;
+        public float maxScale = 1.0f;
+        public Color color1 = Color.white;
+        public Color color2 = Color.white;
+        public Color lightColor = Color.white;
+        public float minRotation = 0;
+        public float maxRotation = 360;
+        public float density = 0.5f;
+               
         public bool remove = false;
     }
     public List<VegetationData> vegetationData = new List<VegetationData>()
@@ -375,36 +384,70 @@ public class CustomTerrain : MonoBehaviour
             {                
                 for (int tp = 0; tp < terrainData.treePrototypes.Length; tp++)
                 {
+                    if (UnityEngine.Random.Range(0.0f, 1.0f) > vegetationData[tp].density)
+                    {
+                        break;
+                    }
+
                     int hmX = (int)Utils.Map(x, 0, terrainData.size.x, 0, (float)terrainData.heightmapResolution);
                     int hmZ = (int)Utils.Map(z, 0, terrainData.size.z, 0, (float)terrainData.heightmapResolution);
                     float thisHeight = terrainData.GetHeight(hmX, hmZ) / terrainData.size.y;
-                    if (thisHeight >= vegetationData[tp].minHeight && thisHeight <= vegetationData[tp].maxHeight)
+                    float steepness = terrainData.GetSteepness(
+                        x / (float)terrainData.size.x,
+                        z / (float)terrainData.size.z);
+                    if ((thisHeight >= vegetationData[tp].minHeight && thisHeight <= vegetationData[tp].maxHeight)
+                        && (steepness >= vegetationData[tp].minSlope && steepness <= vegetationData[tp].maxSlope))
                     {
-                        TreeInstance instance = new TreeInstance
+                        Vector3 position;
+
+                        ////Default: perfect grid
+                        //position = new Vector3(x / terrainData.size.x,
+                        //        thisHeight,
+                        //        z / terrainData.size.z),
+
+                        //Slight random offset
+                        position = new Vector3((x + UnityEngine.Random.Range(-10.0f, 10.0f)) / terrainData.size.x,
+                                                thisHeight,
+                                                (z + UnityEngine.Random.Range(-10.0f, 10.0f)) / terrainData.size.z);
+
+                        ////Todo: Poisson Disk
+                        //position = new Vector3(x / terrainData.size.x,
+                        //        thisHeight,
+                        //        z / terrainData.size.z),
+
+                        Vector3 treeWorldPos = new Vector3(
+                            position.x * terrainData.size.x,
+                            position.y * terrainData.size.y,
+                            position.z * terrainData.size.z)
+                            + this.transform.position;
+                        RaycastHit hit;
+                        int layerMask = 1 << terrainLayer;
+                        if (Physics.Raycast(treeWorldPos + Vector3.up * 10, -Vector3.up, out hit, 100, layerMask)
+                            || Physics.Raycast(treeWorldPos - Vector3.up * 10, Vector3.up, out hit, 100, layerMask))
                         {
-                            ////Default: perfect grid
-                            //position = new Vector3(x / terrainData.size.x,
-                            //        thisHeight,
-                            //        z / terrainData.size.z),
+                            TreeInstance instance = new TreeInstance
+                            {
 
-                            //Slight random offset
-                            position = new Vector3((x + UnityEngine.Random.Range(-10.0f, 10.0f)) / terrainData.size.x,
-                                                    thisHeight,
-                                                    (z + UnityEngine.Random.Range(-10.0f, 10.0f)) / terrainData.size.z),
+                                position = position,
+                                rotation = UnityEngine.Random.Range(0, 360),
+                                prototypeIndex = tp,
+                                color = Color.Lerp(
+                                    vegetationData[tp].color1,
+                                    vegetationData[tp].color2,
+                                    UnityEngine.Random.Range(0.0f, 1.0f)),
+                                lightmapColor = vegetationData[tp].lightColor,
+                                heightScale = UnityEngine.Random.Range(vegetationData[tp].minScale, vegetationData[tp].maxScale),
+                                widthScale = UnityEngine.Random.Range(vegetationData[tp].minScale, vegetationData[tp].maxScale)
+                            };
 
-                            ////Todo: Poisson Disk
-                            //position = new Vector3(x / terrainData.size.x,
-                            //        thisHeight,
-                            //        z / terrainData.size.z),
+                            float treeHeight = (hit.point.y - this.transform.position.y) / terrainData.size.y;
+                            instance.position = new Vector3(
+                                instance.position.x,
+                                treeHeight - vegetationData[tp].pivotOffset,
+                                instance.position.z);
+                            allVegetation.Add(instance);
 
-                            rotation = UnityEngine.Random.Range(0, 360),
-                            prototypeIndex = tp,
-                            color = Color.white,
-                            lightmapColor = Color.white,
-                            heightScale = 0.95f,
-                            widthScale = 0.95f
-                        };
-                        allVegetation.Add(instance);
+                        }
                         if (allVegetation.Count >= maxTrees) goto TREESDONE;
                     }
 
