@@ -7,6 +7,10 @@ using System.Linq;
 [ExecuteInEditMode]
 public class CustomTerrain : MonoBehaviour
 {
+    public enum TagType { Tag = 0, Layer = 1 }
+    [SerializeField]
+    int terrainLayer = -1;
+
     public Vector2 randomHeightRange = new Vector2(0, 0.1f);
     public Texture2D heightMapImage;
     public Vector3 heightMapScale = new Vector3(2, 0.5f, 2);
@@ -667,7 +671,7 @@ public class CustomTerrain : MonoBehaviour
         terrainData.SetHeights(0, 0, heightMap);
     }
 #if UNITY_EDITOR
-    private void AddTag(SerializedProperty tagsProp, string newTag)
+    private int AddTag(SerializedProperty tagsProp, string newTag, TagType tagType)
     {
         bool found = false;
 
@@ -678,16 +682,38 @@ public class CustomTerrain : MonoBehaviour
             if (t.stringValue.Equals(newTag))
             {
                 found = true;
-                break;
+                return i;
             }
         }
         if (!found)
         {
-            // create a new item in the tags array and give it the newTag value
-            tagsProp.InsertArrayElementAtIndex(0);
-            SerializedProperty newTagProp = tagsProp.GetArrayElementAtIndex(0);
-            newTagProp.stringValue = newTag;
+            switch (tagType)
+            {
+                case TagType.Tag:
+                    // create a new item in the tags array and give it the newTag value
+                    tagsProp.InsertArrayElementAtIndex(0);
+                    SerializedProperty newTagProp = tagsProp.GetArrayElementAtIndex(0);
+                    newTagProp.stringValue = newTag;
+                    return -1; //not needed
+                case TagType.Layer:
+                    // Create a new layer
+                    for (int j = 8; j < tagsProp.arraySize; j++)
+                    {
+                        //user layers start at 8
+                        SerializedProperty newLayer = tagsProp.GetArrayElementAtIndex(j);
+                        if (newLayer.stringValue == "")
+                        {
+                            newLayer.stringValue = newTag;
+                            return j;
+                        }
+                    }
+                    return -1; //shouldnt be called
+                default:
+                    return -1; // shouldn't be called
+            }
+
         }
+        return -1;
     }
 #endif
 
@@ -704,15 +730,20 @@ public class CustomTerrain : MonoBehaviour
             AssetDatabase.LoadAllAssetsAtPath("ProjectSettings/TagManager.asset")[0]);
         SerializedProperty tagsProp = tagManager.FindProperty("tags");
 
-        AddTag(tagsProp, "Terrain");
-        AddTag(tagsProp, "Cloud");
-        AddTag(tagsProp, "Shore");
+        AddTag(tagsProp, "Terrain", TagType.Tag);
+        AddTag(tagsProp, "Cloud", TagType.Tag);
+        AddTag(tagsProp, "Shore", TagType.Tag);
 
         // update tags DB
         tagManager.ApplyModifiedProperties();
 
+        SerializedProperty layerProp = tagManager.FindProperty("layers");
+        terrainLayer = AddTag(layerProp, "Terrain", TagType.Layer);
+        tagManager.ApplyModifiedProperties();
+
         // tag this object
         this.gameObject.tag = "Terrain";
+        this.gameObject.layer = terrainLayer;
 #endif
     }
     // Start is called before the first frame update
