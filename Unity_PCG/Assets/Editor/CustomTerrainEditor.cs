@@ -285,7 +285,7 @@ public class CustomTerrainEditor : Editor
                 terrain.RemoveVegetation();
             }
             EditorGUILayout.EndHorizontal();
-            if (GUILayout.Button("Apply Splatmaps"))
+            if (GUILayout.Button("Apply Vegetation"))
             {
                 terrain.PlantVegetation();
             }

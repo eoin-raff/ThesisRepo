@@ -86,6 +86,7 @@ public class CustomTerrain : MonoBehaviour
     #endregion
 
     #region Vegetation
+    [System.Serializable]
     public class VegetationData 
     {
         public GameObject mesh = null;
@@ -101,7 +102,7 @@ public class CustomTerrain : MonoBehaviour
         new VegetationData()
     };
     public int maxTrees = 5000;
-    public int treeSpacing = 5;
+    public float treeSpacing = 5;
     #endregion
 
     public Terrain terrain;
@@ -347,7 +348,18 @@ public class CustomTerrain : MonoBehaviour
     }
     public void PlantVegetation()
     {
-
+        TreePrototype[] treePrototypes;
+        treePrototypes = new TreePrototype[vegetationData.Count];
+        int treeIdx = 0;
+        foreach (VegetationData t in vegetationData)
+        {
+            treePrototypes[treeIdx] = new TreePrototype
+            {
+                prefab = t.mesh
+            };
+            treeIdx++;
+        }
+        terrainData.treePrototypes = treePrototypes;
     }
     //TODO: Refactor Add and remove fucntions using generics
     /*
