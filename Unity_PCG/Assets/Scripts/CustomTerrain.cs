@@ -102,7 +102,7 @@ public class CustomTerrain : MonoBehaviour
         new VegetationData()
     };
     public int maxTrees = 5000;
-    public float treeSpacing = 5;
+    public int treeSpacing = 5;
     #endregion
 
     public Terrain terrain;
@@ -360,7 +360,58 @@ public class CustomTerrain : MonoBehaviour
             treeIdx++;
         }
         terrainData.treePrototypes = treePrototypes;
+
+        List<TreeInstance> allVegetation = new List<TreeInstance>();
+        //NEED TO GET VALUES FROM TERRAIN MESH, NOT HEIGHTMAP
+        
+        //print(terrainData.size.x + ":" + terrainData.size.z);
+        for (int z = 0; z < terrainData.size.z; z += treeSpacing)
+        {
+            for (int x = 0; x < terrainData.size.x; x += treeSpacing)
+            {                
+                for (int tp = 0; tp < terrainData.treePrototypes.Length; tp++)
+                {
+                    int hmX = (int)Utils.Map(x, 0, terrainData.size.x, 0, (float)terrainData.heightmapResolution);
+                    int hmZ = (int)Utils.Map(z, 0, terrainData.size.z, 0, (float)terrainData.heightmapResolution);
+                    float thisHeight = terrainData.GetHeight(hmX, hmZ) / terrainData.size.y;
+                    if (thisHeight >= vegetationData[tp].minHeight && thisHeight <= vegetationData[tp].maxHeight)
+                    {
+                        TreeInstance instance = new TreeInstance
+                        {
+                            ////Default: perfect grid
+                            //position = new Vector3(x / terrainData.size.x,
+                            //        thisHeight,
+                            //        z / terrainData.size.z),
+
+                            //Slight random offset
+                            position = new Vector3((x + UnityEngine.Random.Range(-10.0f, 10.0f)) / terrainData.size.x,
+                                                    thisHeight,
+                                                    (z + UnityEngine.Random.Range(-10.0f, 10.0f)) / terrainData.size.z),
+
+                            ////Todo: Poisson Disk
+                            //position = new Vector3(x / terrainData.size.x,
+                            //        thisHeight,
+                            //        z / terrainData.size.z),
+
+                            rotation = UnityEngine.Random.Range(0, 360),
+                            prototypeIndex = tp,
+                            color = Color.white,
+                            lightmapColor = Color.white,
+                            heightScale = 0.95f,
+                            widthScale = 0.95f
+                        };
+                        allVegetation.Add(instance);
+                        if (allVegetation.Count >= maxTrees) goto TREESDONE;
+                    }
+
+                }
+            }
+        }
+    TREESDONE:
+        terrainData.treeInstances = allVegetation.ToArray();
+
     }
+
     //TODO: Refactor Add and remove fucntions using generics
     /*
      * e.g.

@@ -271,7 +271,7 @@ public class CustomTerrainEditor : Editor
             
 
             EditorGUILayout.IntSlider(maxTrees, 0, 10000, new GUIContent("Max Trees"));
-            EditorGUILayout.Slider(treeSpacing, 2, 20, new GUIContent("Tree Spacing"));
+            EditorGUILayout.IntSlider(treeSpacing, 2, 20, new GUIContent("Tree Spacing"));
 
             vegetationTable = GUITableLayout.DrawTable(vegetationTable, vegetationData);
             EditorGUILayout.Space(20);
