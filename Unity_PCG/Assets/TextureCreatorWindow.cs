@@ -17,6 +17,9 @@ public class TextureCreatorWindow : EditorWindow
     bool seamlessToggle = false;
     bool mapToggle = false;
 
+    float brightness = 0.5f;
+    float contrast = 0.5f;
+
     Texture2D pTexture;
 
     [MenuItem("Window/TextureCreatorWindow")]
@@ -51,6 +54,9 @@ public class TextureCreatorWindow : EditorWindow
         perlinHeightScale = EditorGUILayout.Slider("Height Scale", perlinHeightScale, 0, 1);
         perlinOffsetX = EditorGUILayout.IntSlider("Offset X", perlinOffsetX, 0, 10000);
         perlinOffsetY = EditorGUILayout.IntSlider("Offset Y", perlinOffsetY, 0, 10000);
+
+        brightness = EditorGUILayout.Slider("Brightness", brightness, 0, 2);
+        contrast = EditorGUILayout.Slider("Contrast", contrast, 0, 2);
 
         alphaToggle = EditorGUILayout.Toggle("Alpha?", alphaToggle);
         seamlessToggle = EditorGUILayout.Toggle("Seamless?", seamlessToggle);
@@ -114,7 +120,7 @@ public class TextureCreatorWindow : EditorWindow
                                         perlinOctaves,
                                         perlinPersistance) * perlinHeightScale;
                     }
-                    float colValue = pValue;
+                    float colValue = contrast * (pValue - 0.5f) + 0.5f * brightness;
                     if (min > colValue)
                     {
                         min = colValue;

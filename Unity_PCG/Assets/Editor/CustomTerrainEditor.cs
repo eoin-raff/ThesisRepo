@@ -44,6 +44,7 @@ public class CustomTerrainEditor : Editor
     private GUITableState splatMapTable;
     private SerializedProperty splatHeights;
 
+    private Texture2D texture;
     // foldouts
     private bool showRandom = false;
     private bool showLoadHeights = false;
@@ -53,6 +54,7 @@ public class CustomTerrainEditor : Editor
     private bool showMidpointDisplacement = false;
     private bool showSmoothing = false;
     private bool showSplatMaps = false;
+    private bool showHeightMap = false;
 
     //scroll bar
     private Vector2 scrollPos;
@@ -267,6 +269,38 @@ public class CustomTerrainEditor : Editor
             terrain.ResetTerrain();
         }
 
+        HLine();
+        showHeightMap = EditorGUILayout.Foldout(showHeightMap, "Heightmap");
+        if (showHeightMap)
+        {
+            if (texture == null)
+            {
+                texture = new Texture2D(terrain.terrainData.heightmapResolution, terrain.terrainData.heightmapResolution);
+            }
+            int heightmapTextureSize = (int)(EditorGUIUtility.currentViewWidth - 100);
+
+            GUILayout.BeginHorizontal();
+            GUILayout.FlexibleSpace();
+            GUILayout.Label(texture, GUILayout.Width(heightmapTextureSize), GUILayout.Height(heightmapTextureSize));
+            GUILayout.FlexibleSpace();
+            GUILayout.EndHorizontal();
+
+            if (GUILayout.Button("Refresh", GUILayout.Width(heightmapTextureSize)))
+            {
+                float[,] heightMap = terrain.terrainData.GetHeights(0, 0, terrain.terrainData.heightmapResolution, terrain.terrainData.heightmapResolution);
+                for (int y = 0; y < terrain.terrainData.heightmapResolution; y++)
+                {
+                    for (int x = 0; x < terrain.terrainData.heightmapResolution; x++)
+                    {
+                        texture.SetPixel(x, y, new Color(heightMap[x, y],
+                            heightMap[x, y],
+                            heightMap[x, y],
+                            1));
+                    }
+                }
+                texture.Apply();
+            }
+        }
         // End Scrollbar
         EditorGUILayout.EndScrollView();
         EditorGUILayout.EndVertical();
