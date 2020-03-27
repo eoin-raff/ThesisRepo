@@ -85,6 +85,25 @@ public class CustomTerrain : MonoBehaviour
     };
     #endregion
 
+    #region Vegetation
+    public class VegetationData 
+    {
+        public GameObject mesh = null;
+        public float minHeight = 0.0f;
+        public float maxHeight = 1.0f;
+        public float minSlope = 0;
+        public float maxSlope = 90f;
+
+        public bool remove = false;
+    }
+    public List<VegetationData> vegetationData = new List<VegetationData>()
+    {
+        new VegetationData()
+    };
+    public int maxTrees = 5000;
+    public int treeSpacing = 5;
+    #endregion
+
     public Terrain terrain;
     public TerrainData terrainData;
 
@@ -325,6 +344,39 @@ public class CustomTerrain : MonoBehaviour
         }
         terrainData.SetHeights(0, 0, heightMap);
 
+    }
+    public void PlantVegetation()
+    {
+
+    }
+    //TODO: Refactor Add and remove fucntions using generics
+    /*
+     * e.g.
+     * public void AddData<T>(ref List<T> list)
+     * public void RemoveData<T>(ref List<T> list)
+     */
+    public void AddNewVegetation()
+    {
+        vegetationData.Add(new VegetationData());
+    }
+
+    public void RemoveVegetation()
+    {
+        List<VegetationData> keptData = new List<VegetationData>();
+        for (int i = 0; i < vegetationData.Count; i++)
+        {
+            if (!vegetationData[i].remove)
+            {
+                keptData.Add(vegetationData[i]);
+            }
+          
+
+        }
+        if (keptData.Count == 0)
+        {
+            keptData.Add(vegetationData[0]);
+        }
+        vegetationData = keptData;
     }
 
     public void Voronoi()

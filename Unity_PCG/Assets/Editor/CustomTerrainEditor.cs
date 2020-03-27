@@ -44,6 +44,11 @@ public class CustomTerrainEditor : Editor
     private GUITableState splatMapTable;
     private SerializedProperty splatHeights;
 
+    private GUITableState vegetationTable;
+    private SerializedProperty vegetationData;
+    private SerializedProperty maxTrees;
+    private SerializedProperty treeSpacing;
+
     private Texture2D texture;
     // foldouts
     private bool showRandom = false;
@@ -55,6 +60,7 @@ public class CustomTerrainEditor : Editor
     private bool showSmoothing = false;
     private bool showSplatMaps = false;
     private bool showHeightMap = false;
+    private bool showVegetation = false;
 
     //scroll bar
     private Vector2 scrollPos;
@@ -95,6 +101,11 @@ public class CustomTerrainEditor : Editor
 
         splatMapTable = new GUITableState("splatMapTable");
         splatHeights = serializedObject.FindProperty("splatHeights");
+
+        vegetationTable = new GUITableState("vegetationTable");
+        vegetationData = serializedObject.FindProperty("vegetationData");
+        maxTrees = serializedObject.FindProperty("maxTrees");
+        treeSpacing = serializedObject.FindProperty("treeSpacing");
     }
 
     public override void OnInspectorGUI() 
@@ -251,6 +262,35 @@ public class CustomTerrainEditor : Editor
                 terrain.SplatMaps();
             }
         }
+
+        showVegetation = EditorGUILayout.Foldout(showVegetation, "Vegetation");
+        if (showVegetation)
+        {
+            HLine();
+            GUILayout.Label("Vegetation", EditorStyles.boldLabel);
+            
+
+            EditorGUILayout.IntSlider(maxTrees, 0, 10000, new GUIContent("Max Trees"));
+            EditorGUILayout.Slider(treeSpacing, 2, 20, new GUIContent("Tree Spacing"));
+
+            vegetationTable = GUITableLayout.DrawTable(vegetationTable, vegetationData);
+            EditorGUILayout.Space(20);
+            EditorGUILayout.BeginHorizontal();
+            if (GUILayout.Button("+"))
+            {
+                terrain.AddNewVegetation();
+            }
+            if (GUILayout.Button("-"))
+            {
+                terrain.RemoveVegetation();
+            }
+            EditorGUILayout.EndHorizontal();
+            if (GUILayout.Button("Apply Splatmaps"))
+            {
+                terrain.PlantVegetation();
+            }
+        }
+
 
         HLine();
 
