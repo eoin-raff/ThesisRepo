@@ -309,9 +309,12 @@ public class CustomTerrainEditor : Editor
 
 
             EditorGUILayout.IntSlider(maxDetails, 0, 10000, new GUIContent("Max Details"));
-            EditorGUILayout.IntSlider(detailSpacing, 2, 20, new GUIContent("Detail Spacing"));
+            EditorGUILayout.IntSlider(detailSpacing, 1, 20, new GUIContent("Detail Spacing"));
 
             detailTable = GUITableLayout.DrawTable(detailTable, details);
+
+            terrain.GetComponent<Terrain>().detailObjectDistance = maxDetails.intValue;
+
             EditorGUILayout.Space(20);
             EditorGUILayout.BeginHorizontal();
             if (GUILayout.Button("+"))

@@ -293,7 +293,73 @@ public partial class CustomTerrain : MonoBehaviour
 
     public void PaintDetails()
     {
-        throw new NotImplementedException();
+        DetailPrototype[] detailPrototypes;
+        detailPrototypes = new DetailPrototype[details.Count];
+        int detailIndex = 0;
+        foreach (Detail detail in details)
+        {
+            detailPrototypes[detailIndex] = new DetailPrototype
+            {
+                prototype = detail.prototype,
+                prototypeTexture = detail.prototypeTexture,
+                healthyColor = detail.healthyColor,
+                dryColor = detail.dryColor,
+                minHeight = detail.heightRange.x,
+                maxHeight = detail.heightRange.y,
+                minWidth = detail.widthRange.x,
+                maxWidth = detail.widthRange.y,
+                noiseSpread = detail.noiseSpread
+            };
+            if (detailPrototypes[detailIndex].prototype)
+            {
+                detailPrototypes[detailIndex].usePrototypeMesh = true;
+                detailPrototypes[detailIndex].renderMode = DetailRenderMode.VertexLit;
+            }
+            else
+            {
+                detailPrototypes[detailIndex].usePrototypeMesh = false;
+                detailPrototypes[detailIndex].renderMode = DetailRenderMode.GrassBillboard;
+            }
+            detailIndex++;
+        }
+        terrainData.detailPrototypes = detailPrototypes;
+        float[,] heightMap = terrainData.GetHeights(0, 0, terrainData.heightmapResolution, terrainData.heightmapResolution);
+        for (int i = 0; i < terrainData.detailPrototypes.Length; i++)
+        {
+            int[,] detailMap = new int[terrainData.detailResolution, terrainData.detailResolution]; //perhaps use width & height instead of resolution
+            for (int y = 0; y < terrainData.detailResolution; y+=detailSpacing)
+            {
+                for (int x = 0; x < terrainData.detailResolution; x+=detailSpacing)
+                {
+                    if (UnityEngine.Random.Range(0.0f, 1.0f) >  details[i].density)
+                    {
+                        continue;
+                    }
+                    int hmX = (int)Utils.Map(x, 0, terrainData.detailResolution, 0, (float)terrainData.heightmapResolution);
+                    int hmY = (int)Utils.Map(y, 0, terrainData.detailResolution, 0, (float)terrainData.heightmapResolution);
+
+                    float thisNoise = Utils.Map(Mathf.PerlinNoise(
+                        x * details[i].feather,
+                        y * details[i].feather),
+                        0, 1, 0.5f, 1);
+                    float heightStart = details[i].minHeight * thisNoise - details[i].overlap * thisNoise;
+                    float heightEnd = details[i].maxHeight * thisNoise - details[i].overlap * thisNoise;
+                    float thisHeight = heightMap[hmY, hmX]; //XY is flipped for heightmap and detail map
+                    float steepness = terrainData.GetSteepness(
+                        hmX / (float)terrainData.size.x,
+                        hmY / (float)terrainData.size.z);
+
+                    bool inHeightBand = thisHeight >= heightStart && thisHeight <= heightEnd;
+                    bool inSlopeBand = steepness >= details[i].minSlope && steepness <= details[i].maxSlope;
+
+                    if (inHeightBand && inSlopeBand)
+                    {
+                        detailMap[y, x] = 1; // XY is flipped because detail map is rotated 90deg from heightMap 
+                    }
+                }
+            }
+            terrainData.SetDetailLayer(0, 0, i, detailMap);
+        }
     }
 
     public void PlantVegetation()
@@ -314,7 +380,6 @@ public partial class CustomTerrain : MonoBehaviour
         List<TreeInstance> allVegetation = new List<TreeInstance>();
         //NEED TO GET VALUES FROM TERRAIN MESH, NOT HEIGHTMAP
         
-        //print(terrainData.size.x + ":" + terrainData.size.z);
         for (int z = 0; z < terrainData.size.z; z += treeSpacing)
         {
             for (int x = 0; x < terrainData.size.x; x += treeSpacing)
