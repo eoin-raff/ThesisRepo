@@ -49,6 +49,11 @@ public class CustomTerrainEditor : Editor
     private SerializedProperty maxTrees;
     private SerializedProperty treeSpacing;
 
+    private GUITableState detailTable;
+    private SerializedProperty details;
+    private SerializedProperty maxDetails;
+    private SerializedProperty detailSpacing;
+
     private Texture2D texture;
     // foldouts
     private bool showRandom = false;
@@ -61,6 +66,7 @@ public class CustomTerrainEditor : Editor
     private bool showSplatMaps = false;
     private bool showHeightMap = false;
     private bool showVegetation = false;
+    private bool showDetail = false;
 
     //scroll bar
     private Vector2 scrollPos;
@@ -106,6 +112,11 @@ public class CustomTerrainEditor : Editor
         vegetationData = serializedObject.FindProperty("vegetationData");
         maxTrees = serializedObject.FindProperty("maxTrees");
         treeSpacing = serializedObject.FindProperty("treeSpacing");
+
+        detailTable = new GUITableState("details");
+        details = serializedObject.FindProperty("details");
+        maxDetails = serializedObject.FindProperty("maxDetails");
+        detailSpacing = serializedObject.FindProperty("detailSpacing");
     }
 
     public override void OnInspectorGUI() 
@@ -178,11 +189,11 @@ public class CustomTerrainEditor : Editor
             EditorGUILayout.BeginHorizontal();
             if (GUILayout.Button("+"))
             {
-                terrain.AddNewPerlin();
+                terrain.AddNewData(ref terrain.perlinParameters);
             }
             if (GUILayout.Button("-"))
             {
-                terrain.RemovePerlin();
+                terrain.RemoveData(ref terrain.perlinParameters);
             }
             EditorGUILayout.EndHorizontal();
             if (GUILayout.Button("Apply Multiple Perlin"))
@@ -250,11 +261,11 @@ public class CustomTerrainEditor : Editor
             EditorGUILayout.BeginHorizontal();
             if (GUILayout.Button("+"))
             {
-                terrain.AddNewSplatHeight();
+                terrain.AddNewData<Splatmap>(ref terrain.splatHeights);
             }
             if (GUILayout.Button("-"))
             {
-                terrain.RemoveSplatHeight();
+                terrain.RemoveData < Splatmap> (ref terrain.splatHeights);
             }
             EditorGUILayout.EndHorizontal();
             if (GUILayout.Button("Apply Splatmaps"))
@@ -269,7 +280,6 @@ public class CustomTerrainEditor : Editor
             HLine();
             GUILayout.Label("Vegetation", EditorStyles.boldLabel);
             
-
             EditorGUILayout.IntSlider(maxTrees, 0, 10000, new GUIContent("Max Trees"));
             EditorGUILayout.IntSlider(treeSpacing, 2, 20, new GUIContent("Tree Spacing"));
 
@@ -278,11 +288,11 @@ public class CustomTerrainEditor : Editor
             EditorGUILayout.BeginHorizontal();
             if (GUILayout.Button("+"))
             {
-                terrain.AddNewVegetation();
+                terrain.AddNewData(ref terrain.vegetationData);
             }
             if (GUILayout.Button("-"))
             {
-                terrain.RemoveVegetation();
+                terrain.RemoveData(ref terrain.vegetationData);
             }
             EditorGUILayout.EndHorizontal();
             if (GUILayout.Button("Apply Vegetation"))
@@ -291,6 +301,33 @@ public class CustomTerrainEditor : Editor
             }
         }
 
+        showDetail = EditorGUILayout.Foldout(showDetail, "Details");
+        if (showDetail)
+        {
+            HLine();
+            GUILayout.Label("Details", EditorStyles.boldLabel);
+
+
+            EditorGUILayout.IntSlider(maxDetails, 0, 10000, new GUIContent("Max Details"));
+            EditorGUILayout.IntSlider(detailSpacing, 2, 20, new GUIContent("Detail Spacing"));
+
+            detailTable = GUITableLayout.DrawTable(detailTable, details);
+            EditorGUILayout.Space(20);
+            EditorGUILayout.BeginHorizontal();
+            if (GUILayout.Button("+"))
+            {
+                terrain.AddNewData<Detail> (ref terrain.details);
+            }
+            if (GUILayout.Button("-"))
+            {
+                terrain.RemoveData<Detail>(ref terrain.details);
+            }
+            EditorGUILayout.EndHorizontal();
+            if (GUILayout.Button("Apply Vegetation"))
+            {
+                terrain.PaintDetails();
+            }
+        }
 
         HLine();
 
@@ -354,15 +391,4 @@ public class CustomTerrainEditor : Editor
         EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
     }
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }

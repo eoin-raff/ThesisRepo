@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 [ExecuteInEditMode]
-public class CustomTerrain : MonoBehaviour
+public partial class CustomTerrain : MonoBehaviour
 {
     public enum TagType { Tag = 0, Layer = 1 }
     [SerializeField]
@@ -17,7 +17,7 @@ public class CustomTerrain : MonoBehaviour
 
     public bool resetTerrain = true;
 
-    #region Perlin Noise
+#region Perlin Noise
     public float perlinScaleX = 0.001f;
     public float perlinScaleY = 0.001f;
     public int perlinOffsetX = 0;
@@ -25,29 +25,17 @@ public class CustomTerrain : MonoBehaviour
     public int perlinOctaves = 3;
     public float perlinPersistance = 0.5f;
     public float perlinHeightScale = 0.5f;
-    #endregion    
 
-    #region Multiple Perlin Noise
-    [Serializable]
-    public class PerlinParameters
-    {
-        public float xScale = 0.001f;
-        public float yScale = 0.001f;
-        public int xOffset = 0;
-        public int yOffset = 0;
-        public int octaves = 3;
-        public float persistance = 0.5f;
-        public float heightScale = 0.9f;
-        public bool remove = false;
-    }
+#endregion    
+#region Multiple Perlin Noise
     public List<PerlinParameters> perlinParameters = new List<PerlinParameters>()
     {
         new PerlinParameters()
     };
 
-    #endregion
-
-    #region Voronoi
+#endregion                  
+        
+#region Voronoi
     public int voronoiPeakCount;
     public float voronoiFallOff;
     public float voronoiDropOff;
@@ -56,68 +44,43 @@ public class CustomTerrain : MonoBehaviour
     public enum VoronoiType { Linear, Power, Combined }
     public VoronoiType voronoiType = VoronoiType.Linear;
 
-    #endregion
-
-    #region Midpoint Displacement
+#endregion
+#region Midpoint Displacement
     public float MPminHeight;
     public float MPmaxHeight;
     public float MProughness;
     public float MPheightDampener;
-    #endregion
-
+#endregion
     public int smoothAmount = 1;
-
-    #region SplatMaps
-    [Serializable]
-    public class SplatHeight
+#region SplatMaps
+    public List<Splatmap> splatHeights = new List<Splatmap>()
     {
-        public Texture2D texture = null;
-        public float minHeight = 0.1f;
-        public float maxHeight = 0.2f;
-        public float minSlope = 0;
-        public float maxSlope = 90f;
-        public Vector2 tileOffset = Vector2.zero;
-        public Vector2 tileSize = Vector2.one * 50  ;
-        public float blendOffset = 0.01f;
-        public Vector2 blendNoiseScale = Vector2.one * 0.1f;
-        public float blendNoiseScalar = 0.1f;
-        public bool remove = false;
-    }
-    public List<SplatHeight> splatHeights = new List<SplatHeight>()
-    {
-        new SplatHeight()
+        new Splatmap()
     };
-    #endregion
 
-    #region Vegetation
-    [System.Serializable]
-    public class VegetationData 
+#endregion
+#region Vegetation
+    public List<Vegetation> vegetationData = new List<Vegetation>()
     {
-        public GameObject mesh = null;
-        public float pivotOffset = 0.0f;
-        public float minHeight = 0.0f;
-        public float maxHeight = 1.0f;
-        public float minSlope = 0;
-        public float maxSlope = 90f;
-        public float minScale = 0.7f;
-        public float maxScale = 1.0f;
-        public Color color1 = Color.white;
-        public Color color2 = Color.white;
-        public Color lightColor = Color.white;
-        public float minRotation = 0;
-        public float maxRotation = 360;
-        public float density = 0.5f;
-               
-        public bool remove = false;
-    }
-    public List<VegetationData> vegetationData = new List<VegetationData>()
-    {
-        new VegetationData()
+        new Vegetation()
     };
     public int maxTrees = 5000;
     public int treeSpacing = 5;
+
+#endregion
+#region Details
+    public List<Detail> details = new List<Detail>()
+    {
+        new Detail()
+    };
+    public int maxDetails = 5000;
+    public int detailSpacing = 5;
     #endregion
 
+
+
+
+    
     public Terrain terrain;
     public TerrainData terrainData;
 
@@ -133,27 +96,8 @@ public class CustomTerrain : MonoBehaviour
         }
     }
 
-    public void AddNewSplatHeight()
-    {
-        splatHeights.Add(new SplatHeight());
-    }
-    public void RemoveSplatHeight()
-    {
-        List<SplatHeight> keptSplatHeights = new List<SplatHeight>();
-        for (int i = 0; i < splatHeights.Count; i++)
-        {
-            if (!splatHeights[i].remove)
-            {
-                keptSplatHeights.Add(splatHeights[i]);
-            }
-        }
-        if (keptSplatHeights.Count == 0)
-        {
-            keptSplatHeights.Add(splatHeights[0]);
-        }
-        splatHeights = keptSplatHeights;
-    }
 
+    [Obsolete("Use Unity's in built steepness instead")]
     float GetSteepness(float[,] heightMap, int x, int y, int width, int height)
     {
         float h = heightMap[x, y];
@@ -173,7 +117,7 @@ public class CustomTerrain : MonoBehaviour
         TerrainLayer[] newSplatPrototypes;
         newSplatPrototypes = new TerrainLayer[splatHeights.Count];
         int spIndex = 0;
-        foreach (SplatHeight splatHeight in splatHeights)
+        foreach (Splatmap splatHeight in splatHeights)
         {
             newSplatPrototypes[spIndex] = new TerrainLayer
             {
@@ -223,7 +167,7 @@ public class CustomTerrain : MonoBehaviour
                         splat[i] = 1;
                     }
                 }
-                NormalizeVector(ref splat);
+                Utils.NormalizeVector(ref splat);
                 for (int z = 0; z < splatHeights.Count; z++)
                 {
                     splatmapData[x, y, z] = splat[z];
@@ -232,19 +176,6 @@ public class CustomTerrain : MonoBehaviour
         }
         terrainData.SetAlphamaps(0, 0, splatmapData);
 
-    }
-
-    private void NormalizeVector(ref float[] v) //try with / without ref
-    {
-        float total = 0;
-        for (int i = 0; i < v.Length; i++)
-        {
-            total += v[i];
-        }
-        for (int i = 0; i < v.Length; i++)
-        {
-            v[i] /= total;
-        }
     }
 
     public void MidpointDisplacement()
@@ -359,12 +290,18 @@ public class CustomTerrain : MonoBehaviour
         terrainData.SetHeights(0, 0, heightMap);
 
     }
+
+    public void PaintDetails()
+    {
+        throw new NotImplementedException();
+    }
+
     public void PlantVegetation()
     {
         TreePrototype[] treePrototypes;
         treePrototypes = new TreePrototype[vegetationData.Count];
         int treeIdx = 0;
-        foreach (VegetationData t in vegetationData)
+        foreach (Vegetation t in vegetationData)
         {
             treePrototypes[treeIdx] = new TreePrototype
             {
@@ -457,36 +394,6 @@ public class CustomTerrain : MonoBehaviour
     TREESDONE:
         terrainData.treeInstances = allVegetation.ToArray();
 
-    }
-
-    //TODO: Refactor Add and remove fucntions using generics
-    /*
-     * e.g.
-     * public void AddData<T>(ref List<T> list)
-     * public void RemoveData<T>(ref List<T> list)
-     */
-    public void AddNewVegetation()
-    {
-        vegetationData.Add(new VegetationData());
-    }
-
-    public void RemoveVegetation()
-    {
-        List<VegetationData> keptData = new List<VegetationData>();
-        for (int i = 0; i < vegetationData.Count; i++)
-        {
-            if (!vegetationData[i].remove)
-            {
-                keptData.Add(vegetationData[i]);
-            }
-          
-
-        }
-        if (keptData.Count == 0)
-        {
-            keptData.Add(vegetationData[0]);
-        }
-        vegetationData = keptData;
     }
 
     public void Voronoi()
@@ -645,32 +552,7 @@ public class CustomTerrain : MonoBehaviour
         }
         terrainData.SetHeights(0, 0, heightMap);
     }
-    public void AddNewPerlin()
-    {
-        perlinParameters.Add(new PerlinParameters());
-    }
-    public void RemovePerlin()
-    {
-        // New list for parameters that should be kept
-        List<PerlinParameters> keptPerlinParameters = new List<PerlinParameters>();
 
-        // Loop through current parameters, and check if they should be removed or not
-        for (int i = 0; i < perlinParameters.Count; i++)
-        {
-            if (!perlinParameters[i].remove)
-            {
-                //if they should not be removed, add them to the kepy list
-                keptPerlinParameters.Add(perlinParameters[i]);
-            }
-        }
-        if (keptPerlinParameters.Count == 0)
-        {
-            //if none are to be kept, then add at least 1 item to the kept list so the table will work
-            keptPerlinParameters.Add(perlinParameters[0]);
-        }
-        // set list to kept list
-        perlinParameters = keptPerlinParameters;
-    }
     public void RandomTerrain()
     {
         float[,] heightMap = GetHeightMap();
@@ -713,6 +595,7 @@ public class CustomTerrain : MonoBehaviour
         }
         terrainData.SetHeights(0, 0, heightMap);
     }
+
 #if UNITY_EDITOR
     private int AddTag(SerializedProperty tagsProp, string newTag, TagType tagType)
     {
@@ -789,15 +672,132 @@ public class CustomTerrain : MonoBehaviour
         this.gameObject.layer = terrainLayer;
 #endif
     }
-    // Start is called before the first frame update
-    void Start()
-    {
 
+    public void AddNewData<T>(ref List<T> list) where T : new()
+    {
+        T data = default; // should be equivalent to new T()
+        list.Add(data);
+    }
+    public void RemoveData<T>(ref List<T> list)
+    {
+        List<T> keptData = new List<T>();
+        for (int i = 0; i < list.Count; i++)
+        {
+            if (!details[i].remove)
+            {
+                keptData.Add(list[i]);
+            }
+        }
+        if (keptData.Count == 0)
+        {
+            keptData.Add(list[0]);
+        }
+        list = keptData;
     }
 
-    // Update is called once per frame
-    void Update()
+    [Obsolete("Please use 'AddNewData<T>(ref List<T> list)' instead")]
+    public void AddNewSplatHeight()
     {
+        splatHeights.Add(new Splatmap());
+    }
 
+    [Obsolete("Please use 'RemoveData<T>(ref List<T> list)' instead")]
+    public void RemoveSplatHeight()
+    {
+        List<Splatmap> keptSplatHeights = new List<Splatmap>();
+        for (int i = 0; i < splatHeights.Count; i++)
+        {
+            if (!splatHeights[i].remove)
+            {
+                keptSplatHeights.Add(splatHeights[i]);
+            }
+        }
+        if (keptSplatHeights.Count == 0)
+        {
+            keptSplatHeights.Add(splatHeights[0]);
+        }
+        splatHeights = keptSplatHeights;
+    }
+
+    [Obsolete("Please use 'AddNewData<T>(ref List<T> list)' instead")]
+    public void AddNewPerlin()
+    {
+        perlinParameters.Add(new PerlinParameters());
+    }   
+
+    [Obsolete("Please use 'RemoveData<T>(ref List<T> list)' instead")]
+    public void RemovePerlin()
+    {
+        // New list for parameters that should be kept
+        List<PerlinParameters> keptPerlinParameters = new List<PerlinParameters>();
+
+        // Loop through current parameters, and check if they should be removed or not
+        for (int i = 0; i < perlinParameters.Count; i++)
+        {
+            if (!perlinParameters[i].remove)
+            {
+                //if they should not be removed, add them to the kepy list
+                keptPerlinParameters.Add(perlinParameters[i]);
+            }
+        }
+        if (keptPerlinParameters.Count == 0)
+        {
+            //if none are to be kept, then add at least 1 item to the kept list so the table will work
+            keptPerlinParameters.Add(perlinParameters[0]);
+        }
+        // set list to kept list
+        perlinParameters = keptPerlinParameters;
+    }
+
+    [Obsolete("Please use 'AddNewData<T>(ref List<T> list)' instead")]
+    public void AddNewVegetation()
+    {
+        vegetationData.Add(new Vegetation());
+    }
+
+    [Obsolete("Please use 'RemoveData<T>(ref List<T> list)' instead")]
+    public void RemoveVegetation()
+    {
+        List<Vegetation> keptData = new List<Vegetation>();
+        for (int i = 0; i < vegetationData.Count; i++)
+        {
+            if (!vegetationData[i].remove)
+            {
+                keptData.Add(vegetationData[i]);
+            }
+
+
+        }
+        if (keptData.Count == 0)
+        {
+            keptData.Add(vegetationData[0]);
+        }
+        vegetationData = keptData;
+    }
+
+    [Obsolete("Please use 'RemoveData<T>(ref List<T> list)' instead")]
+    public void RemoveDetail()
+    {
+        List<Detail> keptData = new List<Detail>();
+        for (int i = 0; i < details.Count; i++)
+        {
+            if (!details[i].remove)
+            {
+                keptData.Add(details[i]);
+            }
+
+
+        }
+        if (keptData.Count == 0)
+        {
+            keptData.Add(details[0]);
+        }
+        details = keptData;
+    }
+
+    [Obsolete("Please use 'AddNewData<T>(ref List<T> list)' instead")]
+    public void AddNewDetail()
+    {
+        details.Add(new Detail());
     }
 }

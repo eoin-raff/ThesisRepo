@@ -29,4 +29,17 @@ public static class Utils
         return Mathf.Lerp(targetMin, targetMax, t);
     }
 
+    public static void NormalizeVector(ref float[] v) //try with / without ref
+    {
+        float total = 0;
+        for (int i = 0; i < v.Length; i++)
+        {
+            total += v[i];
+        }
+        for (int i = 0; i < v.Length; i++)
+        {
+            v[i] /= total;
+        }
+    }
+
 }

@@ -271,85 +271,85 @@ MonoBehaviour:
   voronoiMinHeight: 0
   voronoiMaxHeight: 0.43168318
   voronoiType: 0
-  MPminHeight: 0
-  MPmaxHeight: 0
-  MProughness: 0
-  MPheightDampener: 0
+  MPminHeight: -0.5
+  MPmaxHeight: 0.5
+  MProughness: 1.8
+  MPheightDampener: 1.59
   smoothAmount: 1
   splatHeights:
-  - texture: {fileID: 2800000, guid: 60724ca4e99f54f7a9c399ee0739c087, type: 3}
+  - remove: 0
     minHeight: 0
     maxHeight: 0.15
     minSlope: 45
     maxSlope: 90
+    texture: {fileID: 2800000, guid: 60724ca4e99f54f7a9c399ee0739c087, type: 3}
     tileOffset: {x: 0, y: 0}
     tileSize: {x: 5, y: 5}
     blendOffset: 0.01
     blendNoiseScale: {x: 0.1, y: 0.1}
     blendNoiseScalar: 0.1
-    remove: 0
-  - texture: {fileID: 2800000, guid: a4fedcb40a80e4e57b3b3d708aff9873, type: 3}
+  - remove: 0
     minHeight: 0
     maxHeight: 0.15
     minSlope: 0
     maxSlope: 45
+    texture: {fileID: 2800000, guid: a4fedcb40a80e4e57b3b3d708aff9873, type: 3}
     tileOffset: {x: 0, y: 0}
     tileSize: {x: 5, y: 5}
     blendOffset: 0.01
     blendNoiseScale: {x: 0.1, y: 0.1}
     blendNoiseScalar: 0.1
-    remove: 0
-  - texture: {fileID: 2800000, guid: 858e483d613d848cb935156b41553e4d, type: 3}
+  - remove: 0
     minHeight: 0.15
     maxHeight: 0.25
     minSlope: 0
     maxSlope: 45
+    texture: {fileID: 2800000, guid: 858e483d613d848cb935156b41553e4d, type: 3}
     tileOffset: {x: 0, y: 0}
     tileSize: {x: 5, y: 5}
     blendOffset: 0.01
     blendNoiseScale: {x: 0.1, y: 0.1}
     blendNoiseScalar: 0.1
-    remove: 0
-  - texture: {fileID: 2800000, guid: 34d6d98f8d3184e94aee664e99601940, type: 3}
+  - remove: 0
     minHeight: 0.15
     maxHeight: 0.25
-    minSlope: 45
+    minSlope: 35
     maxSlope: 90
+    texture: {fileID: 2800000, guid: 34d6d98f8d3184e94aee664e99601940, type: 3}
     tileOffset: {x: 0, y: 0}
     tileSize: {x: 5, y: 5}
     blendOffset: 0.01
     blendNoiseScale: {x: 0.1, y: 0.1}
     blendNoiseScalar: 0.1
-    remove: 0
-  - texture: {fileID: 2800000, guid: 9c80b7e7d27b645a2bcb818c875ac606, type: 3}
+  - remove: 0
     minHeight: 0.3
-    maxHeight: 0.5
+    maxHeight: 0.7
     minSlope: 0
     maxSlope: 45
+    texture: {fileID: 2800000, guid: 9c80b7e7d27b645a2bcb818c875ac606, type: 3}
     tileOffset: {x: 0, y: 0}
     tileSize: {x: 5, y: 5}
     blendOffset: 0.01
     blendNoiseScale: {x: 0.1, y: 0.1}
     blendNoiseScalar: 0.1
-    remove: 0
-  - texture: {fileID: 2800000, guid: a8704af5f941549e5a408a2904eb31fb, type: 3}
+  - remove: 0
     minHeight: 0.3
-    maxHeight: 0.5
-    minSlope: 45
+    maxHeight: 0.7
+    minSlope: 35
     maxSlope: 90
+    texture: {fileID: 2800000, guid: a8704af5f941549e5a408a2904eb31fb, type: 3}
     tileOffset: {x: 0, y: 0}
     tileSize: {x: 5, y: 5}
     blendOffset: 0.01
     blendNoiseScale: {x: 0.1, y: 0.1}
     blendNoiseScalar: 0.1
-    remove: 0
   vegetationData:
-  - mesh: {fileID: -927199367670048503, guid: 2a44e858bd119bca11002b7b44295342, type: 3}
+  - mesh: {fileID: -927199367670048503, guid: 25fa881dbd110e38a00062d88f962b59, type: 3}
     pivotOffset: 0
     minHeight: 0
-    maxHeight: 0.1
+    maxHeight: 0.2
     minSlope: 0
-    maxSlope: 90
+    maxSlope: 25
     minScale: 0.7
     maxScale: 1
     color1: {r: 1, g: 1, b: 1, a: 1}
@@ -357,12 +357,12 @@ MonoBehaviour:
     lightColor: {r: 1, g: 1, b: 1, a: 1}
     minRotation: 0
     maxRotation: 360
-    density: 0.5
+    density: 0.2
     remove: 0
   - mesh: {fileID: -927199367670048503, guid: 0f362a31bd1113061100b7a844295342, type: 3}
     pivotOffset: 0.0015
     minHeight: 0.1
-    maxHeight: 0.3
+    maxHeight: 0.2
     minSlope: 0
     maxSlope: 20
     minScale: 0.7
@@ -391,6 +391,39 @@ MonoBehaviour:
     remove: 0
   maxTrees: 10000
   treeSpacing: 5
+  details:
+  - remove: 0
+    minHeight: 0
+    maxHeight: 1
+    minSlope: 0
+    maxSlope: 90
+    prototype: {fileID: 0}
+    prototypeTexture: {fileID: 0}
+    overlap: 0.01
+    feather: 0.05
+    density: 0.5
+  - remove: 0
+    minHeight: 0
+    maxHeight: 1
+    minSlope: 0
+    maxSlope: 90
+    prototype: {fileID: 0}
+    prototypeTexture: {fileID: 0}
+    overlap: 0.01
+    feather: 0.05
+    density: 0.5
+  - remove: 0
+    minHeight: 0
+    maxHeight: 1
+    minSlope: 0
+    maxSlope: 90
+    prototype: {fileID: 0}
+    prototypeTexture: {fileID: 0}
+    overlap: 0.01
+    feather: 0.05
+    density: 0.5
+  maxDetails: 5000
+  detailSpacing: 5
   terrain: {fileID: 29482990}
   terrainData: {fileID: 15600000, guid: 2a158fba47a64d44092107bef6194558, type: 2}
 --- !u!154 &29482989
@@ -555,7 +588,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 400002, guid: c6453f8e1f814744d8b94e5a6d1f9942, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 500
+      value: 501.572
       objectReference: {fileID: 0}
     - target: {fileID: 400002, guid: c6453f8e1f814744d8b94e5a6d1f9942, type: 3}
       propertyPath: m_LocalRotation.x
