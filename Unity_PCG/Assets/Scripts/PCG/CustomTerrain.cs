@@ -17,7 +17,7 @@ public partial class CustomTerrain : MonoBehaviour
 
     public bool resetTerrain = true;
 
-#region Perlin Noise
+    #region Perlin Noise
     public float perlinScaleX = 0.001f;
     public float perlinScaleY = 0.001f;
     public int perlinOffsetX = 0;
@@ -26,16 +26,16 @@ public partial class CustomTerrain : MonoBehaviour
     public float perlinPersistance = 0.5f;
     public float perlinHeightScale = 0.5f;
 
-#endregion    
-#region Multiple Perlin Noise
+    #endregion
+    #region Multiple Perlin Noise
     public List<PerlinParameters> perlinParameters = new List<PerlinParameters>()
     {
         new PerlinParameters()
     };
 
-#endregion                  
-        
-#region Voronoi
+    #endregion
+
+    #region Voronoi
     public int voronoiPeakCount;
     public float voronoiFallOff;
     public float voronoiDropOff;
@@ -44,22 +44,22 @@ public partial class CustomTerrain : MonoBehaviour
     public enum VoronoiType { Linear, Power, Combined }
     public VoronoiType voronoiType = VoronoiType.Linear;
 
-#endregion
-#region Midpoint Displacement
+    #endregion
+    #region Midpoint Displacement
     public float MPminHeight;
     public float MPmaxHeight;
     public float MProughness;
     public float MPheightDampener;
-#endregion
+    #endregion
     public int smoothAmount = 1;
-#region SplatMaps
+    #region SplatMaps
     public List<Splatmap> splatHeights = new List<Splatmap>()
     {
         new Splatmap()
     };
 
-#endregion
-#region Vegetation
+    #endregion
+    #region Vegetation
     public List<Vegetation> vegetationData = new List<Vegetation>()
     {
         new Vegetation()
@@ -67,8 +67,8 @@ public partial class CustomTerrain : MonoBehaviour
     public int maxTrees = 5000;
     public int treeSpacing = 5;
 
-#endregion
-#region Details
+    #endregion
+    #region Details
     public List<Detail> details = new List<Detail>()
     {
         new Detail()
@@ -79,6 +79,7 @@ public partial class CustomTerrain : MonoBehaviour
     #region Water
     public float waterHeight;
     public GameObject waterGO;
+    public Material shorelineMaterial;
     #endregion
 
 
@@ -138,8 +139,8 @@ public partial class CustomTerrain : MonoBehaviour
 
         float[,] heightMap = terrainData.GetHeights(0, 0, terrainData.heightmapResolution,
                                                           terrainData.heightmapResolution);
-        float[,,] splatmapData = new float[terrainData.alphamapResolution, 
-                                           terrainData.alphamapResolution, 
+        float[,,] splatmapData = new float[terrainData.alphamapResolution,
+                                           terrainData.alphamapResolution,
                                            terrainData.alphamapLayers];
 
         for (int y = 0; y < terrainData.alphamapResolution; y++)
@@ -161,10 +162,10 @@ public partial class CustomTerrain : MonoBehaviour
                     //alpha and height maps are at 90deg to each other, so swap x and y here
                     float thisSteepness = terrainData.GetSteepness(y / (float)terrainData.alphamapResolution,
                                                                    x / (float)terrainData.alphamapResolution);
-                    bool isInHeightBand = heightMap[x, y] >= thisHeightStart 
+                    bool isInHeightBand = heightMap[x, y] >= thisHeightStart
                                             && heightMap[x, y] <= thisHeightStop;
-                    bool isInSteepnessBand = thisSteepness >= splatHeights[i].minSlope 
-                                            && thisSteepness <= splatHeights[i].maxSlope ;
+                    bool isInSteepnessBand = thisSteepness >= splatHeights[i].minSlope
+                                            && thisSteepness <= splatHeights[i].maxSlope;
                     if (isInHeightBand && isInSteepnessBand)
                     {
                         splat[i] = 1;
@@ -330,11 +331,11 @@ public partial class CustomTerrain : MonoBehaviour
         for (int i = 0; i < terrainData.detailPrototypes.Length; i++)
         {
             int[,] detailMap = new int[terrainData.detailResolution, terrainData.detailResolution]; //perhaps use width & height instead of resolution
-            for (int y = 0; y < terrainData.detailResolution; y+=detailSpacing)
+            for (int y = 0; y < terrainData.detailResolution; y += detailSpacing)
             {
-                for (int x = 0; x < terrainData.detailResolution; x+=detailSpacing)
+                for (int x = 0; x < terrainData.detailResolution; x += detailSpacing)
                 {
-                    if (UnityEngine.Random.Range(0.0f, 1.0f) >  details[i].density)
+                    if (UnityEngine.Random.Range(0.0f, 1.0f) > details[i].density)
                     {
                         continue;
                     }
@@ -362,6 +363,81 @@ public partial class CustomTerrain : MonoBehaviour
                 }
             }
             terrainData.SetDetailLayer(0, 0, i, detailMap);
+        }
+    }
+
+    public void AddShore()
+    {
+        float[,] heightMap = terrainData.GetHeights(0, 0, terrainData.heightmapResolution, terrainData.heightmapResolution);
+        int quadCount = 0;
+
+        for (int y = 0; y < terrainData.heightmapResolution; y++)
+        {
+            for (int x = 0; x < terrainData.heightmapResolution; x++)
+            {
+                Vector2 location = new Vector2(x, y);
+                List<Vector2> neighbors = GetNeighbors(location, terrainData.heightmapResolution, terrainData.heightmapResolution);
+                foreach (Vector2 n in neighbors)
+                {
+                    if (heightMap[x, y] < waterHeight && heightMap[(int)n.x, (int)n.y] > waterHeight)
+                    {
+
+                        quadCount++;
+                        GameObject go = GameObject.CreatePrimitive(PrimitiveType.Quad);
+                        go.transform.localScale *= 10.0f;
+
+                        go.transform.position = this.transform.position
+                            + new Vector3(
+                                    y / (float)terrainData.heightmapResolution * terrainData.size.z,
+                                    waterHeight * terrainData.size.y,
+                                    x / (float)terrainData.heightmapResolution * terrainData.size.x);
+
+                        go.transform.LookAt(new Vector3(
+                                n.y / (float)terrainData.heightmapResolution * terrainData.size.z,
+                                waterHeight * terrainData.size.y,
+                                n.x / (float)terrainData.heightmapResolution * terrainData.size.x));
+
+                        go.transform.Rotate(90, 0, 0);
+
+                        go.tag = "Shore";
+                    }
+                }
+            }
+        }
+        GameObject[] shoreQuads = GameObject.FindGameObjectsWithTag("Shore");
+        MeshFilter[] meshFilters = new MeshFilter[shoreQuads.Length];
+        for (int m = 0; m < shoreQuads.Length; m++)
+        {
+            meshFilters[m] = shoreQuads[m].GetComponent<MeshFilter>();
+        }
+        CombineInstance[] combine = new CombineInstance[meshFilters.Length];
+        int i = 0;
+        while (i < meshFilters.Length)
+        {
+            combine[i].mesh = meshFilters[i].sharedMesh;
+            combine[i].transform = meshFilters[i].transform.localToWorldMatrix;
+            meshFilters[i].gameObject.SetActive(false);
+            i++;
+        }
+
+        GameObject currentShoreLine = GameObject.Find("ShoreLine");
+        if (currentShoreLine)
+        {
+            DestroyImmediate(currentShoreLine);
+        }
+        GameObject shoreLine = new GameObject();
+        shoreLine.name = "ShoreLine";
+        shoreLine.AddComponent<WaveAnimation>(); //Old code from Unity Islands Demo, back in Unity 3 or 4
+        shoreLine.transform.position = this.transform.position;
+        shoreLine.transform.rotation = this.transform.rotation;
+        MeshFilter thisMF = shoreLine.AddComponent<MeshFilter>();
+        thisMF.mesh = new Mesh();
+        shoreLine.GetComponent<MeshFilter>().sharedMesh.CombineMeshes(combine);
+        MeshRenderer r = shoreLine.AddComponent<MeshRenderer>();
+        r.sharedMaterial = shorelineMaterial;
+        for (int sQ = 0; sQ < shoreQuads.Length; sQ++)
+        {
+            DestroyImmediate(shoreQuads[sQ]);
         }
     }
 
@@ -398,11 +474,11 @@ public partial class CustomTerrain : MonoBehaviour
 
         List<TreeInstance> allVegetation = new List<TreeInstance>();
         //NEED TO GET VALUES FROM TERRAIN MESH, NOT HEIGHTMAP
-        
+
         for (int z = 0; z < terrainData.size.z; z += treeSpacing)
         {
             for (int x = 0; x < terrainData.size.x; x += treeSpacing)
-            {                
+            {
                 for (int tp = 0; tp < terrainData.treePrototypes.Length; tp++)
                 {
                     if (UnityEngine.Random.Range(0.0f, 1.0f) > vegetationData[tp].density)
@@ -539,13 +615,13 @@ public partial class CustomTerrain : MonoBehaviour
 
         terrainData.SetHeights(0, 0, heightMap);
     }
-    
+
     public List<Vector2> GetNeighbors(Vector2 pos, int width, int height)
     {
         List<Vector2> neighbors = new List<Vector2>();
-        for(int y = -1; y < 2; y++)
+        for (int y = -1; y < 2; y++)
         {
-            for(int x = -1; x < 2; x++)
+            for (int x = -1; x < 2; x++)
             {
                 if (!(x == 0 && y == 0)) //don't include current position, kernel is only focused on neighbors
                 {
@@ -591,7 +667,7 @@ public partial class CustomTerrain : MonoBehaviour
             }
             smoothProgress++;
 #if UNITY_EDITOR
-            EditorUtility.DisplayProgressBar("Smoothing Terrain", "Progress", smoothProgress/smoothAmount);
+            EditorUtility.DisplayProgressBar("Smoothing Terrain", "Progress", smoothProgress / smoothAmount);
 #endif
         }
         terrainData.SetHeights(0, 0, heightMap);
@@ -807,7 +883,7 @@ public partial class CustomTerrain : MonoBehaviour
     public void AddNewPerlin()
     {
         perlinParameters.Add(new PerlinParameters());
-    }   
+    }
 
     [Obsolete("Please use 'RemoveData<T>(ref List<T> list)' instead")]
     public void RemovePerlin()

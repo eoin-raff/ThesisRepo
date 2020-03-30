@@ -56,6 +56,7 @@ public class CustomTerrainEditor : Editor
 
     private SerializedProperty waterHeight;
     private SerializedProperty waterGO;
+    private SerializedProperty shorelineMaterial;
 
     private Texture2D texture;
     // foldouts
@@ -124,6 +125,7 @@ public class CustomTerrainEditor : Editor
 
         waterHeight = serializedObject.FindProperty("waterHeight");
         waterGO = serializedObject.FindProperty("waterGO");
+        shorelineMaterial = serializedObject.FindProperty("shorelineMaterial");
     }
 
     public override void OnInspectorGUI() 
@@ -348,6 +350,11 @@ public class CustomTerrainEditor : Editor
             if (GUILayout.Button("Add Water"))
             {
                 terrain.AddWater();
+            }
+            EditorGUILayout.PropertyField(shorelineMaterial);
+            if (GUILayout.Button("Add Shore"))
+            {
+                terrain.AddShore();
             }
         }
 
