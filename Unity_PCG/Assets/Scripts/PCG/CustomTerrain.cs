@@ -762,12 +762,12 @@ public partial class CustomTerrain : MonoBehaviour
         T data = default; // should be equivalent to new T()
         list.Add(data);
     }
-    public void RemoveData<T>(ref List<T> list)
+    public void RemoveData<T>(ref List<T> list) where T : TableItem
     {
         List<T> keptData = new List<T>();
         for (int i = 0; i < list.Count; i++)
         {
-            if (!details[i].remove)
+            if (!list[i].remove)
             {
                 keptData.Add(list[i]);
             }

@@ -257,15 +257,15 @@ MonoBehaviour:
   perlinPersistance: 0.623
   perlinHeightScale: 0.103
   perlinParameters:
-  - xScale: 0.001
+  - remove: 0
+    xScale: 0.001
     yScale: 0.001
     xOffset: 0
     yOffset: 0
     octaves: 3
     persistance: 0.5
     heightScale: 0.9
-    remove: 0
-  voronoiPeakCount: 23
+  voronoiPeakCount: 15
   voronoiFallOff: 1.08
   voronoiDropOff: 2.22
   voronoiMinHeight: 0
@@ -275,69 +275,113 @@ MonoBehaviour:
   MPmaxHeight: 0.5
   MProughness: 1.8
   MPheightDampener: 1.59
-  smoothAmount: 1
+  smoothAmount: 3
   splatHeights:
   - remove: 0
     minHeight: 0
-    maxHeight: 0.15
-    minSlope: 45
+    maxHeight: 0.001
+    minSlope: 0
     maxSlope: 90
-    texture: {fileID: 2800000, guid: 60724ca4e99f54f7a9c399ee0739c087, type: 3}
+    texture: {fileID: 2800000, guid: 9d5a367c7b85746008744fb5eb1c92be, type: 3}
     tileOffset: {x: 0, y: 0}
     tileSize: {x: 1, y: 1}
     blendOffset: 0.01
     blendNoiseScale: {x: 0.1, y: 0.1}
-    blendNoiseScalar: 0.1
+    blendNoiseScalar: 0.015
   - remove: 0
     minHeight: 0
-    maxHeight: 0.15
+    maxHeight: 0.01
     minSlope: 0
-    maxSlope: 45
-    texture: {fileID: 2800000, guid: a4fedcb40a80e4e57b3b3d708aff9873, type: 3}
-    tileOffset: {x: 0, y: 0}
-    tileSize: {x: 1, y: 1}
-    blendOffset: 0.01
-    blendNoiseScale: {x: 0.1, y: 0.1}
-    blendNoiseScalar: 0.1
-  - remove: 0
-    minHeight: 0.15
-    maxHeight: 0.25
-    minSlope: 0
-    maxSlope: 45
-    texture: {fileID: 2800000, guid: 858e483d613d848cb935156b41553e4d, type: 3}
-    tileOffset: {x: 0, y: 0}
-    tileSize: {x: 1, y: 1}
-    blendOffset: 0.01
-    blendNoiseScale: {x: 0.1, y: 0.1}
-    blendNoiseScalar: 0.1
-  - remove: 0
-    minHeight: 0.15
-    maxHeight: 0.25
-    minSlope: 35
     maxSlope: 90
-    texture: {fileID: 2800000, guid: 34d6d98f8d3184e94aee664e99601940, type: 3}
+    texture: {fileID: 2800000, guid: f8c772e01a0486c45ad016b514d66475, type: 3}
     tileOffset: {x: 0, y: 0}
     tileSize: {x: 1, y: 1}
     blendOffset: 0.01
     blendNoiseScale: {x: 0.1, y: 0.1}
-    blendNoiseScalar: 0.1
+    blendNoiseScalar: 0.01
   - remove: 0
-    minHeight: 0.3
-    maxHeight: 0.7
+    minHeight: 0
+    maxHeight: 0.03
     minSlope: 0
-    maxSlope: 45
+    maxSlope: 6
+    texture: {fileID: 2800000, guid: 125428743f86e4a50ad5873da341929c, type: 3}
+    tileOffset: {x: 0, y: 0}
+    tileSize: {x: 1, y: 1}
+    blendOffset: 0.01
+    blendNoiseScale: {x: 0.1, y: 0.1}
+    blendNoiseScalar: 0.01
+  - remove: 0
+    minHeight: 0
+    maxHeight: 0.05
+    minSlope: 4
+    maxSlope: 10
+    texture: {fileID: 2800000, guid: bcf1aee4cb4974e7694ecd794826771e, type: 3}
+    tileOffset: {x: 0, y: 0}
+    tileSize: {x: 1, y: 1}
+    blendOffset: 0.01
+    blendNoiseScale: {x: 0.1, y: 0.1}
+    blendNoiseScalar: 0.01
+  - remove: 0
+    minHeight: 0.01
+    maxHeight: 0.03
+    minSlope: 0
+    maxSlope: 30
     texture: {fileID: 2800000, guid: 9c80b7e7d27b645a2bcb818c875ac606, type: 3}
     tileOffset: {x: 0, y: 0}
     tileSize: {x: 1, y: 1}
     blendOffset: 0.01
     blendNoiseScale: {x: 0.1, y: 0.1}
-    blendNoiseScalar: 0.1
+    blendNoiseScalar: 0.01
   - remove: 0
-    minHeight: 0.3
-    maxHeight: 0.7
-    minSlope: 35
+    minHeight: 0.03
+    maxHeight: 0.05
+    minSlope: 0
+    maxSlope: 30
+    texture: {fileID: 2800000, guid: 858e483d613d848cb935156b41553e4d, type: 3}
+    tileOffset: {x: 0, y: 0}
+    tileSize: {x: 1, y: 1}
+    blendOffset: 0.01
+    blendNoiseScale: {x: 0.1, y: 0.1}
+    blendNoiseScalar: 0.05
+  - remove: 0
+    minHeight: 0.05
+    maxHeight: 0.1
+    minSlope: 0
+    maxSlope: 30
+    texture: {fileID: 2800000, guid: dd49ed99f55924d13bacefd240626bc5, type: 3}
+    tileOffset: {x: 0, y: 0}
+    tileSize: {x: 1, y: 1}
+    blendOffset: 0.01
+    blendNoiseScale: {x: 0.1, y: 0.1}
+    blendNoiseScalar: 0.01
+  - remove: 0
+    minHeight: 0.03
+    maxHeight: 0.05
+    minSlope: 20
+    maxSlope: 40
+    texture: {fileID: 2800000, guid: 34d6d98f8d3184e94aee664e99601940, type: 3}
+    tileOffset: {x: 0, y: 0}
+    tileSize: {x: 1, y: 1}
+    blendOffset: 0.01
+    blendNoiseScale: {x: 0.1, y: 0.1}
+    blendNoiseScalar: 0.01
+  - remove: 0
+    minHeight: 0
+    maxHeight: 1
+    minSlope: 30
     maxSlope: 90
-    texture: {fileID: 2800000, guid: a8704af5f941549e5a408a2904eb31fb, type: 3}
+    texture: {fileID: 2800000, guid: e13ad7a9d4dc84697aaa540e7548d65b, type: 3}
+    tileOffset: {x: 0, y: 0}
+    tileSize: {x: 1, y: 1}
+    blendOffset: 0.01
+    blendNoiseScale: {x: 0.1, y: 0.1}
+    blendNoiseScalar: 0.01
+  - remove: 0
+    minHeight: 0.1
+    maxHeight: 0.5
+    minSlope: 0
+    maxSlope: 90
+    texture: {fileID: 2800000, guid: c12fba8bcc2ef4b959d67f60ca59d886, type: 3}
     tileOffset: {x: 0, y: 0}
     tileSize: {x: 1, y: 1}
     blendOffset: 0.01
@@ -346,40 +390,10 @@ MonoBehaviour:
   vegetationData:
   - remove: 0
     minHeight: 0
-    maxHeight: 0.2
-    minSlope: 0
-    maxSlope: 25
-    mesh: {fileID: -927199367670048503, guid: 25fa881dbd110e38a00062d88f962b59, type: 3}
-    pivotOffset: 0
-    minScale: 0.7
-    maxScale: 1
-    color1: {r: 1, g: 1, b: 1, a: 1}
-    color2: {r: 1, g: 1, b: 1, a: 1}
-    lightColor: {r: 1, g: 1, b: 1, a: 1}
-    minRotation: 0
-    maxRotation: 360
-    density: 0.2
-  - remove: 0
-    minHeight: 0.1
-    maxHeight: 0.2
-    minSlope: 0
-    maxSlope: 20
-    mesh: {fileID: -927199367670048503, guid: 0f362a31bd1113061100b7a844295342, type: 3}
-    pivotOffset: 0.0015
-    minScale: 0.7
-    maxScale: 1
-    color1: {r: 1, g: 1, b: 1, a: 1}
-    color2: {r: 1, g: 1, b: 1, a: 1}
-    lightColor: {r: 1, g: 1, b: 1, a: 1}
-    minRotation: 0
-    maxRotation: 360
-    density: 1
-  - remove: 0
-    minHeight: 0.3
-    maxHeight: 0.5
+    maxHeight: 1
     minSlope: 0
     maxSlope: 90
-    mesh: {fileID: -927199367670048503, guid: 43202a31bd1113061100b7a844295342, type: 3}
+    mesh: {fileID: 0}
     pivotOffset: 0
     minScale: 0.7
     maxScale: 1
@@ -394,11 +408,10 @@ MonoBehaviour:
   details:
   - remove: 0
     minHeight: 0
-    maxHeight: 0.5
+    maxHeight: 1
     minSlope: 0
-    maxSlope: 5
-    prototype: {fileID: -927199367670048503, guid: 8e41f14c6552d48e6a7992aaecc808e4,
-      type: 3}
+    maxSlope: 90
+    prototype: {fileID: 0}
     prototypeTexture: {fileID: 0}
     dryColor: {r: 1, g: 1, b: 1, a: 1}
     healthyColor: {r: 1, g: 1, b: 1, a: 1}
@@ -407,24 +420,11 @@ MonoBehaviour:
     noiseSpread: 0.5
     overlap: 0.01
     feather: 0.05
-    density: 0.001
-  - remove: 0
-    minHeight: 0
-    maxHeight: 0.3
-    minSlope: 0
-    maxSlope: 10
-    prototype: {fileID: 0}
-    prototypeTexture: {fileID: 2800000, guid: 4c3440f2bd11488b1100df5944295342, type: 3}
-    dryColor: {r: 1, g: 1, b: 1, a: 1}
-    healthyColor: {r: 1, g: 1, b: 1, a: 1}
-    heightRange: {x: 1, y: 1}
-    widthRange: {x: 1, y: 1}
-    noiseSpread: 0.5
-    overlap: 0.01
-    feather: 0.05
-    density: 5
+    density: 0.5
   maxDetails: 10000
   detailSpacing: 1
+  waterHeight: 0.01
+  waterGO: {fileID: 100000, guid: 780611a67e8e941a2b3aa96e5915a793, type: 3}
   terrain: {fileID: 29482990}
   terrainData: {fileID: 15600000, guid: 2a158fba47a64d44092107bef6194558, type: 2}
 --- !u!154 &29482989
@@ -567,6 +567,108 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &596447608
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 596447612}
+  - component: {fileID: 596447611}
+  - component: {fileID: 596447610}
+  - component: {fileID: 596447609}
+  m_Layer: 4
+  m_Name: water
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &596447609
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 596447608}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a3d3ef1a5bbfb4e0a910fbbe5830b1f9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  waterMode: 2
+  disablePixelLights: 1
+  textureSize: 256
+  clipPlaneOffset: 0.07
+  reflectLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  refractLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+--- !u!23 &596447610
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 596447608}
+  m_Enabled: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
+  m_DynamicOccludee: 1
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: 7350b65a6431f604a8496c39db1ac9c5, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+--- !u!33 &596447611
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 596447608}
+  m_Mesh: {fileID: 4300006, guid: ba6a41dc489914734857bb5924eb70ad, type: 3}
+--- !u!4 &596447612
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 596447608}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 500, y: 6, z: 500}
+  m_LocalScale: {x: 1000, y: 1, z: 1000}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1025158763
 PrefabInstance:

@@ -272,7 +272,7 @@ public class CustomTerrainEditor : Editor
             }
             if (GUILayout.Button("-"))
             {
-                terrain.RemoveData < Splatmap> (ref terrain.splatHeights);
+                terrain.RemoveData <Splatmap> (ref terrain.splatHeights);
             }
             EditorGUILayout.EndHorizontal();
             if (GUILayout.Button("Apply Splatmaps"))
@@ -299,7 +299,7 @@ public class CustomTerrainEditor : Editor
             }
             if (GUILayout.Button("-"))
             {
-                terrain.RemoveData(ref terrain.vegetationData);
+                terrain.RemoveData<Vegetation>(ref terrain.vegetationData);
             }
             EditorGUILayout.EndHorizontal();
             if (GUILayout.Button("Apply Vegetation"))
@@ -330,7 +330,7 @@ public class CustomTerrainEditor : Editor
             }
             if (GUILayout.Button("-"))
             {
-                terrain.RemoveData(ref terrain.details);
+                terrain.RemoveData<Detail>(ref terrain.details);
             }
             EditorGUILayout.EndHorizontal();
             if (GUILayout.Button("Apply Details"))

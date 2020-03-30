@@ -1,7 +1,8 @@
 ﻿using System;
 
+
 [Serializable]
-public class PerlinParameters
+public class PerlinParameters : TableItem
 {
     public float xScale = 0.001f;
     public float yScale = 0.001f;
@@ -10,6 +11,5 @@ public class PerlinParameters
     public int octaves = 3;
     public float persistance = 0.5f;
     public float heightScale = 0.9f;
-    public bool remove = false;
 }
 
