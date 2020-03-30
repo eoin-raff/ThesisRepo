@@ -54,6 +54,9 @@ public class CustomTerrainEditor : Editor
     private SerializedProperty maxDetails;
     private SerializedProperty detailSpacing;
 
+    private SerializedProperty waterHeight;
+    private SerializedProperty waterGO;
+
     private Texture2D texture;
     // foldouts
     private bool showRandom = false;
@@ -67,6 +70,7 @@ public class CustomTerrainEditor : Editor
     private bool showHeightMap = false;
     private bool showVegetation = false;
     private bool showDetail = false;
+    private bool showWater = false;
 
     //scroll bar
     private Vector2 scrollPos;
@@ -117,6 +121,9 @@ public class CustomTerrainEditor : Editor
         details = serializedObject.FindProperty("details");
         maxDetails = serializedObject.FindProperty("maxDetails");
         detailSpacing = serializedObject.FindProperty("detailSpacing");
+
+        waterHeight = serializedObject.FindProperty("waterHeight");
+        waterGO = serializedObject.FindProperty("waterGO");
     }
 
     public override void OnInspectorGUI() 
@@ -319,16 +326,28 @@ public class CustomTerrainEditor : Editor
             EditorGUILayout.BeginHorizontal();
             if (GUILayout.Button("+"))
             {
-                terrain.AddNewData<Detail> (ref terrain.details);
+                terrain.AddNewData(ref terrain.details);
             }
             if (GUILayout.Button("-"))
             {
-                terrain.RemoveData<Detail>(ref terrain.details);
+                terrain.RemoveData(ref terrain.details);
             }
             EditorGUILayout.EndHorizontal();
-            if (GUILayout.Button("Apply Vegetation"))
+            if (GUILayout.Button("Apply Details"))
             {
                 terrain.PaintDetails();
+            }
+        }
+
+        showWater = EditorGUILayout.Foldout(showWater, "Water");
+        if (showWater)
+        {
+            EditorGUILayout.Slider(waterHeight, 0, 1, new GUIContent("Water Height"));
+            EditorGUILayout.PropertyField(waterGO, new GUIContent("Water Game Object"));
+
+            if (GUILayout.Button("Add Water"))
+            {
+                terrain.AddWater();
             }
         }
 
