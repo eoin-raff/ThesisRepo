@@ -82,6 +82,16 @@ public partial class CustomTerrain : MonoBehaviour
     public Material shorelineMaterial;
     #endregion
 
+    #region Erosion
+    public enum ErosionType { Rain, Thermal, Tidal, River, Wind };
+    public ErosionType erosionType = ErosionType.Rain;
+    public float erosionStrength = 0.1f;
+    public int springsPerRiver = 5;
+    public float solubility = 0.01f;
+    public int droplets = 10;
+    public int erosionSmoothAmount = 5;
+
+    #endregion
 
 
 
@@ -364,6 +374,59 @@ public partial class CustomTerrain : MonoBehaviour
             }
             terrainData.SetDetailLayer(0, 0, i, detailMap);
         }
+    }
+
+    public void Erode()
+    {
+        switch (erosionType)
+        {
+            case ErosionType.Rain:
+                Rain();
+                break;
+            case ErosionType.Thermal:
+                Tidal();
+                break;
+            case ErosionType.Tidal:
+                Thermal();
+                break;
+            case ErosionType.River:
+                River();
+                break;
+            case ErosionType.Wind:
+                Wind();
+                break;
+            default:
+                break;
+        }
+        for (int i = 0; i < erosionSmoothAmount; i++)
+        {
+            Smooth();
+        }
+    }
+
+    private void Wind()
+    {
+        throw new NotImplementedException();
+    }
+
+    private void River()
+    {
+        throw new NotImplementedException();
+    }
+
+    private void Thermal()
+    {
+        throw new NotImplementedException();
+    }
+
+    private void Tidal()
+    {
+        throw new NotImplementedException();
+    }
+
+    private void Rain()
+    {
+        throw new NotImplementedException();
     }
 
     public void AddShore()
