@@ -468,7 +468,30 @@ public partial class CustomTerrain : MonoBehaviour
 
     private void Tidal()
     {
-        throw new NotImplementedException();
+        /*
+         *  Simulate erosion from waves beating at landscape
+         *  like a blend of thermal and shorline
+         */
+        Debug.Log("Tidal Erosion");
+        float[,] heightMap = GetHeightMap(false);
+
+        for (int y = 0; y < terrainData.heightmapResolution; y++)
+        {
+            for (int x = 0; x < terrainData.heightmapResolution; x++)
+            {
+                Vector2 location = new Vector2(x, y);
+                List<Vector2> neighbors = GetNeighbors(location, terrainData.heightmapResolution, terrainData.heightmapResolution);
+                foreach (Vector2 n in neighbors)
+                {
+                    if (heightMap[x, y] < waterHeight && heightMap[(int)n.x, (int)n.y] > waterHeight)
+                    {
+                        heightMap[x, y] = waterHeight;
+                        heightMap[(int)n.x, (int)n.y] = waterHeight;
+                    }
+                }
+            }
+        }
+        terrainData.SetHeights(0, 0, heightMap);
     }
 
     private void Rain()
