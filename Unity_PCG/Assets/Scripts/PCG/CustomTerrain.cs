@@ -425,7 +425,29 @@ public partial class CustomTerrain : MonoBehaviour
 
     private void Wind()
     {
-        throw new NotImplementedException();
+        /*
+         * This algorithm simulates particles being lifted and despostied, or dragged across a surface by wind
+         */
+        float[,] heightMap = GetHeightMap(false);
+        int res = terrainData.heightmapResolution; 
+
+        for (int y = 0; y < res; y+=10) // Skip ahead a larger amount on the y axis
+        {
+            for (int x = 0; x < res; x++)
+            {
+                float noise = (float)Mathf.PerlinNoise(x * 0.06f, y * 0.06f) * 20 * erosionStrength;    //Get a Perlin Noise value for waves
+                int nx = x;
+                int digY = y + (int)noise; //Dig a trench at the current Y values offset by noise
+                int ny = digY + 5;         //Find a new Y which is a step away from the digY
+
+                if (!(nx < 0 || nx > (res - 1) || ny < 0 || ny > (res-1)))  //Check that nx and ny are valid points within the heightMap
+                {
+                    heightMap[x, ny - 5] -= erosionAmount;                  //Dig a Trench at the digY
+                    heightMap[nx, ny] += erosionAmount;                     //Deposit sediment at ny
+                }
+            }
+        }
+        terrainData.SetHeights(0, 0, heightMap);
     }
 
     private void River()
