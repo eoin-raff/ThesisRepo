@@ -430,7 +430,68 @@ public partial class CustomTerrain : MonoBehaviour
 
     private void River()
     {
-        throw new NotImplementedException();
+        float[,] heightMap = GetHeightMap(false);                                           // Get the current HeightMap without resetting terrain
+        
+        float[,] erosionMap = new float[                                                    // Create a new map to keep track of the rivers
+            terrainData.heightmapResolution,                                                //  with the same size as heightMap
+            terrainData.heightmapResolution];
+        
+        for (int i = 0; i < droplets; i++)                                                  // Droplets controls the number of rivers
+        {
+            Vector2 dropletPosition = new Vector2(                                          // Create droplets in random positions on the heightMap
+                UnityEngine.Random.Range(0, terrainData.heightmapResolution),
+                UnityEngine.Random.Range(0, terrainData.heightmapResolution));
+            
+            erosionMap[(int)dropletPosition.x, (int)dropletPosition.y] = erosionStrength;   // Initialize erosionMap with values of erosionStrength at each droplet's position
+
+            for (int j = 0; j < springsPerRiver; j++)                                       // Springs per river determines how many directions the river will flow in.
+            {
+                erosionMap = RunRiver(dropletPosition,                                      // Call RunRiver to calculate the river's path down the terrain
+                    heightMap, 
+                    erosionMap, 
+                    terrainData.heightmapResolution, terrainData.heightmapResolution);
+            }
+        }
+        
+        for (int y = 0; y < terrainData.heightmapResolution; y++)
+        {
+            for (int x = 0; x < terrainData.heightmapResolution; x++)
+            {
+                if (erosionMap[x, y] > 0)
+                {
+                    heightMap[x, y] -= erosionMap[x, y];                                    // Apply the erosion map to the heightmap
+                }
+            }
+        }
+        terrainData.SetHeights(0, 0, heightMap);                                            // Apply heightMap to Terrain
+    }
+
+    private float[,] RunRiver(Vector2 dropletPosition, float[,] heightMap, float[,] erosionMap, int width, int height)
+    {
+        while (erosionMap[(int)dropletPosition.x, (int)dropletPosition.y] > 0)  
+        {
+            List<Vector2> neighbors = GetNeighbors(dropletPosition, width, height);                             //Get the neighboring positions
+            neighbors.Shuffle();                                                                                //Shuffle them so we don't always get the same value
+            bool foundLower = false;
+            foreach (Vector2 n in neighbors)
+            {
+                if (heightMap[(int)n.x, (int)n.y] < heightMap[(int)dropletPosition.x, (int)dropletPosition.y])  // If the neighbor is lower than the droplet
+                {
+                    erosionMap[(int)n.x, (int)n.y] = erosionMap[(int)dropletPosition.x, 
+                                                                (int)dropletPosition.y] 
+                                                              - solubility;                                     // Set the erosionMap at the neighbors position equal to the erosionMap at droplet position - solubility
+                    dropletPosition = n;                                                                        // Check from the neighbors position next time. I.e. move downhill, gathering sediment
+                    foundLower = true;
+                    break;                                                                                      // Stop searching the neighbors once you have found one suitable
+                }
+            }
+            if (!foundLower)                                                                                    // If you have checked all neighbors and not found one lower
+            {
+                erosionMap[(int)dropletPosition.x, (int)dropletPosition.y] -= solubility;                       // Then reduce your current value (i.e. drop off sediment)
+            }
+        }
+
+        return erosionMap;
     }
 
     private void Thermal()
