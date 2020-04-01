@@ -429,21 +429,33 @@ public partial class CustomTerrain : MonoBehaviour
          * This algorithm simulates particles being lifted and despostied, or dragged across a surface by wind
          */
         float[,] heightMap = GetHeightMap(false);
-        int res = terrainData.heightmapResolution; 
+        int res = terrainData.heightmapResolution;
 
-        for (int y = 0; y < res; y+=10) // Skip ahead a larger amount on the y axis
+        float windDir = 30;                                                                              //angle of the wind between 0 and 360
+                            
+        float sin = -Mathf.Sin(Mathf.Deg2Rad * windDir);
+        float cos = Mathf.Cos(Mathf.Deg2Rad * windDir);
+
+        //Loop a much larger area than heightmap to accommodate for rotation in final step.
+        for (int y = -(res-1)*2; y < res*2; y+=10) // Skip ahead a larger amount on the y axis
         {
-            for (int x = 0; x < res; x++)
+            for (int x = -(res-1)*2; x < res*2; x++)
             {
                 float noise = (float)Mathf.PerlinNoise(x * 0.06f, y * 0.06f) * 20 * erosionStrength;    //Get a Perlin Noise value for waves
                 int nx = x;
                 int digY = y + (int)noise; //Dig a trench at the current Y values offset by noise
                 int ny = digY + 5;         //Find a new Y which is a step away from the digY
 
-                if (!(nx < 0 || nx > (res - 1) || ny < 0 || ny > (res-1)))  //Check that nx and ny are valid points within the heightMap
+                //rotate both dig (x, digY) and pile (nx, ny) by wind direction
+                Vector2 digCoords = new Vector2(x * cos - digY * sin, digY * cos + x * sin);
+                Vector2 pileCoords = new Vector2(nx * cos - ny * sin, ny * cos + nx * sin);
+
+                bool digOutOfBounds = (digCoords.x < 0 || digCoords.x > (res - 1) || digCoords.y < 0 || digCoords.y > (res - 1));
+                bool pileOutOfBounds = (pileCoords.x < 0 || pileCoords.x > (res - 1) || pileCoords.y < 0 || pileCoords.y > (res - 1));
+                if (!(pileOutOfBounds || digOutOfBounds))  //Check that nx and ny are valid points within the heightMap
                 {
-                    heightMap[x, ny - 5] -= erosionAmount;                  //Dig a Trench at the digY
-                    heightMap[nx, ny] += erosionAmount;                     //Deposit sediment at ny
+                    heightMap[(int)digCoords.x, (int)digCoords.y] -= erosionAmount;                  //Dig a Trench at the digY
+                    heightMap[(int)pileCoords.x, (int)pileCoords.y] += erosionAmount;                     //Deposit sediment at ny
                 }
             }
         }
