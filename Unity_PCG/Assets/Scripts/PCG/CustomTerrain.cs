@@ -86,6 +86,7 @@ public partial class CustomTerrain : MonoBehaviour
     public enum ErosionType { Rain, Thermal, Tidal, River, Wind };
     public ErosionType erosionType = ErosionType.Rain;
     public float erosionStrength = 0.1f;
+    public float erosionAmount = 0.5f;
     public int springsPerRiver = 5;
     public float solubility = 0.01f;
     public int droplets = 10;
@@ -98,9 +99,25 @@ public partial class CustomTerrain : MonoBehaviour
     public Terrain terrain;
     public TerrainData terrainData;
 
+    /*
+     * Get Height Map will return the current height map if reset terrain is false,
+     * otherwise it will generate a new height map.
+     * The function is overloaded to either use the resetTerrain global varaible, or to be specified when calling the function
+     */
     private float[,] GetHeightMap()
     {
         if (!resetTerrain)
+        {
+            return terrainData.GetHeights(0, 0, terrainData.heightmapResolution, terrainData.heightmapResolution);
+        }
+        else
+        {
+            return new float[terrainData.heightmapResolution, terrainData.heightmapResolution];
+        }
+    }
+    private float[,] GetHeightMap(bool reset)
+    {
+        if (!reset)
         {
             return terrainData.GetHeights(0, 0, terrainData.heightmapResolution, terrainData.heightmapResolution);
         }
@@ -337,7 +354,7 @@ public partial class CustomTerrain : MonoBehaviour
             detailIndex++;
         }
         terrainData.detailPrototypes = detailPrototypes;
-        float[,] heightMap = terrainData.GetHeights(0, 0, terrainData.heightmapResolution, terrainData.heightmapResolution);
+        float[,] heightMap = GetHeightMap(false);
         for (int i = 0; i < terrainData.detailPrototypes.Length; i++)
         {
             int[,] detailMap = new int[terrainData.detailResolution, terrainData.detailResolution]; //perhaps use width & height instead of resolution
@@ -384,10 +401,10 @@ public partial class CustomTerrain : MonoBehaviour
                 Rain();
                 break;
             case ErosionType.Thermal:
-                Tidal();
+                Thermal();
                 break;
             case ErosionType.Tidal:
-                Thermal();
+                Tidal();
                 break;
             case ErosionType.River:
                 River();
@@ -398,10 +415,12 @@ public partial class CustomTerrain : MonoBehaviour
             default:
                 break;
         }
-        for (int i = 0; i < erosionSmoothAmount; i++)
-        {
-            Smooth();
-        }
+        
+        //smoothAmount = erosionSmoothAmount;
+        //for (int i = 0; i < erosionSmoothAmount; i++)
+        //{
+         //Smooth();
+        //}
     }
 
     private void Wind()
@@ -416,8 +435,36 @@ public partial class CustomTerrain : MonoBehaviour
 
     private void Thermal()
     {
-        throw new NotImplementedException();
+        /*
+         *  Simulate erosion from landslides by checking the steepness of a slope
+         *  If the steepness is above a certain threshold, then move some of the current height to the lower neighbor
+         *  This causes cliffs with lower slopes beneath them
+         */
+        Debug.Log("Thermal Erosion");
+        float[,] heightMap = GetHeightMap(false);
+
+        for (int y = 0; y < terrainData.heightmapResolution; y++)
+        {
+            for (int x = 0; x < terrainData.heightmapResolution; x++)
+            {
+                Vector2 location = new Vector2(x, y);
+                List<Vector2> neighbors = GetNeighbors(location, terrainData.heightmapResolution, terrainData.heightmapResolution);
+                foreach (Vector2 n in neighbors)
+                {
+                    if (heightMap[x, y] > heightMap[(int)n.x, (int)n.y] + erosionStrength)
+                    {
+                        //  Debug.Log("Eroding");
+                        float currentHeight = heightMap[x, y];
+                        heightMap[x, y] -= currentHeight * erosionAmount;
+                        heightMap[(int)n.x, (int)n.y] += currentHeight * erosionAmount;
+                    }
+                }
+            }
+        }
+        terrainData.SetHeights(0, 0, heightMap);
     }
+
+
 
     private void Tidal()
     {
@@ -426,12 +473,25 @@ public partial class CustomTerrain : MonoBehaviour
 
     private void Rain()
     {
-        throw new NotImplementedException();
+        /*
+         *  Simulate erosion by rain by creating divots all across the terrain
+         */
+
+        
+        float[,] heightMap =GetHeightMap(false);
+
+        for (int i = 0; i < droplets; i++)
+        {
+            heightMap[UnityEngine.Random.Range(0, terrainData.heightmapResolution),
+                      UnityEngine.Random.Range(0, terrainData.heightmapResolution)]
+                    -= erosionStrength;
+        }
+        terrainData.SetHeights(0, 0, heightMap);
     }
 
     public void AddShore()
     {
-        float[,] heightMap = terrainData.GetHeights(0, 0, terrainData.heightmapResolution, terrainData.heightmapResolution);
+        float[,] heightMap =GetHeightMap(false);
         int quadCount = 0;
 
         for (int y = 0; y < terrainData.heightmapResolution; y++)
@@ -706,7 +766,7 @@ public partial class CustomTerrain : MonoBehaviour
     public void Smooth()
     {
         // Don't use GetHeights() in case ResetTerrain is true;
-        float[,] heightMap = terrainData.GetHeights(0, 0, terrainData.heightmapResolution, terrainData.heightmapResolution);
+        float[,] heightMap =GetHeightMap(false);
 
         float smoothProgress = 0;
 #if UNITY_EDITOR

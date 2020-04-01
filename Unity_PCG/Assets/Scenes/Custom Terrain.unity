@@ -265,17 +265,17 @@ MonoBehaviour:
     octaves: 3
     persistance: 0.5
     heightScale: 0.9
-  voronoiPeakCount: 15
-  voronoiFallOff: 1.08
-  voronoiDropOff: 2.22
+  voronoiPeakCount: 50
+  voronoiFallOff: 5
+  voronoiDropOff: 1.65
   voronoiMinHeight: 0
   voronoiMaxHeight: 0.43168318
   voronoiType: 0
-  MPminHeight: -0.5
+  MPminHeight: -1
   MPmaxHeight: 0.5
   MProughness: 1.8
   MPheightDampener: 1.59
-  smoothAmount: 3
+  smoothAmount: 0
   splatHeights:
   - remove: 0
     minHeight: 0
@@ -383,7 +383,7 @@ MonoBehaviour:
     maxSlope: 90
     texture: {fileID: 2800000, guid: c12fba8bcc2ef4b959d67f60ca59d886, type: 3}
     tileOffset: {x: 0, y: 0}
-    tileSize: {x: 5, y: 5}
+    tileSize: {x: 50, y: 50}
     blendOffset: 0.01
     blendNoiseScale: {x: 0.1, y: 0.1}
     blendNoiseScalar: 0.01
@@ -456,6 +456,13 @@ MonoBehaviour:
   waterHeight: 0.01
   waterGO: {fileID: 100000, guid: 780611a67e8e941a2b3aa96e5915a793, type: 3}
   shorelineMaterial: {fileID: 2100000, guid: 901665a29f6bee448bc3f5a56a60348b, type: 2}
+  erosionType: 1
+  erosionStrength: 0.03
+  erosionAmount: 0.193
+  springsPerRiver: 5
+  solubility: 0.0001
+  droplets: 1000
+  erosionSmoothAmount: 5
   terrain: {fileID: 29482990}
   terrainData: {fileID: 15600000, guid: 2a158fba47a64d44092107bef6194558, type: 2}
 --- !u!154 &29482989

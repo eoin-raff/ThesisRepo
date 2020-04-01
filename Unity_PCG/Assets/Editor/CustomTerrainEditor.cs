@@ -60,6 +60,7 @@ public class CustomTerrainEditor : Editor
 
     private SerializedProperty erosionType;
     private SerializedProperty erosionStrength;
+    private SerializedProperty erosionAmount;
     private SerializedProperty springsPerRiver;
     private SerializedProperty solubility;
     private SerializedProperty droplets;
@@ -136,6 +137,7 @@ public class CustomTerrainEditor : Editor
 
         erosionType = serializedObject.FindProperty("erosionType");
         erosionStrength = serializedObject.FindProperty("erosionStrength");
+        erosionAmount = serializedObject.FindProperty("erosionAmount");
         springsPerRiver = serializedObject.FindProperty("springsPerRiver");
         solubility = serializedObject.FindProperty("solubility");
         droplets = serializedObject.FindProperty("droplets");
@@ -377,6 +379,7 @@ public class CustomTerrainEditor : Editor
         {
             EditorGUILayout.PropertyField(erosionType);
             EditorGUILayout.Slider(erosionStrength, 0, 1, new GUIContent("Erosion Strength"));
+            EditorGUILayout.Slider(erosionAmount, 0, 1, new GUIContent("Erosion Amount"));
             EditorGUILayout.IntSlider(droplets, 1, 1000, new GUIContent("Droplets"));
             EditorGUILayout.Slider(solubility, 0.0001f, 1, new GUIContent("Solubility"));
             EditorGUILayout.IntSlider(springsPerRiver, 0, 20, new GUIContent("Springs Per River"));
