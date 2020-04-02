@@ -145,6 +145,7 @@ public partial class CustomTerrain : MonoBehaviour
     }
     public void SplatMaps()
     {
+#if UNITY_EDITOR
         TerrainLayer[] newSplatPrototypes;
         newSplatPrototypes = new TerrainLayer[splatHeights.Count];
         int spIndex = 0;
@@ -162,7 +163,8 @@ public partial class CustomTerrain : MonoBehaviour
             spIndex++;
             Selection.activeObject = this.gameObject;
         }
-        terrainData.terrainLayers = newSplatPrototypes;
+        terrainData.terrainLayers = newSplatPrototypes; 
+#endif
 
         float[,] heightMap = terrainData.GetHeights(0, 0, terrainData.heightmapResolution,
                                                           terrainData.heightmapResolution);
@@ -339,18 +341,26 @@ public partial class CustomTerrain : MonoBehaviour
                 maxHeight = detail.heightRange.y,
                 minWidth = detail.widthRange.x,
                 maxWidth = detail.widthRange.y,
-                noiseSpread = detail.noiseSpread
+                noiseSpread = detail.noiseSpread,
+                bendFactor = detail.bendFactor
+
             };
             if (detailPrototypes[detailIndex].prototype)
             {
                 detailPrototypes[detailIndex].usePrototypeMesh = true;
-                detailPrototypes[detailIndex].renderMode = DetailRenderMode.VertexLit;
+                detailPrototypes[detailIndex].bendFactor = 0; //Don't want meshes to move with the wind
+                if (detail.renderMode == DetailRenderMode.GrassBillboard)
+                {
+                    detail.renderMode = DetailRenderMode.Grass; //Meshes can't use billboard
+                }
             }
             else
             {
                 detailPrototypes[detailIndex].usePrototypeMesh = false;
-                detailPrototypes[detailIndex].renderMode = DetailRenderMode.GrassBillboard;
+                //detailPrototypes[detailIndex].renderMode = DetailRenderMode.GrassBillboard;
             }
+            detailPrototypes[detailIndex].renderMode = detail.renderMode;
+
             detailIndex++;
         }
         terrainData.detailPrototypes = detailPrototypes;

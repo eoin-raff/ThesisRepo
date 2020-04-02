@@ -38,13 +38,13 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 16822905}
-  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
+  m_IndirectSpecularColor: {r: 0.60065544, g: 0.45199844, b: 0.34016716, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 11
-  m_GIWorkflowMode: 1
+  m_GIWorkflowMode: 0
   m_GISettings:
     serializedVersion: 2
     m_BounceScale: 1
@@ -97,7 +97,8 @@ LightmapSettings:
     m_ExportTrainingData: 0
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
-  m_LightingDataAsset: {fileID: 0}
+  m_LightingDataAsset: {fileID: 112000000, guid: b97fe4fc543a2ef4596c896848da5e9b,
+    type: 2}
   m_UseShadowmask: 1
 --- !u!196 &4
 NavMeshSettings:
@@ -369,13 +370,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 16822904}
-  m_LocalRotation: {x: 0.40821788, y: -0.23456968, z: 0.10938163, w: 0.8754261}
+  m_LocalRotation: {x: 0.34896517, y: -0.37427467, z: 0.74251485, w: -0.43221936}
   m_LocalPosition: {x: 0, y: 3, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
+  m_LocalEulerAnglesHint: {x: 14.723001, y: 60.498, z: 249.025}
 --- !u!1 &29482987
 GameObject:
   m_ObjectHideFlags: 0
@@ -480,9 +481,9 @@ MonoBehaviour:
     minSlope: 2
     maxSlope: 20
     mesh: {fileID: -927199367670048503, guid: 2a44e858bd119bca11002b7b44295342, type: 3}
-    pivotOffset: 0
-    minScale: 0.7
-    maxScale: 1
+    pivotOffset: 0.001
+    minScale: 0.5
+    maxScale: 0.8
     color1: {r: 1, g: 1, b: 1, a: 1}
     color2: {r: 1, g: 1, b: 1, a: 1}
     lightColor: {r: 1, g: 1, b: 1, a: 1}
@@ -493,26 +494,26 @@ MonoBehaviour:
     minHeight: 0.05
     maxHeight: 0.1
     minSlope: 0
-    maxSlope: 30
+    maxSlope: 15
     mesh: {fileID: -927199367670048503, guid: 0f362a31bd1113061100b7a844295342, type: 3}
-    pivotOffset: 0
-    minScale: 0.7
-    maxScale: 1
+    pivotOffset: 0.001
+    minScale: 0.5
+    maxScale: 0.7
     color1: {r: 1, g: 1, b: 1, a: 1}
     color2: {r: 1, g: 1, b: 1, a: 1}
     lightColor: {r: 1, g: 1, b: 1, a: 1}
     minRotation: 0
     maxRotation: 360
-    density: 0.7
+    density: 0.9
   - remove: 0
-    minHeight: 0.1
+    minHeight: 0.12
     maxHeight: 0.5
     minSlope: 0
-    maxSlope: 30
+    maxSlope: 15
     mesh: {fileID: -927199367670048503, guid: 43202a31bd1113061100b7a844295342, type: 3}
-    pivotOffset: 0
-    minScale: 0.7
-    maxScale: 1
+    pivotOffset: 0.001
+    minScale: 0.4
+    maxScale: 0.6
     color1: {r: 1, g: 1, b: 1, a: 1}
     color2: {r: 1, g: 1, b: 1, a: 1}
     lightColor: {r: 1, g: 1, b: 1, a: 1}
@@ -520,24 +521,43 @@ MonoBehaviour:
     maxRotation: 360
     density: 0.5
   maxTrees: 10000
-  treeSpacing: 5
+  treeSpacing: 9
   details:
   - remove: 0
-    minHeight: 0
+    minHeight: 0.13
     maxHeight: 1
     minSlope: 0
     maxSlope: 90
     prototype: {fileID: 0}
-    prototypeTexture: {fileID: 0}
-    dryColor: {r: 1, g: 1, b: 1, a: 1}
-    healthyColor: {r: 1, g: 1, b: 1, a: 1}
+    prototypeTexture: {fileID: 2800000, guid: d6cdc79ec19714fcd980ca3f6ac01a0a, type: 3}
+    renderMode: 0
+    dryColor: {r: 1, g: 0.8773518, b: 0.10849059, a: 1}
+    healthyColor: {r: 0.23255605, g: 0.735849, b: 0.25426772, a: 1}
     heightRange: {x: 1, y: 1}
     widthRange: {x: 1, y: 1}
-    noiseSpread: 0.5
+    noiseSpread: 0.05
+    overlap: 0.01
+    feather: 0.005
+    density: 1
+    bendFactor: 0
+  - remove: 0
+    minHeight: 0.13
+    maxHeight: 1
+    minSlope: 0
+    maxSlope: 90
+    prototype: {fileID: 0}
+    prototypeTexture: {fileID: 2800000, guid: 2c528fec5d95e4ac28cf46399b887662, type: 3}
+    renderMode: 0
+    dryColor: {r: 1, g: 0.8773518, b: 0.10849059, a: 1}
+    healthyColor: {r: 0.23255605, g: 0.735849, b: 0.25426772, a: 1}
+    heightRange: {x: 1, y: 1}
+    widthRange: {x: 1, y: 1}
+    noiseSpread: 0.1
     overlap: 0.01
     feather: 0.05
-    density: 0.5
-  maxDetails: 10000
+    density: 1
+    bendFactor: 0
+  maxDetails: 500
   detailSpacing: 1
   waterHeight: 0.04
   waterGO: {fileID: 100000, guid: 780611a67e8e941a2b3aa96e5915a793, type: 3}
@@ -576,7 +596,7 @@ Terrain:
   m_TreeBillboardDistance: 100
   m_TreeCrossFadeLength: 5
   m_TreeMaximumFullLODCount: 50
-  m_DetailObjectDistance: 10000
+  m_DetailObjectDistance: 500
   m_DetailObjectDensity: 1
   m_HeightmapPixelError: 5
   m_SplatMapDistance: 1000
@@ -602,13 +622,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 29482987}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: 0.45002496, z: -0, w: 0.89301604}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 3
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 53.491, z: 0}
 --- !u!1 &508966202
 GameObject:
   m_ObjectHideFlags: 0
