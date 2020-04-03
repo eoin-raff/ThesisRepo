@@ -94,6 +94,21 @@ public partial class CustomTerrain : MonoBehaviour
 
     #endregion
 
+    #region Clouds
+    public int numberOfClouds = 1;
+    public int particlesPerCloud = 50;
+    public float cloudParticleSize = 5;
+    public Vector3 cloudMinSize = Vector3.one;
+    public Vector3 cloudMaxSize = Vector3.one;
+    public Material cloudMaterial;
+    public Material cloudShadowMaterial;
+    public Color color = Color.white;
+    public Color lining = Color.grey;
+    public float minSpeed = 0.2f;
+    public float maxSpeed = 0.5f;
+    public float distanceTravelled = 500f;
+
+    #endregion
 
 
     public Terrain terrain;
@@ -163,7 +178,7 @@ public partial class CustomTerrain : MonoBehaviour
             spIndex++;
             Selection.activeObject = this.gameObject;
         }
-        terrainData.terrainLayers = newSplatPrototypes; 
+        terrainData.terrainLayers = newSplatPrototypes;
 #endif
 
         float[,] heightMap = terrainData.GetHeights(0, 0, terrainData.heightmapResolution,
@@ -425,11 +440,11 @@ public partial class CustomTerrain : MonoBehaviour
             default:
                 break;
         }
-        
+
         //smoothAmount = erosionSmoothAmount;
         //for (int i = 0; i < erosionSmoothAmount; i++)
         //{
-         //Smooth();
+        //Smooth();
         //}
     }
 
@@ -442,14 +457,14 @@ public partial class CustomTerrain : MonoBehaviour
         int res = terrainData.heightmapResolution;
 
         float windDir = 30;                                                                              //angle of the wind between 0 and 360
-                            
+
         float sin = -Mathf.Sin(Mathf.Deg2Rad * windDir);
         float cos = Mathf.Cos(Mathf.Deg2Rad * windDir);
 
         //Loop a much larger area than heightmap to accommodate for rotation in final step.
-        for (int y = -(res-1)*2; y < res*2; y+=10) // Skip ahead a larger amount on the y axis
+        for (int y = -(res - 1) * 2; y < res * 2; y += 10) // Skip ahead a larger amount on the y axis
         {
-            for (int x = -(res-1)*2; x < res*2; x++)
+            for (int x = -(res - 1) * 2; x < res * 2; x++)
             {
                 float noise = (float)Mathf.PerlinNoise(x * 0.06f, y * 0.06f) * 20 * erosionStrength;    //Get a Perlin Noise value for waves
                 int nx = x;
@@ -472,31 +487,133 @@ public partial class CustomTerrain : MonoBehaviour
         terrainData.SetHeights(0, 0, heightMap);
     }
 
+    public void GenerateClouds()
+    {
+        // Create a Cloud Manager Game Object in the scene
+        GameObject cloudManager = GameObject.Find("CloudManager");
+        if (!cloudManager)
+        {
+            cloudManager = new GameObject
+            {
+                name = "CloudManager"
+            };
+            cloudManager.transform.position = transform.position;
+            cloudManager.AddComponent<CloudManager>();
+        }
+
+        // Remove clouds if they already exists
+        GameObject[] allClouds = GameObject.FindGameObjectsWithTag("Cloud");
+        for (int i = 0; i < allClouds.Length; i++)
+        {
+            DestroyImmediate(allClouds[i]);
+        }
+
+        // Create new Clouds
+        for (int c = 0; c < numberOfClouds; c++)
+        {
+            // Create cloud GameObject with Name and Tag
+            GameObject cloudGO = new GameObject
+            {
+                name = "Cloud" + c,
+                tag = "Cloud"
+            };
+            //Set transform rotation and position to that of cloud manager
+            cloudGO.transform.rotation = cloudManager.transform.rotation;
+            cloudGO.transform.position = cloudManager.transform.position;
+
+            // Add CloudController script
+            CloudController cc = cloudGO.AddComponent<CloudController>();
+            cc.lining = lining;
+            cc.color = color;
+            cc.numberOfParticles = particlesPerCloud;
+            cc.minSpeed = minSpeed;
+            cc.maxSpeed = maxSpeed;
+            cc.distance = distanceTravelled;
+
+            //Create cloud particle system
+            ParticleSystem cloudSystem = cloudGO.AddComponent<ParticleSystem>();
+
+            //Get renderer from cloud GO, or add the component if it doesnt already have it;
+            Renderer cloudRenderer = cloudGO.GetOrAddComponent<Renderer>();
+            cloudRenderer.material = cloudMaterial;
+            cloudRenderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;            // Turn off recieving and casting of shadows for ParticleSystem. we will use a projector instead
+            cloudRenderer.receiveShadows = false;
+
+            // Add clouds to the sky layer so they will not recieve shadows from projector
+            cloudGO.layer = LayerMask.NameToLayer("Sky");
+
+
+            //if (UnityEngine.Random.Range(0, 1) > 0.5)   //Only add shadows to 50% of clouds so that it doesnt become too dark
+            {
+                // Build Shadow Projector, and set Sky and Water as layers which it will ignore
+                GameObject cloudProjector = new GameObject();
+                cloudProjector.name = "Shadow";
+                cloudProjector.transform.position = cloudGO.transform.position;
+                cloudProjector.transform.forward = Vector3.down;
+                cloudProjector.transform.parent = cloudGO.transform;
+
+                Projector cp = cloudProjector.AddComponent<Projector>();
+                cp.material = cloudShadowMaterial;
+                cp.farClipPlane = terrainData.size.y;
+                int skyLayerMask = 1 << LayerMask.NameToLayer("Sky");
+                int waterLayerMask = 1 << LayerMask.NameToLayer("Water");
+                cp.ignoreLayers = skyLayerMask | waterLayerMask; //Bitwise OR i.e. 1000 or 0101 == 1101
+
+                //Set projector parameters
+                cp.fieldOfView = 20.0f; 
+            }
+
+            // Set Particle system values
+            ParticleSystem.MainModule main = cloudSystem.main;  //Get the MainModule of the cloudSystem
+            main.loop = false; //Create the cloud and stop, we will control the rest from CloudManager
+            
+            //main.startLifetime = Mathf.Infinity; //The cloud should remain the entire time
+            main.startLifetime = float.MaxValue; //The cloud should remain the entire time
+            main.startSpeed = 0; //We will control the movement of the cloud
+            main.startSize = cloudParticleSize;
+            main.startColor = color;
+
+            var emission = cloudSystem.emission;
+            emission.rateOverTime = 0;                                      //Create whoe cloud at once
+            emission.SetBursts(new ParticleSystem.Burst[]                   //A single burst at time 0.0f that will create particlesPerCloud billboards
+            {
+                new ParticleSystem.Burst(0.0f, (short)particlesPerCloud)
+            });
+            var shape = cloudSystem.shape;
+            shape.shapeType = ParticleSystemShapeType.Sphere;
+            shape.scale = Utils.RandomVector(cloudMinSize, cloudMaxSize);
+
+            //Set CloudManager as parent, and fix cloud scale
+            cloudGO.transform.parent = cloudManager.transform;
+            cloudGO.transform.localScale = Vector3.one;
+        }
+    }
+
     private void River()
     {
         float[,] heightMap = GetHeightMap(false);                                           // Get the current HeightMap without resetting terrain
-        
+
         float[,] erosionMap = new float[                                                    // Create a new map to keep track of the rivers
             terrainData.heightmapResolution,                                                //  with the same size as heightMap
             terrainData.heightmapResolution];
-        
+
         for (int i = 0; i < droplets; i++)                                                  // Droplets controls the number of rivers
         {
             Vector2 dropletPosition = new Vector2(                                          // Create droplets in random positions on the heightMap
                 UnityEngine.Random.Range(0, terrainData.heightmapResolution),
                 UnityEngine.Random.Range(0, terrainData.heightmapResolution));
-            
+
             erosionMap[(int)dropletPosition.x, (int)dropletPosition.y] = erosionStrength;   // Initialize erosionMap with values of erosionStrength at each droplet's position
 
             for (int j = 0; j < springsPerRiver; j++)                                       // Springs per river determines how many directions the river will flow in.
             {
                 erosionMap = RunRiver(dropletPosition,                                      // Call RunRiver to calculate the river's path down the terrain
-                    heightMap, 
-                    erosionMap, 
+                    heightMap,
+                    erosionMap,
                     terrainData.heightmapResolution, terrainData.heightmapResolution);
             }
         }
-        
+
         for (int y = 0; y < terrainData.heightmapResolution; y++)
         {
             for (int x = 0; x < terrainData.heightmapResolution; x++)
@@ -512,7 +629,7 @@ public partial class CustomTerrain : MonoBehaviour
 
     private float[,] RunRiver(Vector2 dropletPosition, float[,] heightMap, float[,] erosionMap, int width, int height)
     {
-        while (erosionMap[(int)dropletPosition.x, (int)dropletPosition.y] > 0)  
+        while (erosionMap[(int)dropletPosition.x, (int)dropletPosition.y] > 0)
         {
             List<Vector2> neighbors = GetNeighbors(dropletPosition, width, height);                             //Get the neighboring positions
             neighbors.Shuffle();                                                                                //Shuffle them so we don't always get the same value
@@ -521,8 +638,8 @@ public partial class CustomTerrain : MonoBehaviour
             {
                 if (heightMap[(int)n.x, (int)n.y] < heightMap[(int)dropletPosition.x, (int)dropletPosition.y])  // If the neighbor is lower than the droplet
                 {
-                    erosionMap[(int)n.x, (int)n.y] = erosionMap[(int)dropletPosition.x, 
-                                                                (int)dropletPosition.y] 
+                    erosionMap[(int)n.x, (int)n.y] = erosionMap[(int)dropletPosition.x,
+                                                                (int)dropletPosition.y]
                                                               - solubility;                                     // Set the erosionMap at the neighbors position equal to the erosionMap at droplet position - solubility
                     dropletPosition = n;                                                                        // Check from the neighbors position next time. I.e. move downhill, gathering sediment
                     foundLower = true;
@@ -605,8 +722,8 @@ public partial class CustomTerrain : MonoBehaviour
          *  Simulate erosion by rain by creating divots all across the terrain
          */
 
-        
-        float[,] heightMap =GetHeightMap(false);
+
+        float[,] heightMap = GetHeightMap(false);
 
         for (int i = 0; i < droplets; i++)
         {
@@ -619,7 +736,7 @@ public partial class CustomTerrain : MonoBehaviour
 
     public void AddShore()
     {
-        float[,] heightMap =GetHeightMap(false);
+        float[,] heightMap = GetHeightMap(false);
         int quadCount = 0;
 
         for (int y = 0; y < terrainData.heightmapResolution; y++)
@@ -676,8 +793,12 @@ public partial class CustomTerrain : MonoBehaviour
         {
             DestroyImmediate(currentShoreLine);
         }
-        GameObject shoreLine = new GameObject();
-        shoreLine.name = "ShoreLine";
+        GameObject shoreLine = new GameObject
+        {
+            name = "ShoreLine",
+            layer = LayerMask.NameToLayer("Water")
+        };
+
         shoreLine.AddComponent<WaveAnimation>(); //Old code from Unity Islands Demo, back in Unity 3 or 4
         shoreLine.transform.position = this.transform.position;
         shoreLine.transform.rotation = this.transform.rotation;
@@ -894,7 +1015,7 @@ public partial class CustomTerrain : MonoBehaviour
     public void Smooth()
     {
         // Don't use GetHeights() in case ResetTerrain is true;
-        float[,] heightMap =GetHeightMap(false);
+        float[,] heightMap = GetHeightMap(false);
 
         float smoothProgress = 0;
 #if UNITY_EDITOR
@@ -1075,6 +1196,7 @@ public partial class CustomTerrain : MonoBehaviour
         tagManager.ApplyModifiedProperties();
 
         SerializedProperty layerProp = tagManager.FindProperty("layers");
+        AddTag(layerProp, "Sky", TagType.Layer);
         terrainLayer = AddTag(layerProp, "Terrain", TagType.Layer);
         tagManager.ApplyModifiedProperties();
 

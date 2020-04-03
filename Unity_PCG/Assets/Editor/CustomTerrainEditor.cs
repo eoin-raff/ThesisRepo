@@ -65,6 +65,19 @@ public class CustomTerrainEditor : Editor
     private SerializedProperty solubility;
     private SerializedProperty droplets;
     private SerializedProperty erosionSmoothAmount;
+
+    private SerializedProperty numberOfClouds;
+    private SerializedProperty particlesPerCloud;
+    private SerializedProperty cloudParticleSize;
+    private SerializedProperty cloudMinSize;
+    private SerializedProperty cloudMaxSize;
+    private SerializedProperty cloudMaterial;
+    private SerializedProperty cloudShadowMaterial;
+    private SerializedProperty color;
+    private SerializedProperty lining;
+    private SerializedProperty minSpeed;
+    private SerializedProperty maxSpeed;
+    private SerializedProperty distanceTravelled;
     
     private Texture2D texture;
     // foldouts
@@ -81,6 +94,8 @@ public class CustomTerrainEditor : Editor
     private bool showDetail = false;
     private bool showWater = false;
     private bool showErosion = false;
+    private bool showClouds = false;
+
     //scroll bar
     private Vector2 scrollPos;
 
@@ -142,6 +157,19 @@ public class CustomTerrainEditor : Editor
         solubility = serializedObject.FindProperty("solubility");
         droplets = serializedObject.FindProperty("droplets");
         erosionSmoothAmount = serializedObject.FindProperty("erosionSmoothAmount");
+
+        numberOfClouds = serializedObject.FindProperty("numberOfClouds");
+        particlesPerCloud = serializedObject.FindProperty("particlesPerCloud");
+        cloudParticleSize = serializedObject.FindProperty("cloudParticleSize");
+        cloudMinSize = serializedObject.FindProperty("cloudMinSize");
+        cloudMaxSize = serializedObject.FindProperty("cloudMaxSize");
+        cloudMaterial = serializedObject.FindProperty("cloudMaterial");
+        cloudShadowMaterial = serializedObject.FindProperty("cloudShadowMaterial");
+        color = serializedObject.FindProperty("color");
+        lining = serializedObject.FindProperty("lining");
+        minSpeed = serializedObject.FindProperty("minSpeed");
+        maxSpeed = serializedObject.FindProperty("maxSpeed");
+        distanceTravelled = serializedObject.FindProperty("distanceTravelled");
     }
 
     public override void OnInspectorGUI() 
@@ -305,8 +333,8 @@ public class CustomTerrainEditor : Editor
             HLine();
             GUILayout.Label("Vegetation", EditorStyles.boldLabel);
             
-            EditorGUILayout.IntSlider(maxTrees, 0, 10000, new GUIContent("Max Trees"));
-            EditorGUILayout.IntSlider(treeSpacing, 2, 20, new GUIContent("Tree Spacing"));
+            EditorGUILayout.IntSlider(maxTrees, 0, 100000, new GUIContent("Max Trees"));
+            EditorGUILayout.IntSlider(treeSpacing, 1, 20, new GUIContent("Tree Spacing"));
 
             vegetationTable = GUITableLayout.DrawTable(vegetationTable, vegetationData);
             EditorGUILayout.Space(20);
@@ -378,16 +406,37 @@ public class CustomTerrainEditor : Editor
         if (showErosion)
         {
             EditorGUILayout.PropertyField(erosionType);
-            EditorGUILayout.Slider(erosionStrength, 0, 1, new GUIContent("Erosion Strength"));
-            EditorGUILayout.Slider(erosionAmount, 0, 1, new GUIContent("Erosion Amount"));
+            EditorGUILayout.Slider(erosionStrength, 0.00001f, 1, new GUIContent("Erosion Strength"));
+            EditorGUILayout.Slider(erosionAmount, 0.00001f, 1, new GUIContent("Erosion Amount"));
             EditorGUILayout.IntSlider(droplets, 1, 1000, new GUIContent("Droplets"));
-            EditorGUILayout.Slider(solubility, 0.0001f, 1, new GUIContent("Solubility"));
+            EditorGUILayout.Slider(solubility, 0.00001f, 1, new GUIContent("Solubility"));
             EditorGUILayout.IntSlider(springsPerRiver, 0, 20, new GUIContent("Springs Per River"));
             EditorGUILayout.IntSlider(smoothAmount, 0, 10, new GUIContent("Smooth Amount"));
 
             if (GUILayout.Button("Erode"))
             {
                 terrain.Erode();
+            }
+        }
+
+        showClouds = EditorGUILayout.Foldout(showClouds, "Clouds");
+        if (showClouds)
+        {
+            EditorGUILayout.PropertyField(numberOfClouds);
+            EditorGUILayout.PropertyField(particlesPerCloud);
+            EditorGUILayout.PropertyField(cloudParticleSize);
+            EditorGUILayout.PropertyField(cloudMinSize);
+            EditorGUILayout.PropertyField(cloudMaxSize);
+            EditorGUILayout.PropertyField(cloudMaterial);
+            EditorGUILayout.PropertyField(cloudShadowMaterial);
+            EditorGUILayout.PropertyField(color);
+            EditorGUILayout.PropertyField(lining);
+            EditorGUILayout.PropertyField(minSpeed);
+            EditorGUILayout.PropertyField(maxSpeed);
+            EditorGUILayout.PropertyField(distanceTravelled);
+            if (GUILayout.Button("Generate Clouds"))
+            {
+                terrain.GenerateClouds();
             }
         }
 

@@ -29,6 +29,41 @@ public static class Utils
         return Mathf.Lerp(targetMin, targetMax, t);
     }
 
+
+    /// <summary>
+    /// This function will try to return a component of a given type from a gameobject. 
+    /// If the component does not exist, it will instead add it.
+    /// </summary>
+    /// <typeparam name="T">The type of component you wish to find/add</typeparam>
+    /// <param name="gameObject">The GameObject which should have the component</param>
+    /// <returns> Unity Engine Component of Type T</returns>
+    public static T GetOrAddComponent<T>(this GameObject gameObject) where T:UnityEngine.Component
+    {
+
+        T component = gameObject.GetComponent<T>();
+        if (!component)
+        {
+            component = gameObject.AddComponent<T>();
+        }
+        return component;
+    }
+
+    public static Vector3 RandomVector()
+    {
+        return RandomVector(Vector3.zero, Vector3.one);
+    }
+    public static Vector3 RandomVector(Vector3 a, Vector3 b)
+    {
+        float x = UnityEngine.Random.Range(a.x, b.x);
+        float y = UnityEngine.Random.Range(a.y, b.y);
+        float z = UnityEngine.Random.Range(a.z, b.z);
+
+        return new Vector3(x, y, z);
+    }
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="v"></param>
     public static void NormalizeVector(ref float[] v) //try with / without ref
     {
         float total = 0;
