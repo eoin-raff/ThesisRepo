@@ -1114,6 +1114,22 @@ public partial class CustomTerrain : MonoBehaviour
         }
         terrainData.SetHeights(0, 0, heightMap);
     }
+
+    public void AddFalloffMap()
+    {
+        float[,] heightMap = GetHeightMap(false);
+        float[,] falloffMap = FalloffGenerator.GenerateFalloffMap(terrainData.heightmapResolution);
+        for (int y = 0; y < terrainData.heightmapResolution; y++)
+        {
+            for (int x = 0; x < terrainData.heightmapResolution; x++)
+            {
+                heightMap[x, y] -= falloffMap[x, y];
+            }
+        }
+        terrainData.SetHeights(0, 0, heightMap);
+
+    }
+
     public void ResetTerrain()
     {
         float[,] heightMap = new float[terrainData.heightmapResolution, terrainData.heightmapResolution];

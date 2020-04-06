@@ -452,6 +452,11 @@ public class CustomTerrainEditor : Editor
             }
         }
 
+        if (GUILayout.Button("Falloff"))
+        {
+            terrain.AddFalloffMap();
+        }
+
         if (GUILayout.Button("Reset"))
         {
             terrain.ResetTerrain();
