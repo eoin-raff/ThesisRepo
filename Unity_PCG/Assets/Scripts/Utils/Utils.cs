@@ -48,6 +48,30 @@ public static class Utils
         return component;
     }
 
+    public static List<Vector2> GetNeighbors(Vector2 pos, int width, int height)
+    {
+        List<Vector2> neighbors = new List<Vector2>();
+        for (int y = -1; y < 2; y++)
+        {
+            for (int x = -1; x < 2; x++)
+            {
+                if (!(x == 0 && y == 0)) //don't include current position, kernel is only focused on neighbors
+                {
+                    //Find neighbors, clamped within boundaries of image
+                    Vector2 neighborPos = new Vector2(Mathf.Clamp(pos.x + x, 0, width - 1),
+                                                        Mathf.Clamp(pos.y + y, 0, height - 1));
+
+                    // If this is not already in the kernel, then add it
+                    if (!neighbors.Contains(neighborPos))
+                    {
+                        neighbors.Add(neighborPos);
+                    }
+                }
+            }
+        }
+        return neighbors;
+    }
+
     public static Vector3 RandomVector()
     {
         return RandomVector(Vector3.zero, Vector3.one);

@@ -3,10 +3,15 @@ using UnityEngine;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Random = UnityEngine.Random;
 
 [ExecuteInEditMode]
 public partial class CustomTerrain : MonoBehaviour
 {
+    public enum SeedType { Fixed, Random };
+    public SeedType seedType = SeedType.Fixed;
+    public int fixedSeed = 0;
+    private int seed;
     public enum TagType { Tag = 0, Layer = 1 }
     [SerializeField]
     int terrainLayer = -1;
@@ -631,7 +636,7 @@ public partial class CustomTerrain : MonoBehaviour
     {
         while (erosionMap[(int)dropletPosition.x, (int)dropletPosition.y] > 0)
         {
-            List<Vector2> neighbors = GetNeighbors(dropletPosition, width, height);                             //Get the neighboring positions
+            List<Vector2> neighbors = Utils.GetNeighbors(dropletPosition, width, height);                             //Get the neighboring positions
             neighbors.Shuffle();                                                                                //Shuffle them so we don't always get the same value
             bool foundLower = false;
             foreach (Vector2 n in neighbors)
@@ -670,7 +675,7 @@ public partial class CustomTerrain : MonoBehaviour
             for (int x = 0; x < terrainData.heightmapResolution; x++)
             {
                 Vector2 location = new Vector2(x, y);
-                List<Vector2> neighbors = GetNeighbors(location, terrainData.heightmapResolution, terrainData.heightmapResolution);
+                List<Vector2> neighbors = Utils.GetNeighbors(location, terrainData.heightmapResolution, terrainData.heightmapResolution);
                 foreach (Vector2 n in neighbors)
                 {
                     if (heightMap[x, y] > heightMap[(int)n.x, (int)n.y] + erosionStrength)
@@ -686,8 +691,6 @@ public partial class CustomTerrain : MonoBehaviour
         terrainData.SetHeights(0, 0, heightMap);
     }
 
-
-
     private void Tidal()
     {
         /*
@@ -702,7 +705,7 @@ public partial class CustomTerrain : MonoBehaviour
             for (int x = 0; x < terrainData.heightmapResolution; x++)
             {
                 Vector2 location = new Vector2(x, y);
-                List<Vector2> neighbors = GetNeighbors(location, terrainData.heightmapResolution, terrainData.heightmapResolution);
+                List<Vector2> neighbors = Utils.GetNeighbors(location, terrainData.heightmapResolution, terrainData.heightmapResolution);
                 foreach (Vector2 n in neighbors)
                 {
                     if (heightMap[x, y] < waterHeight && heightMap[(int)n.x, (int)n.y] > waterHeight)
@@ -744,40 +747,47 @@ public partial class CustomTerrain : MonoBehaviour
             for (int x = 0; x < terrainData.heightmapResolution; x++)
             {
                 Vector2 location = new Vector2(x, y);
-                List<Vector2> neighbors = GetNeighbors(location, terrainData.heightmapResolution, terrainData.heightmapResolution);
+                List<Vector2> neighbors = Utils.GetNeighbors(location, terrainData.heightmapResolution, terrainData.heightmapResolution);
                 foreach (Vector2 n in neighbors)
                 {
+                    //Find positions on the height map below the waterline, with a neighbor above the waterline (i.e. coast)
                     if (heightMap[x, y] < waterHeight && heightMap[(int)n.x, (int)n.y] > waterHeight)
                     {
-
+                        // Create a quad
                         quadCount++;
                         GameObject go = GameObject.CreatePrimitive(PrimitiveType.Quad);
                         go.transform.localScale *= 10.0f;
 
-                        go.transform.position = this.transform.position
+                        // Position the quad at water height
+                        go.transform.position = transform.position
                             + new Vector3(
                                     y / (float)terrainData.heightmapResolution * terrainData.size.z,
                                     waterHeight * terrainData.size.y,
                                     x / (float)terrainData.heightmapResolution * terrainData.size.x);
-
-                        go.transform.LookAt(new Vector3(
-                                n.y / (float)terrainData.heightmapResolution * terrainData.size.z,
+                        
+                        // Rotate quad to face shore
+                        go.transform.LookAt(new Vector3(                                                
+                                n.y / terrainData.heightmapResolution * terrainData.size.z,
                                 waterHeight * terrainData.size.y,
-                                n.x / (float)terrainData.heightmapResolution * terrainData.size.x));
-
-                        go.transform.Rotate(90, 0, 0);
+                                n.x / terrainData.heightmapResolution * terrainData.size.x));
+                        
+                        // Rotate Quad to lie flat
+                        go.transform.Rotate(90, 0, 0);  
 
                         go.tag = "Shore";
                     }
                 }
             }
         }
+        //Get all shore quads and get all of their mesh filters
         GameObject[] shoreQuads = GameObject.FindGameObjectsWithTag("Shore");
         MeshFilter[] meshFilters = new MeshFilter[shoreQuads.Length];
         for (int m = 0; m < shoreQuads.Length; m++)
         {
             meshFilters[m] = shoreQuads[m].GetComponent<MeshFilter>();
         }
+
+        //Create a CombineInstance of the meshfilters
         CombineInstance[] combine = new CombineInstance[meshFilters.Length];
         int i = 0;
         while (i < meshFilters.Length)
@@ -788,6 +798,7 @@ public partial class CustomTerrain : MonoBehaviour
             i++;
         }
 
+        // If the shoreline already exists, remove it, then create a new one
         GameObject currentShoreLine = GameObject.Find("ShoreLine");
         if (currentShoreLine)
         {
@@ -798,12 +809,14 @@ public partial class CustomTerrain : MonoBehaviour
             name = "ShoreLine",
             layer = LayerMask.NameToLayer("Water")
         };
-
+        //Add wave animation to the shore, and set transfrom
         shoreLine.AddComponent<WaveAnimation>(); //Old code from Unity Islands Demo, back in Unity 3 or 4
-        shoreLine.transform.position = this.transform.position;
-        shoreLine.transform.rotation = this.transform.rotation;
+        shoreLine.transform.position = transform.position;
+        shoreLine.transform.rotation = transform.rotation;
+        //Add meshfilter and empty mesh
         MeshFilter thisMF = shoreLine.AddComponent<MeshFilter>();
         thisMF.mesh = new Mesh();
+        //combine the shore quads mesh filters to one, and delete the shore quads
         shoreLine.GetComponent<MeshFilter>().sharedMesh.CombineMeshes(combine);
         MeshRenderer r = shoreLine.AddComponent<MeshRenderer>();
         r.sharedMaterial = shorelineMaterial;
@@ -815,17 +828,20 @@ public partial class CustomTerrain : MonoBehaviour
 
     public void AddWater()
     {
+        // If the water plane already exists, remove it and create a new one.
         GameObject water = GameObject.Find("water");
         if (!water)
         {
             water = Instantiate(waterGO, transform.position, transform.rotation);
             water.name = "water";
         }
+        // Center the plane and set the height
         water.transform.position = transform.position + new Vector3(
                 terrainData.size.x / 2,
                 waterHeight * terrainData.size.y,
                 terrainData.size.z / 2
             );
+        // Scale the plane on x and z to fit the terrain
         water.transform.localScale = new Vector3(terrainData.size.x, 1, terrainData.size.z);
     }
 
@@ -931,13 +947,15 @@ public partial class CustomTerrain : MonoBehaviour
     public void Voronoi()
     {
         float[,] heightMap = GetHeightMap();
+        Random.InitState(seed);
+
         for (int p = 0; p < voronoiPeakCount; p++)
         {
             // Random Peak
             Vector3 peak = new Vector3(
-                 UnityEngine.Random.Range(0, terrainData.heightmapResolution),
-                 UnityEngine.Random.Range(voronoiMinHeight, voronoiMaxHeight),
-                 UnityEngine.Random.Range(0, terrainData.heightmapResolution));
+                 Random.Range(0, terrainData.heightmapResolution),
+                 Random.Range(voronoiMinHeight, voronoiMaxHeight),
+                 Random.Range(0, terrainData.heightmapResolution));
 
             if (heightMap[(int)peak.x, (int)peak.z] < peak.y)
             {
@@ -988,29 +1006,6 @@ public partial class CustomTerrain : MonoBehaviour
         terrainData.SetHeights(0, 0, heightMap);
     }
 
-    public List<Vector2> GetNeighbors(Vector2 pos, int width, int height)
-    {
-        List<Vector2> neighbors = new List<Vector2>();
-        for (int y = -1; y < 2; y++)
-        {
-            for (int x = -1; x < 2; x++)
-            {
-                if (!(x == 0 && y == 0)) //don't include current position, kernel is only focused on neighbors
-                {
-                    //Find neighbors, clamped within boundaries of image
-                    Vector2 neighborPos = new Vector2(Mathf.Clamp(pos.x + x, 0, width - 1),
-                                                        Mathf.Clamp(pos.y + y, 0, height - 1));
-
-                    // If this is not already in the kernel, then add it
-                    if (!neighbors.Contains(neighborPos))
-                    {
-                        neighbors.Add(neighborPos);
-                    }
-                }
-            }
-        }
-        return neighbors;
-    }
 
     public void Smooth()
     {
@@ -1028,7 +1023,7 @@ public partial class CustomTerrain : MonoBehaviour
                 for (int x = 0; x < terrainData.heightmapResolution; x++)
                 {
                     float avgHeight = heightMap[x, y];
-                    List<Vector2> neighbors = GetNeighbors(new Vector2(x, y), terrainData.heightmapResolution, terrainData.heightmapResolution);
+                    List<Vector2> neighbors = Utils.GetNeighbors(new Vector2(x, y), terrainData.heightmapResolution, terrainData.heightmapResolution);
                     foreach (Vector2 n in neighbors)
                     {
                         avgHeight += heightMap[(int)n.x, (int)n.y];
@@ -1056,8 +1051,8 @@ public partial class CustomTerrain : MonoBehaviour
             for (int x = 0; x < terrainData.heightmapResolution; x++)
             {
                 heightMap[x, y] += Utils.fBM(
-                        (x + perlinOffsetX) * perlinScaleX,
-                        (y + perlinOffsetY) * perlinScaleY,
+                        (seed + x + perlinOffsetX) * perlinScaleX,
+                        (seed + y + perlinOffsetY) * perlinScaleY,
                         perlinOctaves,
                         perlinPersistance)
                     * perlinHeightScale;
@@ -1075,8 +1070,8 @@ public partial class CustomTerrain : MonoBehaviour
                 foreach (PerlinParameters parameters in perlinParameters)
                 {
                     heightMap[x, y] += Utils.fBM(
-                        (x + parameters.xOffset) * parameters.xScale,
-                        (y + parameters.yOffset) * parameters.yScale,
+                        (seed + x + parameters.xOffset) * parameters.xScale,
+                        (seed + y + parameters.yOffset) * parameters.yScale,
                         parameters.octaves,
                         parameters.persistance) * parameters.heightScale;
                 }
@@ -1124,6 +1119,7 @@ public partial class CustomTerrain : MonoBehaviour
             for (int x = 0; x < terrainData.heightmapResolution; x++)
             {
                 heightMap[x, y] -= falloffMap[x, y];
+                //heightMap[x, y] *= 1 - falloffMap[x, y];
             }
         }
         terrainData.SetHeights(0, 0, heightMap);
@@ -1199,6 +1195,20 @@ public partial class CustomTerrain : MonoBehaviour
     }
     void Awake()
     {
+        switch (seedType)
+        {
+            case SeedType.Fixed:
+                seed = fixedSeed;
+                break;
+            case SeedType.Random:
+                seed = (int)Time.time;
+                break;
+            default:
+                break;
+        }
+        UnityEngine.Random.InitState(seed);
+
+
 #if UNITY_EDITOR
         SerializedObject tagManager = new SerializedObject(
             AssetDatabase.LoadAllAssetsAtPath("ProjectSettings/TagManager.asset")[0]);

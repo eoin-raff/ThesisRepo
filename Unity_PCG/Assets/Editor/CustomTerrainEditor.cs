@@ -6,12 +6,15 @@ using EditorGUITable;
 [CanEditMultipleObjects]
 public class CustomTerrainEditor : Editor
 {
-/*
- * Use Serialized properties instead of direct access  to public variables.
- * This way changes in the editor will be saved when we change and recompile the code. 
- */
+    /*
+     * Use Serialized properties instead of direct access  to public variables.
+     * This way changes in the editor will be saved when we change and recompile the code. 
+     */
 
     // properties
+    private SerializedProperty seedType;
+    private SerializedProperty fixedSeed;
+
     private SerializedProperty randomHeightRange;
     private SerializedProperty heightMapScale;
     private SerializedProperty heightMapImage;
@@ -104,6 +107,10 @@ public class CustomTerrainEditor : Editor
     {
         resetTerrain = serializedObject.FindProperty("resetTerrain");
 
+        seedType = serializedObject.FindProperty("seedType");
+        fixedSeed = serializedObject.FindProperty("fixedSeed");
+
+
         randomHeightRange = serializedObject.FindProperty("randomHeightRange");
         heightMapScale = serializedObject.FindProperty("heightMapScale");
         heightMapImage = serializedObject.FindProperty("heightMapImage");
@@ -178,6 +185,9 @@ public class CustomTerrainEditor : Editor
         serializedObject.Update();
 
         CustomTerrain terrain = (CustomTerrain)target;
+
+        EditorGUILayout.PropertyField(seedType);
+        EditorGUILayout.PropertyField(fixedSeed);
 
         //Begin Scrollbar
         Rect r = EditorGUILayout.BeginVertical();

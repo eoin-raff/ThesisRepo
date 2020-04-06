@@ -21,8 +21,8 @@ public static class FalloffGenerator
 
     static float Evaluate(float value)
     {
-        float a = 0.9f;       //curve power
-        float b = 3f;     //curve position
+        float a = 3f;       //curve power
+        float b = 1.5f;     //curve position
 
         //slow to calculate, but should only be run once at the start (i.e. Awake or OnValidate)
         return Mathf.Pow(value, a) / (Mathf.Pow(value, a) + Mathf.Pow((b - b * value), a));
