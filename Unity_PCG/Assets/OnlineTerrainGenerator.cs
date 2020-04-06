@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
+[ExecuteAlways]
 public class OnlineTerrainGenerator : MonoBehaviour
 {
     public CustomTerrain terrain;
@@ -10,12 +11,23 @@ public class OnlineTerrainGenerator : MonoBehaviour
     public int ErosionGenerations = 1;
     public UnityEvent ErosionEvents;
     public UnityEvent PaintingEvents;
+
     // Start is called before the first frame update
     void Start()
     {
         Debug.Assert(GenerationEvents != null, "No Generation Events found", this);
         Debug.Assert(ErosionEvents != null, "No Erosion Events found", this);
         Debug.Assert(PaintingEvents != null, "No Painting Events found", this);
+        Generate();
+    }
+
+    public void Generate()
+    {
+        Debug.Log("Generating from seed " + terrain.Seed);
+        if (terrain.seedType == CustomTerrain.SeedType.Random)
+        {
+            terrain.Seed = System.DateTime.Now.Millisecond;
+        }
         if (GenerationEvents != null)
         {
             GenerationEvents.Invoke();
@@ -39,10 +51,7 @@ public class OnlineTerrainGenerator : MonoBehaviour
     {
         
     }
-    void Generate()
-    {
 
-    }
     void Erode()
     {
 

@@ -246,20 +246,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7256137ffa2fae043913088b3d8c6f5f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  seedType: 0
+  seedType: 1
   fixedSeed: 84651
   terrainLayer: 8
   randomHeightRange: {x: 0, y: 0.01}
-  heightMapImage: {fileID: 0}
+  heightMapImage: {fileID: 2800000, guid: 899b2d450cd2b624b9141f7c14321f13, type: 3}
   heightMapScale: {x: 2, y: 0.5, z: 2}
-  resetTerrain: 1
-  perlinScaleX: 0.005
-  perlinScaleY: 0.005
+  resetTerrain: 0
+  perlinScaleX: 0.0057
+  perlinScaleY: 0.006
   perlinOffsetX: 0
   perlinOffsetY: 0
-  perlinOctaves: 3
-  perlinPersistance: 0.3
-  perlinHeightScale: 0.8
+  perlinOctaves: 5
+  perlinPersistance: 0.312
+  perlinHeightScale: 0.04
   perlinParameters:
   - remove: 0
     xScale: 0.05
@@ -267,8 +267,8 @@ MonoBehaviour:
     xOffset: 0
     yOffset: 0
     octaves: 8
-    persistance: 0.125
-    heightScale: 0.2
+    persistance: 0.4
+    heightScale: 0.01
   - remove: 0
     xScale: 0.005
     yScale: 0.005
@@ -276,18 +276,18 @@ MonoBehaviour:
     yOffset: 0
     octaves: 3
     persistance: 0.3
-    heightScale: 0.8
-  voronoiPeakCount: 15
-  voronoiFallOff: 0.77
-  voronoiDropOff: 1
-  voronoiMinHeight: 0.10815479
-  voronoiMaxHeight: 0.29587013
+    heightScale: 0.3
+  voronoiPeakCount: 25
+  voronoiFallOff: 2.97
+  voronoiDropOff: 0.89
+  voronoiMinHeight: 0.058692455
+  voronoiMaxHeight: 0.45501003
   voronoiType: 2
   MPminHeight: -0.3
   MPmaxHeight: 0.3
-  MProughness: 1.8
-  MPheightDampener: 1.59
-  smoothAmount: 3
+  MProughness: 1.25
+  MPheightDampener: 1.5
+  smoothAmount: 10
   splatHeights:
   - remove: 0
     minHeight: 0
@@ -621,6 +621,17 @@ MonoBehaviour:
         m_CallState: 2
       - m_Target: {fileID: 29482988}
         m_MethodName: AddFalloffMap
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 29482988}
+        m_MethodName: Perlin
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

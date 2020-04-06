@@ -119,6 +119,9 @@ public partial class CustomTerrain : MonoBehaviour
     public Terrain terrain;
     public TerrainData terrainData;
 
+    public int Seed { get => seed; set => seed = value; }
+
+
     /*
      * Get Height Map will return the current height map if reset terrain is false,
      * otherwise it will generate a new height map.
@@ -1063,18 +1066,33 @@ public partial class CustomTerrain : MonoBehaviour
     public void MultiplePerlinTerrain()
     {
         float[,] heightMap = GetHeightMap();
+        float highestPoint = 0;
+        float lowestPoint = float.MaxValue;
         for (int y = 0; y < terrainData.heightmapResolution; y++)
         {
             for (int x = 0; x < terrainData.heightmapResolution; x++)
             {
+                float totalMax = 0;
+
                 foreach (PerlinParameters parameters in perlinParameters)
                 {
                     heightMap[x, y] += Utils.fBM(
                         (seed + x + parameters.xOffset) * parameters.xScale,
                         (seed + y + parameters.yOffset) * parameters.yScale,
                         parameters.octaves,
-                        parameters.persistance) * parameters.heightScale;
+                        parameters.persistance,
+                        ref lowestPoint,
+                        ref highestPoint) * parameters.heightScale;
                 }
+            }
+        }
+        Debug.Log(lowestPoint +","+highestPoint);
+        for (int y = 0; y < terrainData.heightmapResolution; y++)
+        {
+            for (int x = 0; x < terrainData.heightmapResolution; x++)
+            {
+                //heightMap[x, y] = Mathf.InverseLerp(lowestPoint, highestPoint, heightMap[x, y]);
+                heightMap[x, y] = Utils.Map(heightMap[x, y], lowestPoint, highestPoint, 0, 1);
             }
         }
         terrainData.SetHeights(0, 0, heightMap);
@@ -1118,8 +1136,9 @@ public partial class CustomTerrain : MonoBehaviour
         {
             for (int x = 0; x < terrainData.heightmapResolution; x++)
             {
-                heightMap[x, y] -= falloffMap[x, y];
-                //heightMap[x, y] *= 1 - falloffMap[x, y];
+                
+                //heightMap[x, y] -= falloffMap[x, y];
+                heightMap[x, y] *= 1 - falloffMap[x, y];
             }
         }
         terrainData.SetHeights(0, 0, heightMap);
@@ -1192,21 +1211,12 @@ public partial class CustomTerrain : MonoBehaviour
         Debug.Log("Initialising Terrain Data");
         terrain = this.GetComponent<Terrain>();
         terrainData = Terrain.activeTerrain.terrainData;
+        SetRandomSeed();
+
     }
     void Awake()
     {
-        switch (seedType)
-        {
-            case SeedType.Fixed:
-                seed = fixedSeed;
-                break;
-            case SeedType.Random:
-                seed = (int)Time.time;
-                break;
-            default:
-                break;
-        }
-        UnityEngine.Random.InitState(seed);
+        SetRandomSeed();
 
 
 #if UNITY_EDITOR
@@ -1230,6 +1240,24 @@ public partial class CustomTerrain : MonoBehaviour
         this.gameObject.tag = "Terrain";
         this.gameObject.layer = terrainLayer;
 #endif
+    }
+
+    private void SetRandomSeed()
+    {
+        switch (seedType)
+        {
+            case SeedType.Fixed:
+                seed = fixedSeed;
+                break;
+            case SeedType.Random:
+                seed = DateTime.Now.Millisecond;
+                //seed = (int)Time.time;
+                Debug.Log(DateTime.Now.Millisecond);
+                break;
+            default:
+                break;
+        }
+        UnityEngine.Random.InitState(seed);
     }
 
     public void AddNewData<T>(ref List<T> list) where T : new()

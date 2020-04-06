@@ -7,20 +7,36 @@ public static class Utils
     // Fractal Brownian Motion
     public static float fBM(float x, float y, int oct, float persistance)
     {
-        float total = 0;
+        //If no min and max are created, then just discard them here
+        float _min = float.MaxValue;
+        float _max = float.MinValue;
+        return fBM(x, y, oct, persistance, ref _min, ref _max);
+    }
+    public static float fBM(float x, float y, int oct, float persistance, ref float min, ref float max)
+    {
+        float noiseHeight = 0;
         float frequency = 1;
         float amplitude = 1;
         float maxValue = 0;
 
         for (int i = 0; i < oct; i++)
         {
-            total += Mathf.PerlinNoise(x * frequency, y * frequency) * amplitude;
+            float perlinValue = Mathf.PerlinNoise(x * frequency, y * frequency);
+            noiseHeight += perlinValue * amplitude;
             maxValue += amplitude;
             amplitude *= persistance;
             frequency *= 2; //lacunarity
         }
+        if (noiseHeight > max)
+        {
+            max = noiseHeight;
+        }
+        if (noiseHeight < min)
+        {
+            min = noiseHeight;
+        }
 
-        return total / maxValue;
+        return noiseHeight / maxValue;
     }
     public static float Map(float value, float originalMin, float originalMax, float targetMin, float targetMax)
     {

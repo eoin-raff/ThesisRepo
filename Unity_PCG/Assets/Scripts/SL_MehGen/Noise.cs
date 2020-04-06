@@ -70,7 +70,7 @@ public static class Noise
 
 
                     float perlinValue = Mathf.PerlinNoise(sampleX, sampleY) * 2 - 1;
-                    
+
                     noiseHeight += perlinValue * amplitude;
 
                     amplitude *= settings.Persistance;
@@ -98,7 +98,7 @@ public static class Noise
         {
             for (int y = 0; y < mapHeight; y++)
             {
-            for (int x = 0; x < mapWidth; x++)
+                for (int x = 0; x < mapWidth; x++)
                 {
                     noiseMap[x, y] = Mathf.InverseLerp(minLocalNoiseHeight, maxLocalNoiseHeight, noiseMap[x, y]);
                 }
@@ -130,6 +130,6 @@ public class NoiseSettings
         Octaves = Mathf.Max(Octaves, 1);
         Lacunarity = Mathf.Max(Lacunarity, 1f);
         Persistance = Mathf.Clamp01(Persistance);
-        
+
     }
 }
