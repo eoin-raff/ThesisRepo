@@ -64,6 +64,13 @@ public static class Utils
         return component;
     }
 
+    /// <summary>
+    /// This function runs a simple 3x3 Kernel around a given position in a 2d array or image, and returns a list of all the surrounding positions/nodes/pixels
+    /// </summary>
+    /// <param name="pos">The center point from whose neighbors should be found</param>
+    /// <param name="width">The width of the search area (i.e. the image or array, NOT the kernel)</param>
+    /// <param name="height">The height of the search area (i.e. the image or array, NOT the kernel)</param>
+    /// <returns></returns>
     public static List<Vector2> GetNeighbors(Vector2 pos, int width, int height)
     {
         List<Vector2> neighbors = new List<Vector2>();
