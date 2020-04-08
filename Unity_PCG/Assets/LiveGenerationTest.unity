@@ -14,7 +14,7 @@ OcclusionCullingSettings:
 RenderSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 9
-  m_Fog: 1
+  m_Fog: 0
   m_FogColor: {r: 0.9725491, g: 0.73333335, b: 0.36078432, a: 1}
   m_FogMode: 3
   m_FogDensity: 0.002
@@ -226,6 +226,7 @@ GameObject:
   - component: {fileID: 29482990}
   - component: {fileID: 29482989}
   - component: {fileID: 29482988}
+  - component: {fileID: 29482993}
   - component: {fileID: 29482992}
   m_Layer: 8
   m_Name: Terrain
@@ -243,10 +244,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 29482987}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7256137ffa2fae043913088b3d8c6f5f, type: 3}
+  m_Script: {fileID: 11500000, guid: eb7fab98c4b52f24b8aebb52db4fbf10, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  seedType: 0
+  seedType: 1
   fixedSeed: 0
   terrainLayer: 8
   randomHeightRange: {x: 0, y: 0.01}
@@ -502,13 +503,6 @@ MonoBehaviour:
   waterHeight: 0.025
   waterGO: {fileID: 100000, guid: 780611a67e8e941a2b3aa96e5915a793, type: 3}
   shorelineMaterial: {fileID: 2100000, guid: 901665a29f6bee448bc3f5a56a60348b, type: 2}
-  erosionType: 2
-  erosionStrength: 0.005
-  erosionAmount: 0.458
-  springsPerRiver: 3
-  solubility: 0.0001
-  droplets: 41
-  erosionSmoothAmount: 5
   numberOfClouds: 1000
   particlesPerCloud: 50
   cloudParticleSize: 15
@@ -590,7 +584,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 29482987}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a82dc8d5e7de8974bbca11ec3eeedf9d, type: 3}
+  m_Script: {fileID: 11500000, guid: 391be2b2cc122be47850422574256103, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   terrain: {fileID: 29482988}
@@ -725,6 +719,34 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &29482993
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 29482987}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3a1b5c4facb0e924b85b6113b53222d3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  terrain: {fileID: 29482988}
+  resolution: 513
+  erosionType: 0
+  erosionSmoothAmount: 5
+  rainDroplets: 10
+  rainErosionStrength: 0.5
+  riverSprings: 5
+  riverSolubility: 0.01
+  riverErosionStrength: 0
+  riverSourcePoints: 0
+  thermalErosionSensitivity: 0
+  thermalErosionAmount: 0
+  tidalErosionStrength: 0
+  windAngle: 0
+  windErosionAmount: 0
+  windErosionStrength: 0
 --- !u!1 &631875818
 GameObject:
   m_ObjectHideFlags: 0
