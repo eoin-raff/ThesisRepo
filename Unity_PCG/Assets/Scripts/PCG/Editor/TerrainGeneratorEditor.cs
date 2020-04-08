@@ -5,9 +5,9 @@ using EditorGUITable;
 
 namespace MED10.PCG
 {
-    [CustomEditor(typeof(CustomTerrain))]
+    [CustomEditor(typeof(TerrainGenerator))]
     [CanEditMultipleObjects]
-    public class CustomTerrainEditor : Editor
+    public class TerrainGeneratorEditor : Editor
     {
         /*
          * Use Serialized properties instead of direct access  to public variables.
@@ -172,7 +172,7 @@ namespace MED10.PCG
             // Update values in GUI from Custom Terrain
             serializedObject.Update();
 
-            CustomTerrain terrain = (CustomTerrain)target;
+            TerrainGenerator terrain = (TerrainGenerator)target;
 
             EditorGUILayout.PropertyField(seedType);
             EditorGUILayout.PropertyField(fixedSeed);

@@ -4,9 +4,9 @@ using UnityEngine.Events;
 namespace MED10.PCG
 {
     [ExecuteAlways]
-    public class OnlineTerrainGenerator : MonoBehaviour
+    public class RuntimeGeneration : MonoBehaviour
     {
-        public CustomTerrain terrain;
+        public TerrainGenerator terrain;
         public UnityEvent GenerationEvents;
         public int ErosionGenerations = 1;
         public UnityEvent ErosionEvents;
@@ -24,7 +24,7 @@ namespace MED10.PCG
         public void Generate()
         {
             Debug.Log("Generating from seed " + terrain.Seed);
-            if (terrain.seedType == CustomTerrain.SeedType.Random)
+            if (terrain.seedType == TerrainGenerator.SeedType.Random)
             {
                 terrain.Seed = System.DateTime.Now.Millisecond;
             }

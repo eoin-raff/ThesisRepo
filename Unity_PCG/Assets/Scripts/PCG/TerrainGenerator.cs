@@ -8,7 +8,7 @@ using Random = UnityEngine.Random;
 namespace MED10.PCG
 {
     [ExecuteInEditMode]
-    public class CustomTerrain : MonoBehaviour
+    public class TerrainGenerator : MonoBehaviour
     {
         public enum SeedType { Fixed, Random };
         public SeedType seedType = SeedType.Fixed;

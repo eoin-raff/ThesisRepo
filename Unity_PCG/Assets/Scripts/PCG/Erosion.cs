@@ -6,7 +6,7 @@ namespace MED10.PCG
 {
     public class Erosion : MonoBehaviour
     {
-        public CustomTerrain terrain;
+        public TerrainGenerator terrain;
         public enum ErosionType { Rain, Thermal, Tidal, River, Wind };
         public ErosionType erosionType = ErosionType.Rain;
         public float erosionStrength = 0.1f;
