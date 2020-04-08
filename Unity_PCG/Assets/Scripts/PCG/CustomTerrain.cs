@@ -6,7 +6,7 @@ using System.Linq;
 using Random = UnityEngine.Random;
 
 [ExecuteInEditMode]
-public partial class CustomTerrain : MonoBehaviour
+public class CustomTerrain : MonoBehaviour
 {
     public enum SeedType { Fixed, Random };
     public SeedType seedType = SeedType.Fixed;
@@ -56,7 +56,9 @@ public partial class CustomTerrain : MonoBehaviour
     public float MProughness;
     public float MPheightDampener;
     #endregion
+    
     public int smoothAmount = 1;
+    
     #region SplatMaps
     public List<Splatmap> splatHeights = new List<Splatmap>()
     {
@@ -87,18 +89,6 @@ public partial class CustomTerrain : MonoBehaviour
     public Material shorelineMaterial;
     #endregion
 
-    #region Erosion
-    public enum ErosionType { Rain, Thermal, Tidal, River, Wind };
-    public ErosionType erosionType = ErosionType.Rain;
-    public float erosionStrength = 0.1f;
-    public float erosionAmount = 0.5f;
-    public int springsPerRiver = 5;
-    public float solubility = 0.01f;
-    public int droplets = 10;
-    public int erosionSmoothAmount = 5;
-
-    #endregion
-
     #region Clouds
     public int numberOfClouds = 1;
     public int particlesPerCloud = 50;
@@ -127,7 +117,7 @@ public partial class CustomTerrain : MonoBehaviour
      * otherwise it will generate a new height map.
      * The function is overloaded to either use the resetTerrain global varaible, or to be specified when calling the function
      */
-    private float[,] GetHeightMap()
+    public float[,] GetHeightMap()
     {
         if (!resetTerrain)
         {
@@ -138,7 +128,7 @@ public partial class CustomTerrain : MonoBehaviour
             return new float[terrainData.heightmapResolution, terrainData.heightmapResolution];
         }
     }
-    private float[,] GetHeightMap(bool reset)
+    public float[,] GetHeightMap(bool reset)
     {
         if (!reset)
         {
@@ -150,22 +140,6 @@ public partial class CustomTerrain : MonoBehaviour
         }
     }
 
-
-    [Obsolete("Use Unity's in built steepness instead")]
-    float GetSteepness(float[,] heightMap, int x, int y, int width, int height)
-    {
-        float h = heightMap[x, y];
-        //if on upper edge, find gradient by going backwards
-        int nx = x + 1 > width - 1 ? x - 1 : x + 1;
-        int ny = y + 1 > height - 1 ? y - 1 : y + 1;
-
-        float dx = heightMap[nx, y] - h;
-        float dy = heightMap[x, ny] - h;
-        Vector2 gradient = new Vector2(dx, dy);
-
-        return gradient.magnitude;
-
-    }
     public void SplatMaps()
     {
 #if UNITY_EDITOR
@@ -426,74 +400,6 @@ public partial class CustomTerrain : MonoBehaviour
         }
     }
 
-    public void Erode()
-    {
-        switch (erosionType)
-        {
-            case ErosionType.Rain:
-                Rain();
-                break;
-            case ErosionType.Thermal:
-                Thermal();
-                break;
-            case ErosionType.Tidal:
-                Tidal();
-                break;
-            case ErosionType.River:
-                River();
-                break;
-            case ErosionType.Wind:
-                Wind();
-                break;
-            default:
-                break;
-        }
-
-        //smoothAmount = erosionSmoothAmount;
-        //for (int i = 0; i < erosionSmoothAmount; i++)
-        //{
-        //Smooth();
-        //}
-    }
-
-    private void Wind()
-    {
-        /*
-         * This algorithm simulates particles being lifted and despostied, or dragged across a surface by wind
-         */
-        float[,] heightMap = GetHeightMap(false);
-        int res = terrainData.heightmapResolution;
-
-        float windDir = 30;                                                                              //angle of the wind between 0 and 360
-
-        float sin = -Mathf.Sin(Mathf.Deg2Rad * windDir);
-        float cos = Mathf.Cos(Mathf.Deg2Rad * windDir);
-
-        //Loop a much larger area than heightmap to accommodate for rotation in final step.
-        for (int y = -(res - 1) * 2; y < res * 2; y += 10) // Skip ahead a larger amount on the y axis
-        {
-            for (int x = -(res - 1) * 2; x < res * 2; x++)
-            {
-                float noise = (float)Mathf.PerlinNoise(x * 0.06f, y * 0.06f) * 20 * erosionStrength;    //Get a Perlin Noise value for waves
-                int nx = x;
-                int digY = y + (int)noise; //Dig a trench at the current Y values offset by noise
-                int ny = digY + 5;         //Find a new Y which is a step away from the digY
-
-                //rotate both dig (x, digY) and pile (nx, ny) by wind direction
-                Vector2 digCoords = new Vector2(x * cos - digY * sin, digY * cos + x * sin);
-                Vector2 pileCoords = new Vector2(nx * cos - ny * sin, ny * cos + nx * sin);
-
-                bool digOutOfBounds = (digCoords.x < 0 || digCoords.x > (res - 1) || digCoords.y < 0 || digCoords.y > (res - 1));
-                bool pileOutOfBounds = (pileCoords.x < 0 || pileCoords.x > (res - 1) || pileCoords.y < 0 || pileCoords.y > (res - 1));
-                if (!(pileOutOfBounds || digOutOfBounds))  //Check that nx and ny are valid points within the heightMap
-                {
-                    heightMap[(int)digCoords.x, (int)digCoords.y] -= erosionAmount;                  //Dig a Trench at the digY
-                    heightMap[(int)pileCoords.x, (int)pileCoords.y] += erosionAmount;                     //Deposit sediment at ny
-                }
-            }
-        }
-        terrainData.SetHeights(0, 0, heightMap);
-    }
 
     public void GenerateClouds()
     {
@@ -597,148 +503,6 @@ public partial class CustomTerrain : MonoBehaviour
         }
     }
 
-    private void River()
-    {
-        float[,] heightMap = GetHeightMap(false);                                           // Get the current HeightMap without resetting terrain
-
-        float[,] erosionMap = new float[                                                    // Create a new map to keep track of the rivers
-            terrainData.heightmapResolution,                                                //  with the same size as heightMap
-            terrainData.heightmapResolution];
-
-        for (int i = 0; i < droplets; i++)                                                  // Droplets controls the number of rivers
-        {
-            Vector2 dropletPosition = new Vector2(                                          // Create droplets in random positions on the heightMap
-                UnityEngine.Random.Range(0, terrainData.heightmapResolution),
-                UnityEngine.Random.Range(0, terrainData.heightmapResolution));
-
-            erosionMap[(int)dropletPosition.x, (int)dropletPosition.y] = erosionStrength;   // Initialize erosionMap with values of erosionStrength at each droplet's position
-
-            for (int j = 0; j < springsPerRiver; j++)                                       // Springs per river determines how many directions the river will flow in.
-            {
-                erosionMap = RunRiver(dropletPosition,                                      // Call RunRiver to calculate the river's path down the terrain
-                    heightMap,
-                    erosionMap,
-                    terrainData.heightmapResolution, terrainData.heightmapResolution);
-            }
-        }
-
-        for (int y = 0; y < terrainData.heightmapResolution; y++)
-        {
-            for (int x = 0; x < terrainData.heightmapResolution; x++)
-            {
-                if (erosionMap[x, y] > 0)
-                {
-                    heightMap[x, y] -= erosionMap[x, y];                                    // Apply the erosion map to the heightmap
-                }
-            }
-        }
-        terrainData.SetHeights(0, 0, heightMap);                                            // Apply heightMap to Terrain
-    }
-
-    private float[,] RunRiver(Vector2 dropletPosition, float[,] heightMap, float[,] erosionMap, int width, int height)
-    {
-        while (erosionMap[(int)dropletPosition.x, (int)dropletPosition.y] > 0)
-        {
-            List<Vector2> neighbors = Utils.GetNeighbors(dropletPosition, width, height);                             //Get the neighboring positions
-            neighbors.Shuffle();                                                                                //Shuffle them so we don't always get the same value
-            bool foundLower = false;
-            foreach (Vector2 n in neighbors)
-            {
-                if (heightMap[(int)n.x, (int)n.y] < heightMap[(int)dropletPosition.x, (int)dropletPosition.y])  // If the neighbor is lower than the droplet
-                {
-                    erosionMap[(int)n.x, (int)n.y] = erosionMap[(int)dropletPosition.x,
-                                                                (int)dropletPosition.y]
-                                                              - solubility;                                     // Set the erosionMap at the neighbors position equal to the erosionMap at droplet position - solubility
-                    dropletPosition = n;                                                                        // Check from the neighbors position next time. I.e. move downhill, gathering sediment
-                    foundLower = true;
-                    break;                                                                                      // Stop searching the neighbors once you have found one suitable
-                }
-            }
-            if (!foundLower)                                                                                    // If you have checked all neighbors and not found one lower
-            {
-                erosionMap[(int)dropletPosition.x, (int)dropletPosition.y] -= solubility;                       // Then reduce your current value (i.e. drop off sediment)
-            }
-        }
-
-        return erosionMap;
-    }
-
-    private void Thermal()
-    {
-        /*
-         *  Simulate erosion from landslides by checking the steepness of a slope
-         *  If the steepness is above a certain threshold, then move some of the current height to the lower neighbor
-         *  This causes cliffs with lower slopes beneath them
-         */
-        Debug.Log("Thermal Erosion");
-        float[,] heightMap = GetHeightMap(false);
-
-        for (int y = 0; y < terrainData.heightmapResolution; y++)
-        {
-            for (int x = 0; x < terrainData.heightmapResolution; x++)
-            {
-                Vector2 location = new Vector2(x, y);
-                List<Vector2> neighbors = Utils.GetNeighbors(location, terrainData.heightmapResolution, terrainData.heightmapResolution);
-                foreach (Vector2 n in neighbors)
-                {
-                    if (heightMap[x, y] > heightMap[(int)n.x, (int)n.y] + erosionStrength)
-                    {
-                        //  Debug.Log("Eroding");
-                        float currentHeight = heightMap[x, y];
-                        heightMap[x, y] -= currentHeight * erosionAmount;
-                        heightMap[(int)n.x, (int)n.y] += currentHeight * erosionAmount;
-                    }
-                }
-            }
-        }
-        terrainData.SetHeights(0, 0, heightMap);
-    }
-
-    private void Tidal()
-    {
-        /*
-         *  Simulate erosion from waves beating at landscape
-         *  like a blend of thermal and shorline
-         */
-        Debug.Log("Tidal Erosion");
-        float[,] heightMap = GetHeightMap(false);
-
-        for (int y = 0; y < terrainData.heightmapResolution; y++)
-        {
-            for (int x = 0; x < terrainData.heightmapResolution; x++)
-            {
-                Vector2 location = new Vector2(x, y);
-                List<Vector2> neighbors = Utils.GetNeighbors(location, terrainData.heightmapResolution, terrainData.heightmapResolution);
-                foreach (Vector2 n in neighbors)
-                {
-                    if (heightMap[x, y] < waterHeight && heightMap[(int)n.x, (int)n.y] > waterHeight)
-                    {
-                        heightMap[x, y] = waterHeight;
-                        heightMap[(int)n.x, (int)n.y] = waterHeight;
-                    }
-                }
-            }
-        }
-        terrainData.SetHeights(0, 0, heightMap);
-    }
-
-    private void Rain()
-    {
-        /*
-         *  Simulate erosion by rain by creating divots all across the terrain
-         */
-
-
-        float[,] heightMap = GetHeightMap(false);
-
-        for (int i = 0; i < droplets; i++)
-        {
-            heightMap[UnityEngine.Random.Range(0, terrainData.heightmapResolution),
-                      UnityEngine.Random.Range(0, terrainData.heightmapResolution)]
-                    -= erosionStrength;
-        }
-        terrainData.SetHeights(0, 0, heightMap);
-    }
 
     public void AddShore()
     {
@@ -1251,8 +1015,6 @@ public partial class CustomTerrain : MonoBehaviour
                 break;
             case SeedType.Random:
                 seed = DateTime.Now.Millisecond;
-                //seed = (int)Time.time;
-                Debug.Log(DateTime.Now.Millisecond);
                 break;
             default:
                 break;
@@ -1387,4 +1149,22 @@ public partial class CustomTerrain : MonoBehaviour
     {
         details.Add(new Detail());
     }
+
+
+    [Obsolete("Use Unity's in built steepness instead")]
+    float GetSteepness(float[,] heightMap, int x, int y, int width, int height)
+    {
+        float h = heightMap[x, y];
+        //if on upper edge, find gradient by going backwards
+        int nx = x + 1 > width - 1 ? x - 1 : x + 1;
+        int ny = y + 1 > height - 1 ? y - 1 : y + 1;
+
+        float dx = heightMap[nx, y] - h;
+        float dy = heightMap[x, ny] - h;
+        Vector2 gradient = new Vector2(dx, dy);
+
+        return gradient.magnitude;
+
+    }
+
 }

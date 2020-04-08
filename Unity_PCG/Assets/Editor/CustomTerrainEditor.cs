@@ -61,13 +61,6 @@ public class CustomTerrainEditor : Editor
     private SerializedProperty waterGO;
     private SerializedProperty shorelineMaterial;
 
-    private SerializedProperty erosionType;
-    private SerializedProperty erosionStrength;
-    private SerializedProperty erosionAmount;
-    private SerializedProperty springsPerRiver;
-    private SerializedProperty solubility;
-    private SerializedProperty droplets;
-    private SerializedProperty erosionSmoothAmount;
 
     private SerializedProperty numberOfClouds;
     private SerializedProperty particlesPerCloud;
@@ -157,14 +150,6 @@ public class CustomTerrainEditor : Editor
         waterGO = serializedObject.FindProperty("waterGO");
         shorelineMaterial = serializedObject.FindProperty("shorelineMaterial");
 
-        erosionType = serializedObject.FindProperty("erosionType");
-        erosionStrength = serializedObject.FindProperty("erosionStrength");
-        erosionAmount = serializedObject.FindProperty("erosionAmount");
-        springsPerRiver = serializedObject.FindProperty("springsPerRiver");
-        solubility = serializedObject.FindProperty("solubility");
-        droplets = serializedObject.FindProperty("droplets");
-        erosionSmoothAmount = serializedObject.FindProperty("erosionSmoothAmount");
-
         numberOfClouds = serializedObject.FindProperty("numberOfClouds");
         particlesPerCloud = serializedObject.FindProperty("particlesPerCloud");
         cloudParticleSize = serializedObject.FindProperty("cloudParticleSize");
@@ -252,11 +237,11 @@ public class CustomTerrainEditor : Editor
             EditorGUILayout.BeginHorizontal();
             if (GUILayout.Button("+"))
             {
-                terrain.AddNewData(ref terrain.perlinParameters);
+                Utils.AddNewData(ref terrain.perlinParameters);
             }
             if (GUILayout.Button("-"))
             {
-                terrain.RemoveData(ref terrain.perlinParameters);
+                Utils.RemoveData(ref terrain.perlinParameters);
             }
             EditorGUILayout.EndHorizontal();
             if (GUILayout.Button("Apply Multiple Perlin"))
@@ -324,11 +309,11 @@ public class CustomTerrainEditor : Editor
             EditorGUILayout.BeginHorizontal();
             if (GUILayout.Button("+"))
             {
-                terrain.AddNewData<Splatmap>(ref terrain.splatHeights);
+                Utils.AddNewData<Splatmap>(ref terrain.splatHeights);
             }
             if (GUILayout.Button("-"))
             {
-                terrain.RemoveData <Splatmap> (ref terrain.splatHeights);
+                Utils.RemoveData <Splatmap> (ref terrain.splatHeights);
             }
             EditorGUILayout.EndHorizontal();
             if (GUILayout.Button("Apply Splatmaps"))
@@ -351,11 +336,11 @@ public class CustomTerrainEditor : Editor
             EditorGUILayout.BeginHorizontal();
             if (GUILayout.Button("+"))
             {
-                terrain.AddNewData(ref terrain.vegetationData);
+                Utils.AddNewData(ref terrain.vegetationData);
             }
             if (GUILayout.Button("-"))
             {
-                terrain.RemoveData<Vegetation>(ref terrain.vegetationData);
+                Utils.RemoveData<Vegetation>(ref terrain.vegetationData);
             }
             EditorGUILayout.EndHorizontal();
             if (GUILayout.Button("Apply Vegetation"))
@@ -382,11 +367,11 @@ public class CustomTerrainEditor : Editor
             EditorGUILayout.BeginHorizontal();
             if (GUILayout.Button("+"))
             {
-                terrain.AddNewData(ref terrain.details);
+                Utils.AddNewData(ref terrain.details);
             }
             if (GUILayout.Button("-"))
             {
-                terrain.RemoveData<Detail>(ref terrain.details);
+                Utils.RemoveData<Detail>(ref terrain.details);
             }
             EditorGUILayout.EndHorizontal();
             if (GUILayout.Button("Apply Details"))
@@ -409,23 +394,6 @@ public class CustomTerrainEditor : Editor
             if (GUILayout.Button("Add Shore"))
             {
                 terrain.AddShore();
-            }
-        }
-
-        showErosion = EditorGUILayout.Foldout(showErosion, "Erosion");
-        if (showErosion)
-        {
-            EditorGUILayout.PropertyField(erosionType);
-            EditorGUILayout.Slider(erosionStrength, 0.00001f, 1, new GUIContent("Erosion Strength"));
-            EditorGUILayout.Slider(erosionAmount, 0.00001f, 1, new GUIContent("Erosion Amount"));
-            EditorGUILayout.IntSlider(droplets, 1, 1000, new GUIContent("Droplets"));
-            EditorGUILayout.Slider(solubility, 0.00001f, 1, new GUIContent("Solubility"));
-            EditorGUILayout.IntSlider(springsPerRiver, 0, 20, new GUIContent("Springs Per River"));
-            EditorGUILayout.IntSlider(smoothAmount, 0, 10, new GUIContent("Smooth Amount"));
-
-            if (GUILayout.Button("Erode"))
-            {
-                terrain.Erode();
             }
         }
 
