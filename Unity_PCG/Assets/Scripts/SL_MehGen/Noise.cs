@@ -1,7 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System;
 using UnityEngine;
 
+[Obsolete()]
 public static class Noise
 {
     private const float MaxHeightReduction = 1.9f;
@@ -109,6 +109,7 @@ public static class Noise
     }
 }
 
+[Obsolete()]
 [System.Serializable]
 public class NoiseSettings
 {

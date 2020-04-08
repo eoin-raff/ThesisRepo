@@ -1,5 +1,7 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
+[Obsolete()]
 public static class MeshGenerator
 {
     public static MeshData GenerateTerrainMesh(float[,] heightMap, MeshSettings meshSettings, int levelOfDetail)
@@ -92,6 +94,7 @@ public static class MeshGenerator
     }
 }
 
+[Obsolete()]
 public class MeshData
 {
     Vector3[] vertices;

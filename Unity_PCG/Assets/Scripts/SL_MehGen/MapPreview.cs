@@ -1,5 +1,7 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
+[Obsolete()]
 public class MapPreview : MonoBehaviour
 {
     public Renderer TextureRenderer;
@@ -86,6 +88,8 @@ public class MapPreview : MonoBehaviour
         }
     }
 }
+
+[Obsolete()]
 public enum DrawMode
 {
     NoiseMap,

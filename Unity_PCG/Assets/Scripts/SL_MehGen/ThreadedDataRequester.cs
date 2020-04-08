@@ -3,6 +3,7 @@ using System.Threading;
 using System.Collections.Generic;
 using UnityEngine;
 
+[Obsolete()]
 public class ThreadedDataRequester : MonoBehaviour
 {
     static ThreadedDataRequester Instance;

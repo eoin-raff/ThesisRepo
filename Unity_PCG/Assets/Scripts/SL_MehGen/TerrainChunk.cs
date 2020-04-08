@@ -1,6 +1,7 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
-
+[Obsolete()]
 public class TerrainChunk
 {
     const float colliderGenerationDistanceThreshold = 5;
@@ -179,6 +180,7 @@ public class TerrainChunk
     }
 }
 
+[Obsolete()]
 class LODMesh
 {
     public Mesh Mesh;

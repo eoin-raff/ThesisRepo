@@ -1,7 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System;
 using UnityEngine;
 
+[Obsolete()]
 public static class HeightMapGenerator
 {
     public static HeightMap GenerateHeightMap(int width, int height, HeightMapSettings settings, Vector2 sampleCentre)
@@ -37,7 +37,7 @@ public static class HeightMapGenerator
 
 }
 
-
+[Obsolete()]
 public struct HeightMap
 {
     public readonly float[,] Values;

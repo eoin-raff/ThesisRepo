@@ -1,5 +1,7 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
+[Obsolete()]
 public static class TextureGenerator
 {
     public static Texture2D TextureFromColorMap(Color[] colorMap, int width, int height)
