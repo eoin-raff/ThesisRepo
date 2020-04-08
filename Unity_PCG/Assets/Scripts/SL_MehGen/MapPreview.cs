@@ -37,7 +37,7 @@ public class MapPreview : MonoBehaviour
         }
         else if (DrawMode == DrawMode.FalloffMap)
         {
-            DrawTexture(TextureGenerator.TextureFromHeightmap(new HeightMap( FalloffGenerator.GenerateFalloffMap(MeshSettings.NumVertsPerLine), 0, 1)));
+            DrawTexture(TextureGenerator.TextureFromHeightmap(new HeightMap( MED10.Utilities.FalloffGenerator.GenerateFalloffMap(MeshSettings.NumVertsPerLine), 0, 1)));
         }
     }
 
