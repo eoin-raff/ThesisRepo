@@ -1,30 +1,34 @@
 ﻿using UnityEngine;
 
-public static class FalloffGenerator
+namespace MED10.Utilities
 {
-    public static float[,] GenerateFalloffMap(int size)
+    public static class FalloffGenerator
     {
-        float[,] map = new float[size, size];
-        for (int i = 0; i < size; i++)
+        public static float[,] GenerateFalloffMap(int size)
         {
-            for (int j = 0; j < size; j++)
+            float[,] map = new float[size, size];
+            for (int i = 0; i < size; i++)
             {
-                float x = i / (float)size * 2 - 1;
-                float y = j / (float)size * 2 - 1;
+                for (int j = 0; j < size; j++)
+                {
+                    float x = i / (float)size * 2 - 1;
+                    float y = j / (float)size * 2 - 1;
 
-                float value = Mathf.Max(Mathf.Abs(x), Mathf.Abs(y));
-                map[i, j] = Evaluate(value);
+                    float value = Mathf.Max(Mathf.Abs(x), Mathf.Abs(y));
+                    map[i, j] = Evaluate(value);
+                }
             }
+            return map;
         }
-        return map;
+
+        static float Evaluate(float value)
+        {
+            float a = 3f;       //curve power
+            float b = 1.5f;     //curve position
+
+            //slow to calculate, but should only be run once at the start (i.e. Awake or OnValidate)
+            return Mathf.Pow(value, a) / (Mathf.Pow(value, a) + Mathf.Pow((b - b * value), a));
+        }
     }
 
-    static float Evaluate(float value)
-    {
-        float a = 3f;       //curve power
-        float b = 1.5f;     //curve position
-
-        //slow to calculate, but should only be run once at the start (i.e. Awake or OnValidate)
-        return Mathf.Pow(value, a) / (Mathf.Pow(value, a) + Mathf.Pow((b - b * value), a));
-    }
 }
