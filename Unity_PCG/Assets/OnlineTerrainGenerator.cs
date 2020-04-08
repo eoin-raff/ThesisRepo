@@ -1,61 +1,65 @@
 ﻿using UnityEngine;
 using UnityEngine.Events;
 
-[ExecuteAlways]
-public class OnlineTerrainGenerator : MonoBehaviour
+namespace MED10.PCG
 {
-    public CustomTerrain terrain;
-    public UnityEvent GenerationEvents;
-    public int ErosionGenerations = 1;
-    public UnityEvent ErosionEvents;
-    public UnityEvent PaintingEvents;
-
-    // Start is called before the first frame update
-    void Start()
+    [ExecuteAlways]
+    public class OnlineTerrainGenerator : MonoBehaviour
     {
-        Debug.Assert(GenerationEvents != null, "No Generation Events found", this);
-        Debug.Assert(ErosionEvents != null, "No Erosion Events found", this);
-        Debug.Assert(PaintingEvents != null, "No Painting Events found", this);
-        Generate();
-    }
+        public CustomTerrain terrain;
+        public UnityEvent GenerationEvents;
+        public int ErosionGenerations = 1;
+        public UnityEvent ErosionEvents;
+        public UnityEvent PaintingEvents;
 
-    public void Generate()
-    {
-        Debug.Log("Generating from seed " + terrain.Seed);
-        if (terrain.seedType == CustomTerrain.SeedType.Random)
+        // Start is called before the first frame update
+        void Start()
         {
-            terrain.Seed = System.DateTime.Now.Millisecond;
+            Debug.Assert(GenerationEvents != null, "No Generation Events found", this);
+            Debug.Assert(ErosionEvents != null, "No Erosion Events found", this);
+            Debug.Assert(PaintingEvents != null, "No Painting Events found", this);
+            Generate();
         }
-        if (GenerationEvents != null)
+
+        public void Generate()
         {
-            GenerationEvents.Invoke();
-        }
-        for (int i = 0; i < ErosionGenerations; i++)
-        {
-            if (ErosionEvents != null)
+            Debug.Log("Generating from seed " + terrain.Seed);
+            if (terrain.seedType == CustomTerrain.SeedType.Random)
             {
-                ErosionEvents.Invoke();
+                terrain.Seed = System.DateTime.Now.Millisecond;
+            }
+            if (GenerationEvents != null)
+            {
+                GenerationEvents.Invoke();
+            }
+            for (int i = 0; i < ErosionGenerations; i++)
+            {
+                if (ErosionEvents != null)
+                {
+                    ErosionEvents.Invoke();
+                }
+            }
+            terrain.Smooth();
+            if (PaintingEvents != null)
+            {
+                PaintingEvents.Invoke();
             }
         }
-        terrain.Smooth();
-        if (PaintingEvents != null)
+
+        // Update is called once per frame
+        void Update()
         {
-            PaintingEvents.Invoke();
+
+        }
+
+        void Erode()
+        {
+
+        }
+        void PaintTerrain()
+        {
+
         }
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
-    void Erode()
-    {
-
-    }
-    void PaintTerrain()
-    {
-
-    }
 }
