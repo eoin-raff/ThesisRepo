@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[Obsolete("Not used anymore", true)]
+[Obsolete()]
 public class UpdateableData : ScriptableObject
 {
     public event System.Action OnValuesUpdated;

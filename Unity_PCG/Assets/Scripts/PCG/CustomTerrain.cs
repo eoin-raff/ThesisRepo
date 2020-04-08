@@ -1022,27 +1022,7 @@ public class CustomTerrain : MonoBehaviour
         UnityEngine.Random.InitState(seed);
     }
 
-    public void AddNewData<T>(ref List<T> list) where T : new()
-    {
-        T data = default; // should be equivalent to new T()
-        list.Add(data);
-    }
-    public void RemoveData<T>(ref List<T> list) where T : TableItem
-    {
-        List<T> keptData = new List<T>();
-        for (int i = 0; i < list.Count; i++)
-        {
-            if (!list[i].remove)
-            {
-                keptData.Add(list[i]);
-            }
-        }
-        if (keptData.Count == 0)
-        {
-            keptData.Add(list[0]);
-        }
-        list = keptData;
-    }
+
 
     [Obsolete("Please use 'AddNewData<T>(ref List<T> list)' instead")]
     public void AddNewSplatHeight()
