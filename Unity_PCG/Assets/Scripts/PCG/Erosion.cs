@@ -9,13 +9,13 @@ namespace MED10.PCG
     {
         public TerrainGenerator terrain;
         public int resolution;
-        public enum ErosionType { Rain, Thermal, Tidal, River, Wind };
+        public enum ErosionType { Rain, River, Thermal, Tidal, Wind };
         public ErosionType erosionType = ErosionType.Rain;
 
         public int erosionSmoothAmount = 5;
         
-        public int rainDroplets = 10;
-        public float rainErosionStrength = 0.1f;
+        public int rainDroplets = 100000;
+        public float rainErosionStrength = 0.0025f;
 
         public int riverSprings = 5;
         public float riverSolubility = 0.01f;
@@ -71,7 +71,7 @@ namespace MED10.PCG
             //}
         }
 
-        private void Rain()
+        public void Rain()
         {
             /*
              *  Simulate erosion by rain by creating divots all across the terrain
@@ -87,7 +87,7 @@ namespace MED10.PCG
             }
             terrain.terrainData.SetHeights(0, 0, heightMap);
         }
-        private void River()
+        public void River()
         {
             float[,] heightMap = terrain.GetHeightMap(false);                                           // Get the current HeightMap without resetting terrain
 
@@ -151,7 +151,7 @@ namespace MED10.PCG
 
             return erosionMap;
         }
-        private void Thermal()
+        public void Thermal()
         {
             /*
              *  Simulate erosion from landslides by checking the steepness of a slope
@@ -170,9 +170,8 @@ namespace MED10.PCG
                     {
                         if (heightMap[x, y] > heightMap[(int)n.x, (int)n.y] + thermalErosionSensitivity)
                         {
-                            //  Debug.Log("Eroding");
                             float currentHeight = heightMap[x, y];
-                            float heightDifference = heightMap[x, y] - heightMap[(int)n.x, (int)n.y]; // maybe try base on difference in height, instead of raw height
+                            
                             heightMap[x, y] -= currentHeight * thermalErosionAmount;
                             heightMap[(int)n.x, (int)n.y] += currentHeight * thermalErosionAmount;
                         }
@@ -181,7 +180,7 @@ namespace MED10.PCG
             }
             terrain.terrainData.SetHeights(0, 0, heightMap);
         }
-        private void Tidal()
+        public void Tidal()
         {
             /*
              *  Simulate erosion from waves beating at landscape
@@ -207,7 +206,7 @@ namespace MED10.PCG
             }
             terrain.terrainData.SetHeights(0, 0, heightMap);
         }
-        private void Wind()
+        public void Wind()
         {
             /*
              * This algorithm simulates particles being lifted and despostied, or dragged across a surface by wind
