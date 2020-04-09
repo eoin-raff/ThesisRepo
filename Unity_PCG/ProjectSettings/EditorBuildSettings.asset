@@ -5,9 +5,9 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 0
-    path: Assets/Scenes/EndlessTerrain.unity
-    guid: a418a8210db550d4e971ea6b72b1b92a
+  - enabled: 1
+    path: Assets/Scenes/Lobby.unity
+    guid: 0fdbda665f21b2344b99131a94606327
   - enabled: 1
     path: Assets/Scenes/Custom Terrain.unity
     guid: 2e939735eff6b7a4e9ea9139c223fb92

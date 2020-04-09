@@ -216,6 +216,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: LobbyBackground
       objectReference: {fileID: 0}
+    - target: {fileID: 5633600312467477481, guid: ac6987c9a3caf3247a4a5323e1e7b49f,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ac6987c9a3caf3247a4a5323e1e7b49f, type: 3}
 --- !u!224 &5377541302877610969 stripped

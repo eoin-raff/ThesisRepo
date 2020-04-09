@@ -7,10 +7,17 @@ public class SceneLoader : MonoBehaviour
 {
     public int sceneIndex;
     public StringVariable displayText;
+    public FloatVariable progressVariable;
+    public BoolVariable loadingVariable;
 
+    private float progress;
     public void Load()
     {
-        StartCoroutine(LoadSceneInBackground());
+        if (!loadingVariable.Value)
+        {
+            loadingVariable.Value = true;
+            StartCoroutine(LoadSceneInBackground());
+        }
     }
     IEnumerator LoadSceneInBackground()
     {
@@ -18,6 +25,9 @@ public class SceneLoader : MonoBehaviour
 
         while (!asyncLoad.isDone)
         {
+            progress = Mathf.Clamp01(asyncLoad.progress);
+            progressVariable.Value = progress;
+            displayText.Value = "Loading: " + (int)progress * 100 + "%";
             yield return null;
         }
     }
