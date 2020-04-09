@@ -852,7 +852,6 @@ namespace MED10.PCG
                     }
                 }
             }
-            Debug.Log(lowestPoint + "," + highestPoint);
             for (int y = 0; y < terrainData.heightmapResolution; y++)
             {
                 for (int x = 0; x < terrainData.heightmapResolution; x++)
