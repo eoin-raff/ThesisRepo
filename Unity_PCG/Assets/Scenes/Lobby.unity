@@ -231,8 +231,8 @@ Camera:
   m_GameObject: {fileID: 660670612}
   m_Enabled: 1
   serializedVersion: 2
-  m_ClearFlags: 1
-  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_ClearFlags: 2
+  m_BackGroundColor: {r: 0, g: 0, b: 0, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
@@ -577,6 +577,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Lobby UI
       objectReference: {fileID: 0}
+    - target: {fileID: 5377541302330662424, guid: 72612ff1475afff4daaf4355dc081bd7,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5377541302330662428, guid: 72612ff1475afff4daaf4355dc081bd7,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -680,6 +685,11 @@ PrefabInstance:
     - target: {fileID: 5377541302330662428, guid: 72612ff1475afff4daaf4355dc081bd7,
         type: 3}
       propertyPath: m_Pivot.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5377541302330662429, guid: 72612ff1475afff4daaf4355dc081bd7,
+        type: 3}
+      propertyPath: m_AdditionalShaderChannelsFlag
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5377541303157727539, guid: 72612ff1475afff4daaf4355dc081bd7,

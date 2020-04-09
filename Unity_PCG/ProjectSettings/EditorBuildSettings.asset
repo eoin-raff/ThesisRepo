@@ -9,6 +9,6 @@ EditorBuildSettings:
     path: Assets/Scenes/Lobby.unity
     guid: 0fdbda665f21b2344b99131a94606327
   - enabled: 1
-    path: Assets/Scenes/Custom Terrain.unity
-    guid: 2e939735eff6b7a4e9ea9139c223fb92
+    path: Assets/Scenes/LiveGenerationTest.unity
+    guid: 4c0bbee62b15d9d4f974794cdf87cc99
   m_configObjects: {}
