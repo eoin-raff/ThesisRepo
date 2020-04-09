@@ -3,6 +3,7 @@ using UnityEngine;
 
 namespace MED10.Architecture.Events
 {
+    [CreateAssetMenu]
     public class GameEvent : ScriptableObject
     {
 
