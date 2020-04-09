@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using MED10.Architecture.Variables;
+using UnityEngine;
 using UnityEngine.Events;
 
 namespace MED10.PCG
@@ -6,6 +7,7 @@ namespace MED10.PCG
     [ExecuteAlways]
     public class RuntimeGeneration : MonoBehaviour
     {
+        public IntReference seed;
         public TerrainGenerator terrain;
         public UnityEvent GenerationEvents;
         public int ErosionGenerations = 1;
@@ -23,11 +25,12 @@ namespace MED10.PCG
 
         public void Generate()
         {
-            Debug.Log("Generating from seed " + terrain.Seed);
-            if (terrain.seedType == TerrainGenerator.SeedType.Random)
-            {
-                terrain.Seed = System.DateTime.Now.Millisecond;
-            }
+            //Debug.Log("Generating from seed " + terrain.Seed);
+            //if (terrain.seedType == TerrainGenerator.SeedType.Random)
+            //{
+            //    terrain.Seed = System.DateTime.Now.Millisecond;
+            //}
+            terrain.Seed = seed.Value;
             if (GenerationEvents != null)
             {
                 GenerationEvents.Invoke();
