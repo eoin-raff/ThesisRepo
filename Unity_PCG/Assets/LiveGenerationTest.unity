@@ -253,7 +253,7 @@ MonoBehaviour:
   randomHeightRange: {x: 0, y: 0.01}
   heightMapImage: {fileID: 2800000, guid: 899b2d450cd2b624b9141f7c14321f13, type: 3}
   heightMapScale: {x: 2, y: 0.5, z: 2}
-  resetTerrain: 1
+  resetTerrain: 0
   perlinScaleX: 0.0057
   perlinScaleY: 0.006
   perlinOffsetX: 0
@@ -279,10 +279,10 @@ MonoBehaviour:
     persistance: 0.3
     heightScale: 0.3
   voronoiPeakCount: 25
-  voronoiFallOff: 2.97
+  voronoiFallOff: 1.64
   voronoiDropOff: 0.89
-  voronoiMinHeight: 0.058692455
-  voronoiMaxHeight: 0.45501003
+  voronoiMinHeight: 0.049375687
+  voronoiMaxHeight: 0.25004107
   voronoiType: 2
   MPminHeight: -0.3
   MPmaxHeight: 0.3
@@ -292,7 +292,7 @@ MonoBehaviour:
   splatHeights:
   - remove: 0
     minHeight: 0
-    maxHeight: 0.01
+    maxHeight: 0.003
     minSlope: 0
     maxSlope: 90
     texture: {fileID: 2800000, guid: fb09b5570f5544f53848f02aac9c4f9c, type: 3}
@@ -302,8 +302,8 @@ MonoBehaviour:
     blendNoiseScale: {x: 0.1, y: 0.1}
     blendNoiseScalar: 0.01
   - remove: 0
-    minHeight: 0.01
-    maxHeight: 0.02
+    minHeight: 0.003
+    maxHeight: 0.005
     minSlope: 0
     maxSlope: 90
     texture: {fileID: 2800000, guid: b1114d03f7b0d4d07a72ad67e291b7af, type: 3}
@@ -313,8 +313,8 @@ MonoBehaviour:
     blendNoiseScale: {x: 0.1, y: 0.1}
     blendNoiseScalar: 0.01
   - remove: 0
-    minHeight: 0.02
-    maxHeight: 0.05
+    minHeight: 0.005
+    maxHeight: 0.007
     minSlope: 0
     maxSlope: 90
     texture: {fileID: 2800000, guid: 58e0577615c6d407a81c5d0c67459545, type: 3}
@@ -324,82 +324,93 @@ MonoBehaviour:
     blendNoiseScale: {x: 0.1, y: 0.1}
     blendNoiseScalar: 0.01
   - remove: 0
-    minHeight: 0.03
-    maxHeight: 0.05
+    minHeight: 0.007
+    maxHeight: 0.01
     minSlope: 0
     maxSlope: 15
     texture: {fileID: 2800000, guid: 0a701d8ff65ec4ea0b399612431785d0, type: 3}
     tileOffset: {x: 0, y: 0}
-    tileSize: {x: 1, y: 1}
+    tileSize: {x: 5, y: 5}
     blendOffset: 0.001
     blendNoiseScale: {x: 0.1, y: 0.1}
     blendNoiseScalar: 0.01
   - remove: 0
-    minHeight: 0.03
-    maxHeight: 0.05
+    minHeight: 0.007
+    maxHeight: 0.01
     minSlope: 15
     maxSlope: 45
     texture: {fileID: 2800000, guid: 8d76c0974bfe14f39a626cde8db7fa8c, type: 3}
     tileOffset: {x: 0, y: 0}
-    tileSize: {x: 1, y: 1}
+    tileSize: {x: 5, y: 5}
     blendOffset: 0.001
     blendNoiseScale: {x: 0.1, y: 0.1}
     blendNoiseScalar: 0.01
   - remove: 0
-    minHeight: 0.03
-    maxHeight: 0.05
+    minHeight: 0.007
+    maxHeight: 0.01
     minSlope: 45
-    maxSlope: 90
+    maxSlope: 55
     texture: {fileID: 2800000, guid: 1a096c027adee46b18026c1883d94a09, type: 3}
     tileOffset: {x: 0, y: 0}
-    tileSize: {x: 1, y: 1}
+    tileSize: {x: 5, y: 5}
     blendOffset: 0.001
     blendNoiseScale: {x: 0.1, y: 0.1}
     blendNoiseScalar: 0.01
   - remove: 0
-    minHeight: 0.05
+    minHeight: 0.01
     maxHeight: 1
     minSlope: 0
-    maxSlope: 10
+    maxSlope: 15
     texture: {fileID: 2800000, guid: 46ae0649924b543a6bb192dd3c93b89e, type: 3}
     tileOffset: {x: 0, y: 0}
-    tileSize: {x: 1, y: 1}
+    tileSize: {x: 5, y: 5}
     blendOffset: 0.001
     blendNoiseScale: {x: 0.1, y: 0.1}
     blendNoiseScalar: 0.01
   - remove: 0
-    minHeight: 0.05
+    minHeight: 0.01
     maxHeight: 1
     minSlope: 10
-    maxSlope: 20
+    maxSlope: 35
     texture: {fileID: 2800000, guid: 4eedb15fd8a014129ae94b054187cc82, type: 3}
     tileOffset: {x: 0, y: 0}
-    tileSize: {x: 1, y: 1}
+    tileSize: {x: 5, y: 5}
     blendOffset: 0.001
     blendNoiseScale: {x: 0.1, y: 0.1}
     blendNoiseScalar: 0.01
   - remove: 0
-    minHeight: 0.05
+    minHeight: 0.01
     maxHeight: 1
-    minSlope: 20
-    maxSlope: 30
+    minSlope: 35
+    maxSlope: 45
     texture: {fileID: 2800000, guid: ace73706619b14e8e9cefecea8b025b1, type: 3}
     tileOffset: {x: 0, y: 0}
-    tileSize: {x: 1, y: 1}
+    tileSize: {x: 5, y: 5}
     blendOffset: 0.001
     blendNoiseScale: {x: 0.1, y: 0.1}
     blendNoiseScalar: 0.01
   - remove: 0
-    minHeight: 0.05
+    minHeight: 0.01
     maxHeight: 1
-    minSlope: 30
-    maxSlope: 90
+    minSlope: 45
+    maxSlope: 55
     texture: {fileID: 2800000, guid: 81610d5a58249449683de3278e6b7a5a, type: 3}
     tileOffset: {x: 0, y: 0}
-    tileSize: {x: 1, y: 1}
+    tileSize: {x: 5, y: 5}
     blendOffset: 0.001
     blendNoiseScale: {x: 0.1, y: 0.1}
     blendNoiseScalar: 0.01
+  - remove: 0
+    minHeight: 0
+    maxHeight: 1
+    minSlope: 55
+    maxSlope: 90
+    texture: {fileID: 2800000, guid: e13ad7a9d4dc84697aaa540e7548d65b, type: 3}
+    tileOffset: {x: 0, y: 0}
+    tileSize: {x: 5, y: 5}
+    blendOffset: 0.01
+    blendNoiseScale: {x: 0.1, y: 0.1}
+    blendNoiseScalar: 0.1
   vegetationData:
   - remove: 0
     minHeight: 0.05
@@ -500,7 +511,7 @@ MonoBehaviour:
     bendFactor: 0
   maxDetails: 500
   detailSpacing: 1
-  waterHeight: 0.025
+  waterHeight: 0.015
   waterGO: {fileID: 100000, guid: 780611a67e8e941a2b3aa96e5915a793, type: 3}
   shorelineMaterial: {fileID: 2100000, guid: 901665a29f6bee448bc3f5a56a60348b, type: 2}
   numberOfClouds: 1000
@@ -624,29 +635,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 29482988}
-        m_MethodName: Perlin
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 29482988}
-        m_MethodName: MidpointDisplacement
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-  ErosionGenerations: 10
+  ErosionGenerations: 5
   ErosionEvents:
     m_PersistentCalls:
       m_Calls:
@@ -776,15 +765,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   terrain: {fileID: 29482988}
-  resolution: 513
-  erosionType: 0
+  resolution: 1025
+  erosionType: 2
   erosionSmoothAmount: 5
-  rainDroplets: 108599
+  rainDroplets: 50000
   rainErosionStrength: 0.01
   riverSprings: 5
   riverSolubility: 0.0001
   riverErosionStrength: 0.027
-  riverSourcePoints: 5000
+  riverSourcePoints: 500
   thermalErosionSensitivity: 0.0001
   thermalErosionAmount: 0.5
   tidalErosionStrength: 1
