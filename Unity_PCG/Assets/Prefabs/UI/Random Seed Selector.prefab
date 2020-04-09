@@ -95,8 +95,8 @@ MonoBehaviour:
     VariableValue: {fileID: 11400000, guid: ba40d4031627af34c8f239826c68d3b6, type: 2}
   EnvironmentSeed: {fileID: 11400000, guid: c37aec86bb263bd4caca6a81a0d79e88, type: 2}
   input: {fileID: 7787903090250547390}
-  textDisplay: {fileID: 0}
   seedSetEvent: {fileID: 11400000, guid: 7038afba1f13cee4ca77f184e395f850, type: 2}
+  displayText: {fileID: 11400000, guid: 3746ff38fdaf7114294948535dd12309, type: 2}
 --- !u!1001 &2420394672936430676
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -15,7 +15,7 @@ namespace MED10.PCG
 
         public GameEvent seedSetEvent;
 
-        private StringVariable displayText;
+        public StringVariable displayText;
 
         private void OnEnable()
         {
