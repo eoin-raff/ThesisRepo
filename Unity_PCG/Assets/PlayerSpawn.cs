@@ -8,7 +8,7 @@ public class PlayerSpawn : MonoBehaviour
 {
     public GameObject PlayerPrefab;
 
-    void FindShorePosition(MED10.PCG.TerrainGenerator terrain)
+    public void FindShorePosition(TerrainGenerator terrain)
     {
 
         float[,] heightMap = terrain.GetHeightMap(false);

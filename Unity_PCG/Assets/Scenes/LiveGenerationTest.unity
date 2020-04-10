@@ -247,7 +247,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb7fab98c4b52f24b8aebb52db4fbf10, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  seedType: 0
+  seedType: 1
   fixedSeed: 0
   terrainLayer: 8
   randomHeightRange: {x: 0, y: 0.01}
@@ -598,6 +598,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 391be2b2cc122be47850422574256103, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  TerrainFinished: {fileID: 11400000, guid: 1e8cb325b09282f4cb9f243413062ba1, type: 2}
   seed:
     UseConstant: 0
     ConstantValue: 0
@@ -639,7 +640,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  ErosionGenerations: 5
+  ErosionGenerations: 3
   ErosionEvents:
     m_PersistentCalls:
       m_Calls:
@@ -1257,7 +1258,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1761035517
 MonoBehaviour:
   m_ObjectHideFlags: 0
