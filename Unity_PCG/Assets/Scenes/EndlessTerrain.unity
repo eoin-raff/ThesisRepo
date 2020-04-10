@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.45115393, g: 0.49977583, b: 0.5676963, a: 1}
+  m_IndirectSpecularColor: {r: 0.18363027, g: 0.22788644, b: 0.29807803, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -847,7 +847,7 @@ Light:
   m_BounceIntensity: 1
   m_ColorTemperature: 6570
   m_UseColorTemperature: 0
-  m_BoundingSphereOverride: {x: 4.01e-43, y: 8.4159923e-10, z: 4.02e-43, w: 0}
+  m_BoundingSphereOverride: {x: 0, y: 0, z: 0, w: 8.296753}
   m_UseBoundingSphereOverride: 0
   m_ShadowRadius: 0
   m_ShadowAngle: 0
@@ -897,7 +897,7 @@ MonoBehaviour:
   TextureRenderer: {fileID: 1902015546}
   MeshFilter: {fileID: 1305729802}
   MeshRenderer: {fileID: 1305729801}
-  DrawMode: 1
+  DrawMode: 2
   MeshSettings: {fileID: 11400000, guid: 67e9ab6d89ca7804799b47983b247fe9, type: 2}
   HeightMapSettings: {fileID: 11400000, guid: 077a2950a45d0f249a636f37e8298dec, type: 2}
   TextureData: {fileID: 11400000, guid: 22c37501f2b57004b9cd6c7789a191a5, type: 2}
@@ -1021,7 +1021,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!23 &1305729801
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -1148,7 +1148,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   URL: https://forms.gle/9f8u7y8TAxViBpTP9
-  URLDescription: Default URL is a test questionnaire
 --- !u!114 &1333252607
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1323,7 +1322,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!23 &1902015546
 MeshRenderer:
   m_ObjectHideFlags: 0
