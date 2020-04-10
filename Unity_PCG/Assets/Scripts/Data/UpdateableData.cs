@@ -1,7 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System;
 using UnityEngine;
 
+[Obsolete()]
 public class UpdateableData : ScriptableObject
 {
     public event System.Action OnValuesUpdated;
