@@ -228,6 +228,7 @@ GameObject:
   - component: {fileID: 29482988}
   - component: {fileID: 29482993}
   - component: {fileID: 29482992}
+  - component: {fileID: 29482994}
   m_Layer: 8
   m_Name: Terrain
   m_TagString: Terrain
@@ -247,177 +248,59 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb7fab98c4b52f24b8aebb52db4fbf10, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  seedType: 1
+  seedType: 0
   fixedSeed: 0
   terrainLayer: 8
-  randomHeightRange: {x: 0, y: 0.01}
-  heightMapImage: {fileID: 2800000, guid: 899b2d450cd2b624b9141f7c14321f13, type: 3}
+  randomHeightRange: {x: 0, y: 0.1}
+  heightMapImage: {fileID: 0}
   heightMapScale: {x: 2, y: 0.5, z: 2}
-  resetTerrain: 0
-  perlinScaleX: 0.0057
-  perlinScaleY: 0.006
+  resetTerrain: 1
+  perlinScaleX: 0.001
+  perlinScaleY: 0.001
   perlinOffsetX: 0
   perlinOffsetY: 0
-  perlinOctaves: 5
-  perlinPersistance: 0.312
-  perlinHeightScale: 0.04
+  perlinOctaves: 3
+  perlinPersistance: 0.5
+  perlinHeightScale: 0.5
   perlinParameters:
   - remove: 0
-    xScale: 0.05
-    yScale: 0.05
-    xOffset: 0
-    yOffset: 0
-    octaves: 8
-    persistance: 0.4
-    heightScale: 0.01
-  - remove: 0
-    xScale: 0.005
-    yScale: 0.005
+    xScale: 0.001
+    yScale: 0.001
     xOffset: 0
     yOffset: 0
     octaves: 3
-    persistance: 0.3
-    heightScale: 0.3
-  voronoiPeakCount: 25
-  voronoiFallOff: 1.64
-  voronoiDropOff: 0.89
-  voronoiMinHeight: 0.049375687
-  voronoiMaxHeight: 0.25004107
-  voronoiType: 2
-  MPminHeight: -0.3
-  MPmaxHeight: 0.3
-  MProughness: 1.25
-  MPheightDampener: 1.5
+    persistance: 0.5
+    heightScale: 0.9
+  voronoiPeakCount: 0
+  voronoiFallOff: 0
+  voronoiDropOff: 0
+  voronoiMinHeight: 0
+  voronoiMaxHeight: 0
+  voronoiType: 0
+  MPminHeight: 0
+  MPmaxHeight: 0
+  MProughness: 0
+  MPheightDampener: 0
   smoothAmount: 1
   splatHeights:
   - remove: 0
     minHeight: 0
-    maxHeight: 0.003
+    maxHeight: 1
     minSlope: 0
     maxSlope: 90
-    texture: {fileID: 2800000, guid: fb09b5570f5544f53848f02aac9c4f9c, type: 3}
+    texture: {fileID: 0}
     tileOffset: {x: 0, y: 0}
     tileSize: {x: 1, y: 1}
-    blendOffset: 0.001
-    blendNoiseScale: {x: 0.1, y: 0.1}
-    blendNoiseScalar: 0.01
-  - remove: 0
-    minHeight: 0.003
-    maxHeight: 0.005
-    minSlope: 0
-    maxSlope: 90
-    texture: {fileID: 2800000, guid: b1114d03f7b0d4d07a72ad67e291b7af, type: 3}
-    tileOffset: {x: 0, y: 0}
-    tileSize: {x: 1, y: 1}
-    blendOffset: 0.001
-    blendNoiseScale: {x: 0.1, y: 0.1}
-    blendNoiseScalar: 0.01
-  - remove: 0
-    minHeight: 0.005
-    maxHeight: 0.007
-    minSlope: 0
-    maxSlope: 90
-    texture: {fileID: 2800000, guid: 58e0577615c6d407a81c5d0c67459545, type: 3}
-    tileOffset: {x: 0, y: 0}
-    tileSize: {x: 1, y: 1}
-    blendOffset: 0.001
-    blendNoiseScale: {x: 0.1, y: 0.1}
-    blendNoiseScalar: 0.01
-  - remove: 0
-    minHeight: 0.007
-    maxHeight: 0.01
-    minSlope: 0
-    maxSlope: 15
-    texture: {fileID: 2800000, guid: 0a701d8ff65ec4ea0b399612431785d0, type: 3}
-    tileOffset: {x: 0, y: 0}
-    tileSize: {x: 5, y: 5}
-    blendOffset: 0.001
-    blendNoiseScale: {x: 0.1, y: 0.1}
-    blendNoiseScalar: 0.01
-  - remove: 0
-    minHeight: 0.007
-    maxHeight: 0.01
-    minSlope: 15
-    maxSlope: 45
-    texture: {fileID: 2800000, guid: 8d76c0974bfe14f39a626cde8db7fa8c, type: 3}
-    tileOffset: {x: 0, y: 0}
-    tileSize: {x: 5, y: 5}
-    blendOffset: 0.001
-    blendNoiseScale: {x: 0.1, y: 0.1}
-    blendNoiseScalar: 0.01
-  - remove: 0
-    minHeight: 0.007
-    maxHeight: 0.01
-    minSlope: 45
-    maxSlope: 55
-    texture: {fileID: 2800000, guid: 1a096c027adee46b18026c1883d94a09, type: 3}
-    tileOffset: {x: 0, y: 0}
-    tileSize: {x: 5, y: 5}
-    blendOffset: 0.001
-    blendNoiseScale: {x: 0.1, y: 0.1}
-    blendNoiseScalar: 0.01
-  - remove: 0
-    minHeight: 0.01
-    maxHeight: 1
-    minSlope: 0
-    maxSlope: 15
-    texture: {fileID: 2800000, guid: 46ae0649924b543a6bb192dd3c93b89e, type: 3}
-    tileOffset: {x: 0, y: 0}
-    tileSize: {x: 5, y: 5}
-    blendOffset: 0.001
-    blendNoiseScale: {x: 0.1, y: 0.1}
-    blendNoiseScalar: 0.01
-  - remove: 0
-    minHeight: 0.01
-    maxHeight: 1
-    minSlope: 10
-    maxSlope: 35
-    texture: {fileID: 2800000, guid: 4eedb15fd8a014129ae94b054187cc82, type: 3}
-    tileOffset: {x: 0, y: 0}
-    tileSize: {x: 5, y: 5}
-    blendOffset: 0.001
-    blendNoiseScale: {x: 0.1, y: 0.1}
-    blendNoiseScalar: 0.01
-  - remove: 0
-    minHeight: 0.01
-    maxHeight: 1
-    minSlope: 35
-    maxSlope: 45
-    texture: {fileID: 2800000, guid: ace73706619b14e8e9cefecea8b025b1, type: 3}
-    tileOffset: {x: 0, y: 0}
-    tileSize: {x: 5, y: 5}
-    blendOffset: 0.001
-    blendNoiseScale: {x: 0.1, y: 0.1}
-    blendNoiseScalar: 0.01
-  - remove: 0
-    minHeight: 0.01
-    maxHeight: 1
-    minSlope: 45
-    maxSlope: 55
-    texture: {fileID: 2800000, guid: 81610d5a58249449683de3278e6b7a5a, type: 3}
-    tileOffset: {x: 0, y: 0}
-    tileSize: {x: 5, y: 5}
-    blendOffset: 0.001
-    blendNoiseScale: {x: 0.1, y: 0.1}
-    blendNoiseScalar: 0.01
-  - remove: 0
-    minHeight: 0
-    maxHeight: 1
-    minSlope: 55
-    maxSlope: 90
-    texture: {fileID: 2800000, guid: e13ad7a9d4dc84697aaa540e7548d65b, type: 3}
-    tileOffset: {x: 0, y: 0}
-    tileSize: {x: 5, y: 5}
     blendOffset: 0.01
     blendNoiseScale: {x: 0.1, y: 0.1}
     blendNoiseScalar: 0.1
   vegetationData:
   - remove: 0
-    minHeight: 0.05
-    maxHeight: 0.2
+    minHeight: 0
+    maxHeight: 1
     minSlope: 0
-    maxSlope: 10
-    mesh: {fileID: 136824, guid: 393b236c42954a640b513d46de90ac38, type: 3}
+    maxSlope: 90
+    mesh: {fileID: 0}
     pivotOffset: 0
     minScale: 0.7
     maxScale: 1
@@ -427,62 +310,17 @@ MonoBehaviour:
     minRotation: 0
     maxRotation: 360
     density: 0.5
-  - remove: 0
-    minHeight: 0.2
-    maxHeight: 0.4
-    minSlope: 0
-    maxSlope: 30
-    mesh: {fileID: 123896, guid: c63ea781a273235439e583799176c846, type: 3}
-    pivotOffset: 0
-    minScale: 0.7
-    maxScale: 1
-    color1: {r: 1, g: 1, b: 1, a: 1}
-    color2: {r: 1, g: 1, b: 1, a: 1}
-    lightColor: {r: 1, g: 1, b: 1, a: 1}
-    minRotation: 0
-    maxRotation: 360
-    density: 0.5
-  - remove: 0
-    minHeight: 0.05
-    maxHeight: 0.2
-    minSlope: 10
-    maxSlope: 30
-    mesh: {fileID: 191138, guid: 4e2dd32c733005a44b50004d673dc653, type: 3}
-    pivotOffset: 0
-    minScale: 0.7
-    maxScale: 1
-    color1: {r: 1, g: 1, b: 1, a: 1}
-    color2: {r: 1, g: 1, b: 1, a: 1}
-    lightColor: {r: 1, g: 1, b: 1, a: 1}
-    minRotation: 0
-    maxRotation: 360
-    density: 0.5
-  - remove: 0
-    minHeight: 0.1
-    maxHeight: 0.3
-    minSlope: 0
-    maxSlope: 30
-    mesh: {fileID: 109402, guid: aae542b8a65f39b49b008fa689ce9804, type: 3}
-    pivotOffset: 0
-    minScale: 0.7
-    maxScale: 1
-    color1: {r: 1, g: 1, b: 1, a: 1}
-    color2: {r: 1, g: 1, b: 1, a: 1}
-    lightColor: {r: 1, g: 1, b: 1, a: 1}
-    minRotation: 0
-    maxRotation: 360
-    density: 0.5
-  maxTrees: 50000
-  treeSpacing: 4
+  maxTrees: 5000
+  treeSpacing: 5
   details:
   - remove: 0
-    minHeight: 0.1
+    minHeight: 0
     maxHeight: 1
     minSlope: 0
-    maxSlope: 30
+    maxSlope: 90
     prototype: {fileID: 0}
-    prototypeTexture: {fileID: 2800000, guid: 4c3440f2bd11488b1100df5944295342, type: 3}
-    renderMode: 0
+    prototypeTexture: {fileID: 0}
+    renderMode: 1
     dryColor: {r: 1, g: 1, b: 1, a: 1}
     healthyColor: {r: 1, g: 1, b: 1, a: 1}
     heightRange: {x: 1, y: 1}
@@ -490,37 +328,20 @@ MonoBehaviour:
     noiseSpread: 0.5
     overlap: 0.01
     feather: 0.05
-    density: 0.9
+    density: 0.5
     bendFactor: 0
-  - remove: 0
-    minHeight: 0.1
-    maxHeight: 1
-    minSlope: 0
-    maxSlope: 30
-    prototype: {fileID: 0}
-    prototypeTexture: {fileID: 2800000, guid: d6cdc79ec19714fcd980ca3f6ac01a0a, type: 3}
-    renderMode: 0
-    dryColor: {r: 1, g: 1, b: 1, a: 1}
-    healthyColor: {r: 1, g: 1, b: 1, a: 1}
-    heightRange: {x: 1, y: 1}
-    widthRange: {x: 1, y: 1}
-    noiseSpread: 0.5
-    overlap: 0.01
-    feather: 0.05
-    density: 0.9
-    bendFactor: 0
-  maxDetails: 500
-  detailSpacing: 1
-  waterHeight: 0.015
-  waterGO: {fileID: 100000, guid: 780611a67e8e941a2b3aa96e5915a793, type: 3}
-  shorelineMaterial: {fileID: 2100000, guid: 901665a29f6bee448bc3f5a56a60348b, type: 2}
-  numberOfClouds: 1000
+  maxDetails: 5000
+  detailSpacing: 5
+  waterHeight: 0
+  waterGO: {fileID: 0}
+  shorelineMaterial: {fileID: 0}
+  numberOfClouds: 1
   particlesPerCloud: 50
-  cloudParticleSize: 15
-  cloudMinSize: {x: 5, y: 10, z: 10}
-  cloudMaxSize: {x: 10, y: 20, z: 50}
-  cloudMaterial: {fileID: 2100000, guid: 43405483bf109b246827d41354ecec4d, type: 2}
-  cloudShadowMaterial: {fileID: 2100000, guid: 4c6b6b4195851ae4bbb3094890113446, type: 2}
+  cloudParticleSize: 5
+  cloudMinSize: {x: 1, y: 1, z: 1}
+  cloudMaxSize: {x: 1, y: 1, z: 1}
+  cloudMaterial: {fileID: 0}
+  cloudShadowMaterial: {fileID: 0}
   color: {r: 1, g: 1, b: 1, a: 1}
   lining: {r: 0.5, g: 0.5, b: 0.5, a: 1}
   minSpeed: 0.2
@@ -598,165 +419,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 391be2b2cc122be47850422574256103, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  TerrainFinished: {fileID: 11400000, guid: 1e8cb325b09282f4cb9f243413062ba1, type: 2}
+  TerrainFinished: {fileID: 0}
   seed:
-    UseConstant: 0
+    UseConstant: 1
     ConstantValue: 0
-    VariableValue: {fileID: 11400000, guid: c37aec86bb263bd4caca6a81a0d79e88, type: 2}
-  terrain: {fileID: 29482988}
+    VariableValue: {fileID: 0}
+  terrain: {fileID: 0}
   GenerationEvents:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 29482988}
-        m_MethodName: Voronoi
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 29482988}
-        m_MethodName: MultiplePerlinTerrain
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 29482988}
-        m_MethodName: AddFalloffMap
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-  ErosionGenerations: 3
+      m_Calls: []
+  ErosionGenerations: 1
   ErosionEvents:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 29482993}
-        m_MethodName: Rain
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 29482993}
-        m_MethodName: River
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 29482993}
-        m_MethodName: Tidal
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 29482993}
-        m_MethodName: Thermal
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 29482988}
-        m_MethodName: Smooth
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
   PaintingEvents:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 29482988}
-        m_MethodName: PaintDetails
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 29482988}
-        m_MethodName: PlantVegetation
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 29482988}
-        m_MethodName: SplatMaps
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 29482988}
-        m_MethodName: AddWater
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 29482988}
-        m_MethodName: AddShore
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &29482993
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -771,20 +449,34 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   terrain: {fileID: 29482988}
   resolution: 513
-  erosionType: 2
+  erosionType: 0
   erosionSmoothAmount: 5
-  rainDroplets: 50000
-  rainErosionStrength: 0.01
+  rainDroplets: 100000
+  rainErosionStrength: 0.0025
   riverSprings: 5
-  riverSolubility: 0.0001
-  riverErosionStrength: 0.027
-  riverSourcePoints: 500
-  thermalErosionSensitivity: 0.0001
-  thermalErosionAmount: 0.5
-  tidalErosionStrength: 1
-  windAngle: 232
-  windErosionAmount: 0.01
-  windErosionStrength: 2.38
+  riverSolubility: 0.01
+  riverErosionStrength: 0
+  riverSourcePoints: 0
+  thermalErosionSensitivity: 0
+  thermalErosionAmount: 0
+  tidalErosionStrength: 0
+  windAngle: 0
+  windErosionAmount: 0
+  windErosionStrength: 0
+--- !u!114 &29482994
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 29482987}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 16e56e85efa814ffeb61b8796343ae64, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  testLevel: 0.5
+  requiredSize: 0.75
 --- !u!1 &631875818
 GameObject:
   m_ObjectHideFlags: 0
