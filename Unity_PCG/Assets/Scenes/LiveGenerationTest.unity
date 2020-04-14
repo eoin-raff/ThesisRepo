@@ -475,7 +475,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 16e56e85efa814ffeb61b8796343ae64, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  testLevel: 0.5
+  testLevel: 1
   requiredSize: 0.75
 --- !u!1 &631875818
 GameObject:

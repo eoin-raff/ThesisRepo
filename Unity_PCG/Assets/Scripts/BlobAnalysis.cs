@@ -18,22 +18,28 @@ public class BlobAnalysis : MonoBehaviour
     private List<int> neighborsY = new List<int>();
     private List<int> neighborsX = new List<int>();
 
+    private int amountOfBlobs;
+
+
+    private void Start()
+    {
+        TestForIslands();
+    }
+
 
     public void TestForIslands()    // Call this function to test whether a generated terrain can be used
     {
         inputPoints = GetTerrainPoints();       // Call method to get the terrain points from the TerrainGenerator script
+        
         blobResult = new int[inputPoints.GetLength(0), inputPoints.GetLength(1)];
         
         thresholdedPoints = Threshold(inputPoints, testLevel);  // Threshold the terreainpoints to prepare for grassfire
-
         Debug.Log("Done Thresholding");
 
         SequentialGrassfire();      // Runs grassfire which labels blobs in blobResult variable
-
         Debug.Log("Done Labeling Blobs");
        
         bool isPassable = CalculateUsability(blobResult);   // Calculates the usability of the terrain by checking if any blobs are bigger than a certain threshold
-
         Debug.Log("Terrain is useful: " + isPassable);
     }
 
@@ -71,8 +77,8 @@ public class BlobAnalysis : MonoBehaviour
     void SequentialGrassfire()
     {
         Debug.Log("Running Sequential Grassfire!");
-        
-        int label = 1;
+
+        amountOfBlobs = 1;
 
         for (int y = 1; y < thresholdedPoints.GetLength(0) - 1; y++)
         {
@@ -80,19 +86,19 @@ public class BlobAnalysis : MonoBehaviour
             {
                 if (thresholdedPoints[y, x] == 1)
                 {
-                    Grassfire(y, x, label);
+                    Grassfire(y, x, amountOfBlobs);
                     for (int i = 0; i < neighborsY.Count; i++)
                     {
-                        Grassfire(neighborsY[0], neighborsX[0], label);
+                        Grassfire(neighborsY[0], neighborsX[0], amountOfBlobs);
                     }
-                    label++;
+                    amountOfBlobs++;
                     neighborsX.Clear();
                     neighborsY.Clear();
                 }
             }
         }
 
-        Debug.Log("amount of blobs: " + label);
+        Debug.Log("Amount of blobs: " + amountOfBlobs);
     }
     
     void Grassfire(int y, int x, int label)
@@ -136,7 +142,7 @@ public class BlobAnalysis : MonoBehaviour
 
     bool CalculateUsability(int[,] input)    // If one blob covers e.g. 75 % of the terrain we can pass the generated terrain
     {
-        List<float> blobAreas = new List<float>();
+        int[] blobAreas = new int[amountOfBlobs];
 
         float fullArea = input.GetLength(0) * input.GetLength(1);
 
@@ -144,26 +150,20 @@ public class BlobAnalysis : MonoBehaviour
         {
             for (int x = 1; x < input.GetLength(1) - 1; x++)
             {
-                if (blobAreas.Contains(blobResult[y, x]))
-                {
-                    blobAreas[blobResult[y, x]]++;
-                }
-                else
-                {
-                    blobAreas.Add(blobResult[y, x]);
-                }
+                blobAreas[blobResult[y, x]]++;
             }
         }
 
-        float[] blobAreaPercentages = new float[blobAreas.Count];
 
-        for (int i = 0; i < blobAreas.Count; i++)
+        float[] blobAreaPercentages = new float[blobAreas.Length];
+
+        for (int i = 0; i < blobAreas.Length; i++)
         {
             blobAreaPercentages[i] = blobAreas[i] / fullArea;
 
             if (blobAreaPercentages[i] >= requiredSize)
             {
-                Debug.Log("Percentage of area covered by blolb: " + blobAreaPercentages[i]);
+                Debug.Log("Percentage of area covered by blob: " + blobAreaPercentages[i]);
 
                 return true;
             }
