@@ -977,7 +977,6 @@ namespace MED10.PCG
             terrain = this.GetComponent<Terrain>();
             terrainData = Terrain.activeTerrain.terrainData;
             SetRandomSeed();
-
         }
         void Awake()
         {

@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using MED10.Utilities;
+using MED10.Architecture.Variables;
+using MED10.Architecture.Events;
 
 public class VoxelCounting : MonoBehaviour
 {
@@ -14,13 +16,41 @@ public class VoxelCounting : MonoBehaviour
     private Voxel[,,] voxels;
     private TerrainCollider terrainCollider;
 
+    public FloatVariable coroutineCompletePercentage;
+    public StringVariable uiDisplayString;
+
+    private bool coroutineRunning = false;
+
+    public GameEvent coroutineStartEvent;
+    public GameEvent coroutineEndEvent;
+
     void Start()
     {
         terrainCollider = terrain.GetComponent<TerrainCollider>();
         Debug.Assert(terrainCollider != null, "No terrain collider found", this);
 
-        voxelBoundingVolume = terrain.terrainData.size;
-        voxelVolume = voxelBoundingVolume * voxelScale;
+        float yAxis = terrain.terrainData.size.y;
+        float[,] heightmap = terrain.terrainData.GetHeights(0, 0, terrain.terrainData.heightmapResolution, terrain.terrainData.heightmapResolution);
+        float highestpoint = 0;
+        for (int y = 0; y < terrain.terrainData.heightmapResolution; y++)
+        {
+            for (int x = 0; x < terrain.terrainData.heightmapResolution; x++)
+            {
+                if (heightmap[x, y] > highestpoint)
+                {
+                    highestpoint = heightmap[x, y];
+                }
+            }
+        }
+        yAxis *= highestpoint;
+
+        voxelBoundingVolume = new Vector3(
+            terrain.terrainData.size.x,
+            yAxis + (yAxis * voxelScale), // make sure that there is a layer of voxels above the highest point since we boxcast downwards
+            terrain.terrainData.size.z);
+
+        //voxelVolume = voxelBoundingVolume * voxelScale; //relative to bounding area
+        voxelVolume = Vector3.one * yAxis * voxelScale;     //cubes
 
         Vector3 numberOfVoxelsPerAxis = new Vector3(
             (int)(voxelBoundingVolume.x / voxelVolume.x),
@@ -49,19 +79,45 @@ public class VoxelCounting : MonoBehaviour
             }
         }
 
+        if (!coroutineRunning)
+        {
+            coroutineRunning = true;
+            coroutineStartEvent.Raise();
+            StartCoroutine(CheckVoxels());
+        }
+        else
+        {
+            Debug.LogError("Coroutine already running", this);
+        }
+    }
+
+    private IEnumerator CheckVoxels()
+    {
         int numberOfVoxels = voxels.Length; ;
         int numberOfTerrainVoxels = 0;
 
+        int iterator = 0;
+        
         foreach (Voxel voxel in voxels)
         {
+            float percentage =  (float)++iterator / numberOfVoxels;
+            coroutineCompletePercentage.Value = percentage;
+            uiDisplayString.Value = string.Format("Counting Voxels, {0} of {1}, {2}% complete", iterator, numberOfVoxels, (int)(percentage*100));
             if (voxel.ContainsTerrain())
             {
                 numberOfTerrainVoxels++;
+                voxel.isTerrain = true;
             }
+            //else
+            //{
+            //    DestroyImmediate(voxel);
+            //}
+            yield return null;
         }
+        coroutineEndEvent.Raise();
+        coroutineRunning = false;
         Debug.Log(string.Format("{0} of {1} voxels contain terrain", numberOfTerrainVoxels, numberOfVoxels));
     }
-
 
     private void OnDrawGizmosSelected()
     {
@@ -74,17 +130,16 @@ public class VoxelCounting : MonoBehaviour
 
         foreach (Voxel voxel in voxels)
         {
-
+            if (voxel.isTerrain)
+            {
             //Gizmos.color = voxel.ContainsPoint(terrainCollider.ClosestPoint(voxel.position)) ? Color.green : Color.red;
             Gizmos.DrawWireCube(voxel.position, voxel.size);
+
+            }
         }
 
     }
 
-    private void OnCollisionEnter(Collision collision)
-    {
-        Debug.Log(collision.collider.name);
-    }
 }
 
 class Voxel : MonoBehaviour
@@ -127,6 +182,7 @@ class Voxel : MonoBehaviour
                 return true;
             }
         }
+        gameObject.SetActive(false);
         return false;
     }
 
