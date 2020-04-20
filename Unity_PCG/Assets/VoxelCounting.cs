@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using MED10.Utilities;
 
 public class VoxelCounting : MonoBehaviour
 {
@@ -15,6 +16,9 @@ public class VoxelCounting : MonoBehaviour
 
     void Start()
     {
+        terrainCollider = terrain.GetComponent<TerrainCollider>();
+        Debug.Assert(terrainCollider != null, "No terrain collider found", this);
+
         voxelBoundingVolume = terrain.terrainData.size;
         voxelVolume = voxelBoundingVolume * voxelScale;
 
@@ -24,22 +28,23 @@ public class VoxelCounting : MonoBehaviour
             (int)(voxelBoundingVolume.z / voxelVolume.z));
 
         voxels = new Voxel[(int)numberOfVoxelsPerAxis.x, (int)numberOfVoxelsPerAxis.y, (int)numberOfVoxelsPerAxis.z];
-
-        terrainCollider = terrain.GetComponent<TerrainCollider>();
-        Debug.Assert(terrainCollider != null, "No terrain collider found", this);
-
         for (int x = 0; x < numberOfVoxelsPerAxis.x; x++)
         {
             for (int y = 0; y < numberOfVoxelsPerAxis.y; y++)
             {
                 for (int z = 0; z < numberOfVoxelsPerAxis.z; z++)
                 {
-                    voxels[x, y, z] = new Voxel(new Vector3(
+                    GameObject go = new GameObject();
+                    go.name = string.Format("voxel({0}, {1}, {2})", x, y, z);
+                    go.transform.parent = transform;
+                    Voxel v = go.AddComponent<Voxel>();
+                    v.InitVoxel(new Vector3(
                             (x * voxelVolume.x) + (0.5f * voxelVolume.x),
                             (y * voxelVolume.y) + (0.5f * voxelVolume.y),
                             (z * voxelVolume.z) + (0.5f * voxelVolume.z)
                         ), voxelVolume);
-                    voxels[x, y, z].isTerrain = voxels[x, y, z].ContainsPoint(terrainCollider.ClosestPoint(voxels[x, y, z].position));
+
+                    voxels[x, y, z] = v;
                 }
             }
         }
@@ -57,32 +62,58 @@ public class VoxelCounting : MonoBehaviour
 
         foreach (Voxel voxel in voxels)
         {
-            Gizmos.color = voxel.ContainsPoint(terrainCollider.ClosestPoint(voxel.position)) ? Color.green : Color.red;
+            //Gizmos.color = voxel.ContainsPoint(terrainCollider.ClosestPoint(voxel.position)) ? Color.green : Color.red;
             Gizmos.DrawWireCube(voxel.position, voxel.size);
         }
 
     }
 
+    private void OnCollisionEnter(Collision collision)
+    {
+        Debug.Log(collision.collider.name);
+    }
 }
 
-class Voxel
+class Voxel : MonoBehaviour
 {
     public Vector3 position;
     public Vector3 size;
     public bool isTerrain;                              //Will be used to find fractal dimension
-    
-    public Voxel()                                      //Default Position is (0, 0, 0) and Scale is (1, 1, 1)
+    private BoxCollider boxCollider;
+
+    private void OnEnable()
     {
-        new Voxel(Vector3.zero, Vector3.one);
+        boxCollider = gameObject.GetOrAddComponent<BoxCollider>();
+        Rigidbody rb = gameObject.AddComponent<Rigidbody>();
+        //rb.isKinematic = true;
     }
-    public Voxel(Vector3 position)                      //Default Scale is (1, 1, 1)
+
+    public void InitVoxel()                                      //Default Position is (0, 0, 0) and Scale is (1, 1, 1)
     {
-        new Voxel(position, Vector3.one);
+        InitVoxel(Vector3.zero, Vector3.one);
     }
-    public Voxel(Vector3 position, Vector3 size)        
+    public void InitVoxel(Vector3 position)                      //Default Scale is (1, 1, 1)
+    {
+        InitVoxel(position, Vector3.one);
+    }
+    public void InitVoxel(Vector3 position, Vector3 size)        
     {
         this.position = position;
         this.size = size;
+        transform.position = this.position;
+        transform.localScale = this.size;
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.GetComponent<Collider>().tag == "Terrain")
+        {
+            Debug.Log("Terrain");
+        }
+        else
+        {
+            Debug.Log("Hit something that wasn't Terrain");
+        }
     }
 
     public bool ContainsPoint(Vector3 point)
