@@ -48,6 +48,18 @@ public class VoxelCounting : MonoBehaviour
                 }
             }
         }
+
+        int numberOfVoxels = voxels.Length; ;
+        int numberOfTerrainVoxels = 0;
+
+        foreach (Voxel voxel in voxels)
+        {
+            if (voxel.ContainsTerrain())
+            {
+                numberOfTerrainVoxels++;
+            }
+        }
+        Debug.Log(string.Format("{0} of {1} voxels contain terrain", numberOfTerrainVoxels, numberOfVoxels));
     }
 
 
@@ -62,6 +74,7 @@ public class VoxelCounting : MonoBehaviour
 
         foreach (Voxel voxel in voxels)
         {
+
             //Gizmos.color = voxel.ContainsPoint(terrainCollider.ClosestPoint(voxel.position)) ? Color.green : Color.red;
             Gizmos.DrawWireCube(voxel.position, voxel.size);
         }
@@ -84,8 +97,9 @@ class Voxel : MonoBehaviour
     private void OnEnable()
     {
         boxCollider = gameObject.GetOrAddComponent<BoxCollider>();
+        //boxCollider.isTrigger = true;
         Rigidbody rb = gameObject.AddComponent<Rigidbody>();
-        //rb.isKinematic = true;
+        rb.isKinematic = true;
     }
 
     public void InitVoxel()                                      //Default Position is (0, 0, 0) and Scale is (1, 1, 1)
@@ -104,17 +118,18 @@ class Voxel : MonoBehaviour
         transform.localScale = this.size;
     }
 
-    private void OnTriggerEnter(Collider other)
+    public bool ContainsTerrain()
     {
-        if (other.GetComponent<Collider>().tag == "Terrain")
+        if (Physics.BoxCast(position, size/2, Vector3.down, out RaycastHit info, Quaternion.identity, size.y))
         {
-            Debug.Log("Terrain");
+            if(info.collider.name == "Terrain")
+            {
+                return true;
+            }
         }
-        else
-        {
-            Debug.Log("Hit something that wasn't Terrain");
-        }
+        return false;
     }
+
 
     public bool ContainsPoint(Vector3 point)
     {
@@ -124,4 +139,6 @@ class Voxel : MonoBehaviour
 
         return containsX && containsY && containsZ;
     }
+
+
 }
