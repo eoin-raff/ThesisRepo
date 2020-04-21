@@ -354,6 +354,7 @@ GameObject:
   - component: {fileID: 738387226}
   - component: {fileID: 738387231}
   - component: {fileID: 738387232}
+  - component: {fileID: 738387233}
   m_Layer: 8
   m_Name: Terrain
   m_TagString: Terrain
@@ -589,13 +590,41 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   terrain: {fileID: 738387229}
-  voxelScale: 0.4
+  scaleFactor: 3
   coroutineCompletePercentage: {fileID: 11400000, guid: cf365b24d94db5e4783b3863a35e1ca6,
     type: 2}
   uiDisplayString: {fileID: 11400000, guid: 3746ff38fdaf7114294948535dd12309, type: 2}
   coroutineStartEvent: {fileID: 11400000, guid: 27cf1d28f80cc054994a43b3dc685031,
     type: 2}
   coroutineEndEvent: {fileID: 11400000, guid: 151df04f98406ef49b1bc02f7579722b, type: 2}
+--- !u!114 &738387233
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 738387225}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 391be2b2cc122be47850422574256103, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  TerrainFinished: {fileID: 0}
+  seed:
+    UseConstant: 1
+    ConstantValue: 0
+    VariableValue: {fileID: 0}
+  terrain: {fileID: 0}
+  GenerationEvents:
+    m_PersistentCalls:
+      m_Calls: []
+  ErosionGenerations: 1
+  ErosionEvents:
+    m_PersistentCalls:
+      m_Calls: []
+  PaintingEvents:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &819431074
 GameObject:
   m_ObjectHideFlags: 0

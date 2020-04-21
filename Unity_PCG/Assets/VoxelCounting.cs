@@ -8,8 +8,9 @@ using MED10.Architecture.Events;
 public class VoxelCounting : MonoBehaviour
 {
     public Terrain terrain;
-
-    public float voxelScale;                //The scale of each voxel compared to bounding area
+    [Range(2, 10)]
+    public int scaleFactor;               //The factor that the voxels are scaled down by
+    //private float voxelScale;                //The scale of each voxel compared to bounding area
     private Vector3 voxelBoundingVolume;    //The bouning volume of the
     private Vector3 voxelVolume;            //The scale of an individual voxel
 
@@ -29,28 +30,38 @@ public class VoxelCounting : MonoBehaviour
         terrainCollider = terrain.GetComponent<TerrainCollider>();
         Debug.Assert(terrainCollider != null, "No terrain collider found", this);
 
-        float yAxis = terrain.terrainData.size.y;
-        float[,] heightmap = terrain.terrainData.GetHeights(0, 0, terrain.terrainData.heightmapResolution, terrain.terrainData.heightmapResolution);
-        float highestpoint = 0;
-        for (int y = 0; y < terrain.terrainData.heightmapResolution; y++)
+        float boundingAreaHeight = GetBoundingAreaScaledHeight();
+
+        InitializeVoxels(boundingAreaHeight, scaleFactor);
+
+        if (!coroutineRunning)
         {
-            for (int x = 0; x < terrain.terrainData.heightmapResolution; x++)
-            {
-                if (heightmap[x, y] > highestpoint)
-                {
-                    highestpoint = heightmap[x, y];
-                }
-            }
+            coroutineRunning = true;
+            coroutineStartEvent.Raise();
+            StartCoroutine(CheckVoxels());
         }
-        yAxis *= highestpoint;
+        else
+        {
+            Debug.LogError("Coroutine already running", this);
+        }
+    }
+
+    /// <summary>
+    /// Initialize the voxels
+    /// </summary>
+    /// <param name="boundingAreaHeight">The height of the area bounding area. This will be used to determine the size of the voxels.</param>
+    /// <param name="voxelScaleFactor">The factor by which the voxels are scaled down (e.g. 2 will scale them by 0.5, 4 by 0.25, 10 by 0.1 etc.)</param>
+    private void InitializeVoxels(float boundingAreaHeight, int voxelScaleFactor)
+    {
+        float voxelScale = (float)1 / voxelScaleFactor;
 
         voxelBoundingVolume = new Vector3(
             terrain.terrainData.size.x,
-            yAxis + (yAxis * voxelScale), // make sure that there is a layer of voxels above the highest point since we boxcast downwards
+            boundingAreaHeight + (boundingAreaHeight * voxelScale), // make sure that there is a layer of voxels above the highest point since we boxcast downwards
             terrain.terrainData.size.z);
 
         //voxelVolume = voxelBoundingVolume * voxelScale; //relative to bounding area
-        voxelVolume = Vector3.one * yAxis * voxelScale;     //cubes
+        voxelVolume = Vector3.one * boundingAreaHeight * voxelScale;     //cubes
 
         Vector3 numberOfVoxelsPerAxis = new Vector3(
             (int)(voxelBoundingVolume.x / voxelVolume.x),
@@ -58,14 +69,17 @@ public class VoxelCounting : MonoBehaviour
             (int)(voxelBoundingVolume.z / voxelVolume.z));
 
         voxels = new Voxel[(int)numberOfVoxelsPerAxis.x, (int)numberOfVoxelsPerAxis.y, (int)numberOfVoxelsPerAxis.z];
+
         for (int x = 0; x < numberOfVoxelsPerAxis.x; x++)
         {
             for (int y = 0; y < numberOfVoxelsPerAxis.y; y++)
             {
                 for (int z = 0; z < numberOfVoxelsPerAxis.z; z++)
                 {
-                    GameObject go = new GameObject();
-                    go.name = string.Format("voxel({0}, {1}, {2})", x, y, z);
+                    GameObject go = new GameObject
+                    {
+                        name = string.Format("voxel({0}, {1}, {2})", x, y, z)
+                    };
                     go.transform.parent = transform;
                     Voxel v = go.AddComponent<Voxel>();
                     v.InitVoxel(new Vector3(
@@ -78,17 +92,29 @@ public class VoxelCounting : MonoBehaviour
                 }
             }
         }
+    }
 
-        if (!coroutineRunning)
+    /// <summary>
+    /// This fucntion will set up the bounding area for the voxels. Since the terrain is normall in the bottom 0.2 of the area, it scales the height to fit the terrain mesh.
+    /// </summary>
+    /// <returns>The new height of the bounding area</returns>
+    private float GetBoundingAreaScaledHeight()
+    {
+        float height = terrain.terrainData.size.y;
+        float[,] heightmap = terrain.terrainData.GetHeights(0, 0, terrain.terrainData.heightmapResolution, terrain.terrainData.heightmapResolution);
+        float highestpoint = 0;
+        for (int y = 0; y < terrain.terrainData.heightmapResolution; y++)
         {
-            coroutineRunning = true;
-            coroutineStartEvent.Raise();
-            StartCoroutine(CheckVoxels());
+            for (int x = 0; x < terrain.terrainData.heightmapResolution; x++)
+            {
+                if (heightmap[x, y] > highestpoint)
+                {
+                    highestpoint = heightmap[x, y];
+                }
+            }
         }
-        else
-        {
-            Debug.LogError("Coroutine already running", this);
-        }
+        height *= highestpoint;
+        return height;
     }
 
     private IEnumerator CheckVoxels()
@@ -116,9 +142,16 @@ public class VoxelCounting : MonoBehaviour
         }
         coroutineEndEvent.Raise();
         coroutineRunning = false;
+        float logNR = Mathf.Log10(numberOfTerrainVoxels);
+        float log1R = Mathf.Log10(1 / (float)scaleFactor);
+        Debug.Log("FD: " + logNR / log1R);
         Debug.Log(string.Format("{0} of {1} voxels contain terrain", numberOfTerrainVoxels, numberOfVoxels));
+        //log(Nr)/log(1/r)
     }
 
+    /// <summary>
+    /// Draw the voxels in the editor if the parent is selected
+    /// </summary>
     private void OnDrawGizmosSelected()
     {
         if (voxels==null)
@@ -132,9 +165,7 @@ public class VoxelCounting : MonoBehaviour
         {
             if (voxel.isTerrain)
             {
-            //Gizmos.color = voxel.ContainsPoint(terrainCollider.ClosestPoint(voxel.position)) ? Color.green : Color.red;
-            Gizmos.DrawWireCube(voxel.position, voxel.size);
-
+                Gizmos.DrawWireCube(voxel.position, voxel.size);
             }
         }
 
