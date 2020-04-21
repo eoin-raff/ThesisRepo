@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 
 namespace MED10.Utilities
@@ -162,6 +163,33 @@ namespace MED10.Utilities
             }
         }
 
+        /// <summary>
+        /// Take a bitmap (e.g. heightmap) and save it to the disk as a png
+        /// </summary>
+        /// <param name="bitmap">The bitmap to be converted</param>
+        /// <param name="filename">The filename of the new PNG</param>
+        public static void BitmapToPNG(float[,] bitmap, string filename)
+        {
+            int width = bitmap.GetLength(0);
+            int height = bitmap.GetLength(1);
+            Texture2D outputTexture = new Texture2D(width, height);
+            for (int y = 0; y < height; y++)
+            {
+                for (int x = 0; x < width; x++)
+                {
+                    outputTexture.SetPixel(x, y, Color.Lerp(Color.black, Color.white, bitmap[x, y]));
+                }
+            }
+            outputTexture.Apply();
+
+            byte[] bytes = outputTexture.EncodeToPNG();
+            Directory.CreateDirectory(Application.dataPath + "/SavedTextures");
+            File.WriteAllBytes(Application.dataPath + "/SavedTextures/" + filename + ".png", bytes);
+        }
+        public static void ToPNG(this float[,] bitmap, string filename) //Also created as extension method just in case that is more convenient
+        {
+            BitmapToPNG(bitmap, filename);
+        }
     }
 
 }
