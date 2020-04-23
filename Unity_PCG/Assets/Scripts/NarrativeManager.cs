@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using System;
 
@@ -16,25 +15,37 @@ public class NarrativeManager : MonoBehaviour
     // Time management variables
     private IEnumerator timeCoroutine;
     private int eventNum;                               // Which event are we at
-    public float[] timeBetweenEvents = new float[5];    // Add how much time should elapse from start until this staged area can be loaded
+    public float[] timeBetweenEvents = new float[5];    // Add how much time should elapse from end of last SA until next area can be loaded
+
+ 
+    public bool playerHasControl = false;               // Used to control cinematic sequences. Should also be accessed from other scripts to e.g. start the game.
+    private bool lookForNextSA = false;
+
+    public int withinSA;                                // How close should the player be to the SA before triggering cinematic sequence
 
 
     public void SpaceTime()                             // Call this method to initiate space-time behavior. Should probably be from another script
     {
         eventNum = 0;
-        timeCoroutine = TimeManager(eventNum);
+        float currentTime = Time.time;                  // Time when they start looking for SA spawn
+        timeCoroutine = TimeManager(eventNum, currentTime);
         StartCoroutine(timeCoroutine);
     }
 
 
-    private IEnumerator TimeManager(int num)            // Manage time before next event has to spawn
-    { 
+    private IEnumerator TimeManager(int num, float startTime)            // Manage time before next event has to spawn
+    {
 
-        if (Time.timeSinceLevelLoad >= timeBetweenEvents[num])
+        if (Time.time - startTime >= timeBetweenEvents[num] && lookForNextSA == true)
         {
             CreateStagedArea(num);
 
-            yield return TimeManager(eventNum);
+            startTime = Time.time;                                      // If a SA is spawned, not the time and wait for that amount of time before looking for the next SA
+            yield return TimeManager(eventNum, startTime);
+        }
+        else
+        {
+            yield return TimeManager(eventNum, startTime);
         }
     }
 
@@ -61,6 +72,8 @@ public class NarrativeManager : MonoBehaviour
             {
                 Instantiate(stagedAreas[eventNum], possibleSALocations[i]);       // Spawn the assets in this location and break. Atm, it takes the first possible location and maybe not the best?
 
+                WaitToStartCinematic(possibleSALocations[i]);                     // Start preparing for using cinematic
+
                 eventNum++;         // Start looking into next SA in the coroutine
 
                 break;
@@ -81,6 +94,49 @@ public class NarrativeManager : MonoBehaviour
         // Return up to 10 areas where spawning can happen
 
         return possiblePlaces;               // Return center of found area
+    }
+
+
+    private void CinematicSequence(Transform target)
+    {
+        playerHasControl = false;
+
+        Vector3 lookAtPosition = target.transform.position; 
+
+        float speed = 5.0f;                 // this is the speed at which the camera moves
+
+        playerCam.transform.position = Vector3.Lerp(transform.position, lookAtPosition, speed);
+
+        playerCam.transform.LookAt(lookAtPosition);
+
+        LookAtSA(5.0f);                     // Stare at the SA before moving again
+
+        lookForNextSA = true;
+    }
+
+
+    private IEnumerator WaitToStartCinematic(Transform locationOfSA)        // Check if the player is close enough to the SA to start the cinematic sequence
+    {
+
+        if (playerCam.transform.position.x >= locationOfSA.position.x - withinSA &&
+            playerCam.transform.position.x <= locationOfSA.position.x + withinSA &&
+            playerCam.transform.position.y >= locationOfSA.position.y - withinSA &&
+            playerCam.transform.position.y <= locationOfSA.position.y + withinSA)
+        {
+            CinematicSequence(locationOfSA);
+            yield return new WaitForSeconds(1.0f);
+        }
+        else
+        {
+            yield return WaitToStartCinematic(locationOfSA);
+        }
+    }
+
+
+    private IEnumerator LookAtSA(float time)                                // Controls how long the cinematic sequence lasts
+    {
+        yield return new WaitForSeconds(time);
+        playerHasControl = true;
     }
 }
 
