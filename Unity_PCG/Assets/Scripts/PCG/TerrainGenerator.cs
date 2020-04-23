@@ -1007,7 +1007,7 @@ namespace MED10.PCG
 #endif
         }
 
-        private void SetRandomSeed()
+        public void SetRandomSeed()
         {
             switch (seedType)
             {
@@ -1018,6 +1018,7 @@ namespace MED10.PCG
                     seed = DateTime.Now.Millisecond;
                     break;
                 default:
+                    seed = 0;
                     break;
             }
             UnityEngine.Random.InitState(seed);

@@ -5,7 +5,7 @@ using UnityEngine.Events;
 
 namespace MED10.PCG
 {
-    //[ExecuteAlways]
+    [ExecuteAlways]
     public class RuntimeGeneration : MonoBehaviour
     {
         public GameEvent TerrainFinished;
@@ -22,14 +22,17 @@ namespace MED10.PCG
             Debug.Assert(GenerationEvents != null, "No Generation Events found", this);
             Debug.Assert(ErosionEvents != null, "No Erosion Events found", this);
             Debug.Assert(PaintingEvents != null, "No Painting Events found", this);
+            
+        }
 
-            //terrain.Seed = seed.Value;
+        private void Start()
+        {
             Generate();
         }
 
         public void Generate()
         {
-            //terrain.Seed = seed.Value;
+            //terrain.SetRandomSeed();
             seed.Value = terrain.Seed;
             if (GenerationEvents != null)
             {
@@ -49,7 +52,6 @@ namespace MED10.PCG
             }
             TerrainFinished.Raise();
         }
-
     }
 
 }

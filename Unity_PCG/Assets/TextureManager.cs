@@ -23,6 +23,7 @@ public class TextureManager : MonoBehaviour
             directory = "Heightmaps_";// + DateTime.Today.ToString();        
         }
         string filename = "/HM_"+ seed;
+        Debug.Log("saving heightmap: " + filename);
         Utils.BitmapToPNG(terrainGenerator.GetHeightMap(false), filename);
     }
 
