@@ -48,7 +48,7 @@ public class NarrativeManager : MonoBehaviour
             Vector2 playerPos = new Vector2(playerCam.transform.position.x, playerCam.transform.position.z);
             if (Input.GetKeyDown(KeyCode.G))
             {
-                PossibleSpawnPoints(playerPos, Vector2.one, 0, 1, 0, 1);
+                PossibleSpawnPoints(playerPos, stagedAreas[0].transform.localScale.XZ(), 0, 1, 0, 1);
             }
         }
     }
@@ -129,7 +129,7 @@ public class NarrativeManager : MonoBehaviour
         float targetHeight = minHeight + ((maxHeight - minHeight) / 2);
         float targetSlope = minSlope + ((maxSlope - minSlope) / 2);
 
-        int r = 50;
+        int r = 15;
         float[,] heightmap = terrainGenerator.GetHeightMap(false);
         int mappedX = (int)Utils.Map(playerPosition.x, 0, terrainGenerator.terrainData.size.x, 0, heightmap.GetLength(0));
         int mappedY = (int)Utils.Map(playerPosition.y, 0, terrainGenerator.terrainData.size.z, 0, heightmap.GetLength(1));
@@ -139,29 +139,49 @@ public class NarrativeManager : MonoBehaviour
         //SortedDictionary<float, Vector2> positionsByScore = new SortedDictionary<float, Vector2>();
         float bestScore = float.MaxValue;
         Vector2 bestPosition = Vector2.zero;
+        int validPoints = 0;
+
         for (int y = Mathf.Max(0, mappedY - r); y < Mathf.Min(heightmap.GetLength(1), mappedY + r); y++)
         {
             for (int x = Mathf.Max(0, mappedX - r); x < Mathf.Min(heightmap.GetLength(0), mappedX + r); x++)
             {
                 //Should search the areas around player
                 float totalScore = 0;
-                for (int ny = -(int)stagedAreaSize.y / 2; ny < (int)stagedAreaSize.y / 2; ny++)
+                if (isValidPoint(minHeight, maxHeight, minSlope, maxSlope, heightmap, y, x))
                 {
-                    for (int nx = -(int)stagedAreaSize.x / 2; nx < (int)stagedAreaSize.x / 2; nx++)
+                    validPoints++;   
+                    for (int ny = -(int)stagedAreaSize.y / 2; ny < (int)stagedAreaSize.y / 2; ny++)
                     {
-                        totalScore += scorePointValidity(nx, ny, heightmap, targetHeight, targetSlope);
+                        for (int nx = -(int)stagedAreaSize.x / 2; nx < (int)stagedAreaSize.x / 2; nx++)
+                        {
+                            totalScore += scorePointValidity(x + nx, y + ny, heightmap, targetHeight, targetSlope);
+                        }
+                    }
+                    Debug.Log(totalScore);
+                    if (totalScore < bestScore)
+                    {
+                        bestScore = totalScore;
+                        bestPosition = new Vector2(x, y);
                     }
                 }
-                if (totalScore < bestScore)
-                {
-                    bestScore = totalScore;
-                    bestPosition = new Vector2(x, y);
-                }
+
                 //positionsByScore.Add(totalScore, new Vector2(x, y));
             }
         }
+        if (validPoints > 0)
+        {
+            Debug.Log(String.Format("Position: {0}, Score: {1}, height: {2}", bestPosition, bestScore, heightmap[(int)bestPosition.x, (int)bestPosition.y]));
+            float worldSpaceX = Utils.Map(bestPosition.x, 0, heightmap.GetLength(0), 0, terrainGenerator.terrainData.size.x);
+            float worldSpaceY = terrainGenerator.terrainData.size.y * heightmap[(int)bestPosition.x, (int)bestPosition.y];
+            float worldSpaceZ = Utils.Map(bestPosition.y, 0, heightmap.GetLength(1), 0, terrainGenerator.terrainData.size.z);
+            Instantiate(stagedAreas[0], new Vector3(worldSpaceX, worldSpaceY, worldSpaceZ), Quaternion.identity);
+        }
+        else
+        {
+            Debug.LogWarning("No valid points found");
+        }
         //Debug.Log(positionsByScore[positionsByScore.])
-        Debug.Log(String.Format("Position: {0}, Score: {1}", bestPosition, bestScore));
+
         // Search in an area of r radius from the position denoted by x and y which is the current player position
         // Find first 10 suitable areas that fulfill scale, height, and slope
         // Make sure a found area can't be found again
@@ -172,8 +192,10 @@ public class NarrativeManager : MonoBehaviour
 
     private bool isValidPoint(float minHeight, float maxHeight, float minSlope, float maxSlope, float[,] heightmap, int y, int x)
     {
-        bool isInHeightRange = heightmap[x, y] > maxHeight && heightmap[x, y] < minHeight;
-        float slope = terrainGenerator.terrainData.GetSteepness(x / heightmap.GetLength(0), y / heightmap.GetLength(1));
+        bool isInHeightRange = heightmap[x, y] < maxHeight && heightmap[x, y] > minHeight;
+        float slope = terrainGenerator.terrainData.GetSteepness(
+            x / (float)terrainGenerator.terrainData.alphamapResolution,
+            y / (float)terrainGenerator.terrainData.alphamapResolution);
         bool isInSlopeRange = slope > minSlope && slope < maxSlope;
         return isInHeightRange && isInSlopeRange;
     }
