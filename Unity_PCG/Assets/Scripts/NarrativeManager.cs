@@ -23,10 +23,15 @@ public class NarrativeManager : MonoBehaviour
 
     public int withinSA;                                // How close should the player be to the SA before triggering cinematic sequence
 
+    private Vector3 positionAtLastSA;
+    public float distanceBetweenSAs;                    // How far should player travel before starting to look for next SA 
 
     public void SpaceTime()                             // Call this method to initiate space-time behavior. Should probably be from another script
     {
         eventNum = 0;
+
+        positionAtLastSA = playerCam.transform.position;
+
         float currentTime = Time.time;                  // Time when they start looking for SA spawn
         timeCoroutine = TimeManager(eventNum, currentTime);
         StartCoroutine(timeCoroutine);
@@ -35,17 +40,21 @@ public class NarrativeManager : MonoBehaviour
 
     private IEnumerator TimeManager(int num, float startTime)            // Manage time before next event has to spawn
     {
+        float distance = Vector3.Distance(playerCam.transform.position, positionAtLastSA);
 
-        if (Time.time - startTime >= timeBetweenEvents[num] && lookForNextSA == true)
+        if (distance >= distanceBetweenSAs)
         {
-            CreateStagedArea(num);
+            if (Time.time - startTime >= timeBetweenEvents[num] && lookForNextSA == true)
+            {
+                CreateStagedArea(num);  // We should maybe also look for how long they have travelled?
 
-            startTime = Time.time;                                      // If a SA is spawned, not the time and wait for that amount of time before looking for the next SA
-            yield return TimeManager(eventNum, startTime);
-        }
-        else
-        {
-            yield return TimeManager(eventNum, startTime);
+                startTime = Time.time;                                      // If a SA is spawned, not the time and wait for that amount of time before looking for the next SA
+                yield return TimeManager(eventNum, startTime);
+            }
+            else
+            {
+                yield return TimeManager(eventNum, startTime);
+            }
         }
     }
 
@@ -56,7 +65,7 @@ public class NarrativeManager : MonoBehaviour
         float slope = requirementSA[numSA].slope;
         float height = requirementSA[numSA].height;
 
-        // Check VE within some range for places that fits the requirements and add them to this list
+        // Check VE within some range for places that fits the requirements and add them to this array
         Transform[] possibleSALocations = PossibleSpawnPoints(playerCam.transform.position.x, playerCam.transform.position.y, scale, slope, height);
 
         // Find the most suited area and spawn assets
@@ -75,6 +84,8 @@ public class NarrativeManager : MonoBehaviour
                 WaitToStartCinematic(possibleSALocations[i]);                     // Start preparing for using cinematic
 
                 eventNum++;         // Start looking into next SA in the coroutine
+
+                positionAtLastSA = playerCam.transform.position;
 
                 break;
             }
