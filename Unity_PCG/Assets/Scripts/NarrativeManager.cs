@@ -1,13 +1,17 @@
 ﻿using System.Collections;
 using UnityEngine;
 using System;
+using MED10.PCG;
+using MED10.Utilities;
+using System.Collections.Generic;
 
 public class NarrativeManager : MonoBehaviour
 {
+    public bool DEBUG = true;
     public Camera playerCam;        // Add the camera from the player object to check if a possible location is in sight
 
     // Prefabs for staged areas - Should be designed first and then instatiated at a possible location
-    public GameObject[] stagedAreas = new GameObject[5];      
+    public GameObject[] stagedAreas = new GameObject[5];
 
     // Requirements for placement of SAs
     public SAParameters[] requirementSA = new SAParameters[5];
@@ -17,7 +21,7 @@ public class NarrativeManager : MonoBehaviour
     private int eventNum;                               // Which event are we at
     public float[] timeBetweenEvents = new float[5];    // Add how much time should elapse from end of last SA until next area can be loaded
 
- 
+
     public bool playerHasControl = false;               // Used to control cinematic sequences. Should also be accessed from other scripts to e.g. start the game.
     private bool lookForNextSA = false;
 
@@ -26,6 +30,28 @@ public class NarrativeManager : MonoBehaviour
     private Vector3 positionAtLastSA;
     public float distanceBetweenSAs;                    // How far should player travel before starting to look for next SA 
 
+    public TerrainGenerator terrainGenerator;
+    float[,] heightmap;
+    private void Start()
+    {
+        Debug.Assert(terrainGenerator != null, "No terrain generator assigned", this);
+    }
+
+    private void Update()
+    {
+        if (true)
+        {
+            if (heightmap == null)
+            {
+                heightmap = terrainGenerator.GetHeightMap(false);
+            }
+            Vector2 playerPos = new Vector2(playerCam.transform.position.x, playerCam.transform.position.z);
+            if (Input.GetKeyDown(KeyCode.G))
+            {
+                PossibleSpawnPoints(playerPos, Vector2.one, 0, 1, 0, 1);
+            }
+        }
+    }
     public void SpaceTime()                             // Call this method to initiate space-time behavior. Should probably be from another script
     {
         eventNum = 0;
@@ -61,12 +87,15 @@ public class NarrativeManager : MonoBehaviour
 
     void CreateStagedArea(int numSA)
     {
-        int scale = requirementSA[numSA].scale;
-        float slope = requirementSA[numSA].slope;
-        float height = requirementSA[numSA].height;
+        Vector2 scale = requirementSA[numSA].scale;
+        float minSlope = requirementSA[numSA].minSlope;
+        float maxSlope = requirementSA[numSA].maxSlope;
+        float minHeight = requirementSA[numSA].minHeight;
+        float maxHeight = requirementSA[numSA].maxHeight;
 
         // Check VE within some range for places that fits the requirements and add them to this array
-        Transform[] possibleSALocations = PossibleSpawnPoints(playerCam.transform.position.x, playerCam.transform.position.y, scale, slope, height);
+        Vector2 playerPos = new Vector2(playerCam.transform.position.x, playerCam.transform.position.z);
+        Transform[] possibleSALocations = PossibleSpawnPoints(playerPos, scale, minSlope, maxSlope, minHeight, maxHeight);
 
         // Find the most suited area and spawn assets
         for (int i = 0; i < possibleSALocations.GetLength(0); i++)
@@ -93,12 +122,46 @@ public class NarrativeManager : MonoBehaviour
     }
 
 
-    Transform[] PossibleSpawnPoints(float x, float y, int scale, float height, float slope)
+    Transform[] PossibleSpawnPoints(Vector2 playerPosition, Vector2 stagedAreaSize, float minHeight, float maxHeight, float minSlope, float maxSlope)
     {
         Transform[] possiblePlaces = new Transform[10];
 
-        int r = 50;
+        float targetHeight = minHeight + ((maxHeight - minHeight) / 2);
+        float targetSlope = minSlope + ((maxSlope - minSlope) / 2);
 
+        int r = 50;
+        float[,] heightmap = terrainGenerator.GetHeightMap(false);
+        int mappedX = (int)Utils.Map(playerPosition.x, 0, terrainGenerator.terrainData.size.x, 0, heightmap.GetLength(0));
+        int mappedY = (int)Utils.Map(playerPosition.y, 0, terrainGenerator.terrainData.size.z, 0, heightmap.GetLength(1));
+
+        //Search the area around the player on the HM
+        // Sorted dictionaries are not very performant, so it may be better to split into lists and sort manually
+        //SortedDictionary<float, Vector2> positionsByScore = new SortedDictionary<float, Vector2>();
+        float bestScore = float.MaxValue;
+        Vector2 bestPosition = Vector2.zero;
+        for (int y = Mathf.Max(0, mappedY - r); y < Mathf.Min(heightmap.GetLength(1), mappedY + r); y++)
+        {
+            for (int x = Mathf.Max(0, mappedX - r); x < Mathf.Min(heightmap.GetLength(0), mappedX + r); x++)
+            {
+                //Should search the areas around player
+                float totalScore = 0;
+                for (int ny = -(int)stagedAreaSize.y / 2; ny < (int)stagedAreaSize.y / 2; ny++)
+                {
+                    for (int nx = -(int)stagedAreaSize.x / 2; nx < (int)stagedAreaSize.x / 2; nx++)
+                    {
+                        totalScore += scorePointValidity(nx, ny, heightmap, targetHeight, targetSlope);
+                    }
+                }
+                if (totalScore < bestScore)
+                {
+                    bestScore = totalScore;
+                    bestPosition = new Vector2(x, y);
+                }
+                //positionsByScore.Add(totalScore, new Vector2(x, y));
+            }
+        }
+        //Debug.Log(positionsByScore[positionsByScore.])
+        Debug.Log(String.Format("Position: {0}, Score: {1}", bestPosition, bestScore));
         // Search in an area of r radius from the position denoted by x and y which is the current player position
         // Find first 10 suitable areas that fulfill scale, height, and slope
         // Make sure a found area can't be found again
@@ -107,12 +170,32 @@ public class NarrativeManager : MonoBehaviour
         return possiblePlaces;               // Return center of found area
     }
 
+    private bool isValidPoint(float minHeight, float maxHeight, float minSlope, float maxSlope, float[,] heightmap, int y, int x)
+    {
+        bool isInHeightRange = heightmap[x, y] > maxHeight && heightmap[x, y] < minHeight;
+        float slope = terrainGenerator.terrainData.GetSteepness(x / heightmap.GetLength(0), y / heightmap.GetLength(1));
+        bool isInSlopeRange = slope > minSlope && slope < maxSlope;
+        return isInHeightRange && isInSlopeRange;
+    }
+
+    private float scorePointValidity(int x, int y, float[,] hm, float targetHeight, float targetSlope)
+    {
+        float height = hm[x, y];
+        float slope = terrainGenerator.terrainData.GetSteepness(
+            x / (float)terrainGenerator.terrainData.alphamapResolution,
+            y / (float)terrainGenerator.terrainData.alphamapResolution);
+
+        float score_h = Mathf.Abs(targetHeight - height);
+        float score_s = Mathf.Abs(targetSlope - slope);
+
+        return score_h + score_s;
+    }
 
     private void CinematicSequence(Transform target)
     {
         playerHasControl = false;
 
-        Vector3 lookAtPosition = target.transform.position; 
+        Vector3 lookAtPosition = target.transform.position;
 
         float speed = 5.0f;                 // this is the speed at which the camera moves
 
@@ -156,7 +239,9 @@ public class NarrativeManager : MonoBehaviour
 [Serializable]
 public class SAParameters : TableItem
 {
-    public int scale = 0;
-    public float slope = 0.0f;
-    public float height = 0.0f;
+    public Vector2 scale = Vector2.zero;
+    public float minSlope = 0.0f;
+    public float maxSlope = 1.0f;
+    public float minHeight = 0.0f;
+    public float maxHeight = 1.0f;
 }
