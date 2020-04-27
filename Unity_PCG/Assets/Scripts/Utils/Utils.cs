@@ -131,6 +131,15 @@ namespace MED10.Utilities
             return new Vector3(x, y, z);
         }
         /// <summary>
+        /// Converts a Vector3 (x, y, z) to a Vector2 (x, z).
+        /// </summary>
+        /// <param name="v"></param>
+        /// <returns></returns>
+        public static Vector2 XZ(this Vector3 v)
+        {
+            return new Vector2(v.x, v.z);
+        }
+        /// <summary>
         /// 
         /// </summary>
         /// <param name="v"></param>

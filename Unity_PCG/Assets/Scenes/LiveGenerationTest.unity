@@ -723,7 +723,7 @@ MonoBehaviour:
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
-        m_CallState: 2
+        m_CallState: 0
       - m_Target: {fileID: 29482988}
         m_MethodName: SplatMaps
         m_Mode: 1
@@ -1051,7 +1051,7 @@ GameObject:
   - component: {fileID: 985107146}
   - component: {fileID: 985107145}
   m_Layer: 0
-  m_Name: Space-Time Manager
+  m_Name: SpaceTime Manager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1069,40 +1069,55 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 87cae8c2066fb4945ac9b94ae4c45cda, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerCam: {fileID: 0}
+  DEBUG: 0
+  playerCam: {fileID: 1281193149}
   stagedAreas:
-  - {fileID: 0}
+  - {fileID: 5672113332432925651, guid: e64aaf750c9ebd341a79fd80ba100df0, type: 3}
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
   requirementSA:
   - remove: 0
-    scale: 0
-    slope: 0
-    height: 0
+    scale: {x: 5, y: 5}
+    minSlope: 0
+    maxSlope: 10
+    minHeight: 0.2
+    maxHeight: 0.4
   - remove: 0
-    scale: 0
-    slope: 0
-    height: 0
+    scale: {x: 0, y: 0}
+    minSlope: 0
+    maxSlope: 1
+    minHeight: 0
+    maxHeight: 1
   - remove: 0
-    scale: 0
-    slope: 0
-    height: 0
+    scale: {x: 0, y: 0}
+    minSlope: 0
+    maxSlope: 1
+    minHeight: 0
+    maxHeight: 1
   - remove: 0
-    scale: 0
-    slope: 0
-    height: 0
+    scale: {x: 0, y: 0}
+    minSlope: 0
+    maxSlope: 1
+    minHeight: 0
+    maxHeight: 1
   - remove: 0
-    scale: 0
-    slope: 0
-    height: 0
+    scale: {x: 0, y: 0}
+    minSlope: 0
+    maxSlope: 1
+    minHeight: 0
+    maxHeight: 1
   timeBetweenEvents:
   - 0
   - 0
   - 0
   - 0
   - 0
+  playerHasControl: 0
+  withinSA: 0
+  distanceBetweenSAs: 0
+  terrainGenerator: {fileID: 29482988}
 --- !u!4 &985107146
 Transform:
   m_ObjectHideFlags: 0
@@ -1160,6 +1175,12 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
+--- !u!20 &1281193149 stripped
+Camera:
+  m_CorrespondingSourceObject: {fileID: 2000000, guid: 5e9e851c0e142814dac026a256ba2ac0,
+    type: 3}
+  m_PrefabInstance: {fileID: 1686756321}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1591486913
 GameObject:
   m_ObjectHideFlags: 0

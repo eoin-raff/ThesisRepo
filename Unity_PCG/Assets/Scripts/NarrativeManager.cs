@@ -48,7 +48,7 @@ public class NarrativeManager : MonoBehaviour
             Vector2 playerPos = new Vector2(playerCam.transform.position.x, playerCam.transform.position.z);
             if (Input.GetKeyDown(KeyCode.G))
             {
-                PossibleSpawnPoints(playerPos, stagedAreas[0].transform.localScale.XZ(), 0, 1, 0, 1);
+                PossibleSpawnPoints(playerPos, new Vector2(5, 5), 0, 1, 0, 1);
             }
         }
     }
@@ -157,7 +157,6 @@ public class NarrativeManager : MonoBehaviour
                             totalScore += scorePointValidity(x + nx, y + ny, heightmap, targetHeight, targetSlope);
                         }
                     }
-                    Debug.Log(totalScore);
                     if (totalScore < bestScore)
                     {
                         bestScore = totalScore;
@@ -171,10 +170,14 @@ public class NarrativeManager : MonoBehaviour
         if (validPoints > 0)
         {
             Debug.Log(String.Format("Position: {0}, Score: {1}, height: {2}", bestPosition, bestScore, heightmap[(int)bestPosition.x, (int)bestPosition.y]));
-            float worldSpaceX = Utils.Map(bestPosition.x, 0, heightmap.GetLength(0), 0, terrainGenerator.terrainData.size.x);
+
+            float worldSpaceX = terrainGenerator.terrainData.size.x * (bestPosition.x / terrainGenerator.terrainData.heightmapResolution);
             float worldSpaceY = terrainGenerator.terrainData.size.y * heightmap[(int)bestPosition.x, (int)bestPosition.y];
-            float worldSpaceZ = Utils.Map(bestPosition.y, 0, heightmap.GetLength(1), 0, terrainGenerator.terrainData.size.z);
-            Instantiate(stagedAreas[0], new Vector3(worldSpaceX, worldSpaceY, worldSpaceZ), Quaternion.identity);
+            float worldSpaceZ = terrainGenerator.terrainData.size.z * (bestPosition.y / terrainGenerator.terrainData.heightmapResolution);
+
+            terrainGenerator.Terraform((int)bestPosition.x, (int)bestPosition.y, new Vector2(5, 5));
+            GameObject go = Instantiate(stagedAreas[0], new Vector3(worldSpaceZ, worldSpaceY, worldSpaceX), Quaternion.identity);
+            
         }
         else
         {

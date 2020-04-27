@@ -142,6 +142,33 @@ namespace MED10.PCG
             }
         }
 
+        public void Terraform(int x, int y, Vector2 area)
+        {
+            
+            //ADD FUNCTIONALITY TO REMOVE TREES
+            Debug.Log("Flattening area around heightmap position (" + x + ", " + y + ").");
+            GameObject sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+            float[,] heightmap = GetHeightMap(false);
+            for (int j = Mathf.Max(0, (int)(y - (area.y/2))); j < Mathf.Min(heightmap.GetLength(1), (int)(y + (area.y / 2))); j++)
+            {
+                for (int i = Mathf.Max(0, (int)(x - (area.x / 2))); i < Mathf.Min(heightmap.GetLength(0), (int)(x + (area.x / 2))); i++)
+                {
+                    heightmap[i, j] = heightmap[x, y];
+                }
+            }
+            //for (int i = 0; i < 5; i++)
+            //{
+            //    for (int j = 0; j < 5; j++)
+            //    {
+            //        heightmap[terrainData.heightmapResolution-i-1, terrainData.heightmapResolution-j-1] += 0.5f;
+            //    }
+            //}
+            terrain.terrainData.SetHeights(0, 0, heightmap);
+
+            SplatMaps();
+
+        }
+
         public void SplatMaps()
         {
 #if UNITY_EDITOR
