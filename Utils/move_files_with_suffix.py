@@ -29,11 +29,13 @@ def main(suffix, path):
         print('Exit')
         return
 
-    newFolder = path + '\\' + input('Enter new subfoler name:\n')
+#    newFolder = path + '\\' + input('Enter new subfoler name:\n')
+    newFolder = input('Enter new subfoler name:\n')
     os.mkdir(newFolder)
+    print(str(newFolder))
 
     for file in files:
-        shutil.move(path + '\\' + file, newFolder+'\\'+file)
+        shutil.move(path + '\\' + file, path + '\\' + newFolder+'\\'+file)
     
 
 if __name__ == '__main__':

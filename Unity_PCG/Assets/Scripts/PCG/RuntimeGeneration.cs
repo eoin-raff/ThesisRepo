@@ -5,11 +5,11 @@ using UnityEngine.Events;
 
 namespace MED10.PCG
 {
-    //[ExecuteAlways]
+    [ExecuteAlways]
     public class RuntimeGeneration : MonoBehaviour
     {
         public GameEvent TerrainFinished;
-        public IntReference seed;
+        public IntVariable seed;
         public TerrainGenerator terrain;
         public UnityEvent GenerationEvents;
         public int ErosionGenerations = 1;
@@ -17,18 +17,23 @@ namespace MED10.PCG
         public UnityEvent PaintingEvents;
 
         // Start is called before the first frame update
-        void Start()
+        void OnEnable()
         {
             Debug.Assert(GenerationEvents != null, "No Generation Events found", this);
             Debug.Assert(ErosionEvents != null, "No Erosion Events found", this);
             Debug.Assert(PaintingEvents != null, "No Painting Events found", this);
+            
+        }
 
-            terrain.Seed = seed.Value;
+        private void Start()
+        {
             Generate();
         }
 
         public void Generate()
         {
+            //terrain.SetRandomSeed();
+            seed.Value = terrain.Seed;
             if (GenerationEvents != null)
             {
                 GenerationEvents.Invoke();
@@ -47,7 +52,6 @@ namespace MED10.PCG
             }
             TerrainFinished.Raise();
         }
-
     }
 
 }
