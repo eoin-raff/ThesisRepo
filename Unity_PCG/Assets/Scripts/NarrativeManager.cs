@@ -4,6 +4,7 @@ using System;
 using MED10.PCG;
 using MED10.Utilities;
 using System.Collections.Generic;
+using System.Linq;
 
 public class NarrativeManager : MonoBehaviour
 {
@@ -48,7 +49,12 @@ public class NarrativeManager : MonoBehaviour
             Vector2 playerPos = new Vector2(playerCam.transform.position.x, playerCam.transform.position.z);
             if (Input.GetKeyDown(KeyCode.G))
             {
-                PossibleSpawnPoints(playerPos, new Vector2(5, 5), 0, 1, 0, 1);
+                List<Vector2> candidates = PossibleSpawnPoints(playerPos, new Vector2(5, 5), 0, 1, 0, 1);
+
+                if (FindBestPosition(candidates, out Vector2 spawnPosition))
+                {
+                    InstantiateStagedArea(spawnPosition);
+                }
             }
         }
     }
@@ -87,45 +93,44 @@ public class NarrativeManager : MonoBehaviour
 
     void CreateStagedArea(int numSA)
     {
-        Vector2 scale = requirementSA[numSA].scale;
-        float minSlope = requirementSA[numSA].minSlope;
-        float maxSlope = requirementSA[numSA].maxSlope;
-        float minHeight = requirementSA[numSA].minHeight;
-        float maxHeight = requirementSA[numSA].maxHeight;
+        //Vector2 scale = requirementSA[numSA].scale;
+        //float minSlope = requirementSA[numSA].minSlope;
+        //float maxSlope = requirementSA[numSA].maxSlope;
+        //float minHeight = requirementSA[numSA].minHeight;
+        //float maxHeight = requirementSA[numSA].maxHeight;
 
-        // Check VE within some range for places that fits the requirements and add them to this array
-        Vector2 playerPos = new Vector2(playerCam.transform.position.x, playerCam.transform.position.z);
-        Transform[] possibleSALocations = PossibleSpawnPoints(playerPos, scale, minSlope, maxSlope, minHeight, maxHeight);
+        //// Check VE within some range for places that fits the requirements and add them to this array
+        //Vector2 playerPos = new Vector2(playerCam.transform.position.x, playerCam.transform.position.z);
+        //Transform[] possibleSALocations =  //PossibleSpawnPoints(playerPos, scale, minSlope, maxSlope, minHeight, maxHeight);
 
-        // Find the most suited area and spawn assets
-        for (int i = 0; i < possibleSALocations.GetLength(0); i++)
-        {
-            Vector3 screenPoint = playerCam.WorldToViewportPoint(possibleSALocations[i].position);
+        //// Find the most suited area and spawn assets
+        //for (int i = 0; i < possibleSALocations.GetLength(0); i++)
+        //{
+        //    Vector3 screenPoint = playerCam.WorldToViewportPoint(possibleSALocations[i].position);
 
-            if (screenPoint.z > 0 && screenPoint.x > 0 && screenPoint.x < 1 && screenPoint.y > 0 && screenPoint.y < 1)
-            {
-                continue;       // If the area is witin the frustrum, do not spawn here. Could potentially lead to a lot of spawns behind the player?
-            }
-            else
-            {
-                Instantiate(stagedAreas[eventNum], possibleSALocations[i]);       // Spawn the assets in this location and break. Atm, it takes the first possible location and maybe not the best?
+        //    if (screenPoint.z > 0 && screenPoint.x > 0 && screenPoint.x < 1 && screenPoint.y > 0 && screenPoint.y < 1)
+        //    {
+        //        continue;       // If the area is witin the frustrum, do not spawn here. Could potentially lead to a lot of spawns behind the player?
+        //    }
+        //    else
+        //    {
+        //        Instantiate(stagedAreas[eventNum], possibleSALocations[i]);       // Spawn the assets in this location and break. Atm, it takes the first possible location and maybe not the best?
 
-                WaitToStartCinematic(possibleSALocations[i]);                     // Start preparing for using cinematic
+        //        WaitToStartCinematic(possibleSALocations[i]);                     // Start preparing for using cinematic
 
-                eventNum++;         // Start looking into next SA in the coroutine
+        //        eventNum++;         // Start looking into next SA in the coroutine
 
-                positionAtLastSA = playerCam.transform.position;
+        //        positionAtLastSA = playerCam.transform.position;
 
-                break;
-            }
-        }
+        //        break;
+        //    }
+        //}
+        throw new NotImplementedException();
     }
 
 
-    Transform[] PossibleSpawnPoints(Vector2 playerPosition, Vector2 stagedAreaSize, float minHeight, float maxHeight, float minSlope, float maxSlope)
+    private List<Vector2> PossibleSpawnPoints(Vector2 playerPosition, Vector2 stagedAreaSize, float minHeight, float maxHeight, float minSlope, float maxSlope)
     {
-        Transform[] possiblePlaces = new Transform[10];
-
         float targetHeight = minHeight + ((maxHeight - minHeight) / 2);
         float targetSlope = minSlope + ((maxSlope - minSlope) / 2);
 
@@ -134,56 +139,43 @@ public class NarrativeManager : MonoBehaviour
         int mappedX = (int)Utils.Map(playerPosition.x, 0, terrainGenerator.terrainData.size.x, 0, heightmap.GetLength(0));
         int mappedY = (int)Utils.Map(playerPosition.y, 0, terrainGenerator.terrainData.size.z, 0, heightmap.GetLength(1));
 
-        //Search the area around the player on the HM
+
         // Sorted dictionaries are not very performant, so it may be better to split into lists and sort manually
-        //SortedDictionary<float, Vector2> positionsByScore = new SortedDictionary<float, Vector2>();
-        float bestScore = float.MaxValue;
-        Vector2 bestPosition = Vector2.zero;
+        SortedDictionary<float, Vector2> positionsByScore = new SortedDictionary<float, Vector2>();
+
+        //float bestScore = float.MaxValue;
+        //Vector2 bestPosition = Vector2.zero; //Not currently used, SortedDict used instead
         int validPoints = 0;
 
+        //Search the area around the player on the HM
         for (int y = Mathf.Max(0, mappedY - r); y < Mathf.Min(heightmap.GetLength(1), mappedY + r); y++)
         {
             for (int x = Mathf.Max(0, mappedX - r); x < Mathf.Min(heightmap.GetLength(0), mappedX + r); x++)
             {
-                //Should search the areas around player
-                float totalScore = 0;
-                if (isValidPoint(minHeight, maxHeight, minSlope, maxSlope, heightmap, y, x))
+                if (IsValidPoint(minHeight, maxHeight, minSlope, maxSlope, heightmap, y, x))
                 {
-                    validPoints++;   
+                    float totalScore = 0;
+                    validPoints++;
                     for (int ny = -(int)stagedAreaSize.y / 2; ny < (int)stagedAreaSize.y / 2; ny++)
                     {
                         for (int nx = -(int)stagedAreaSize.x / 2; nx < (int)stagedAreaSize.x / 2; nx++)
                         {
-                            totalScore += scorePointValidity(x + nx, y + ny, heightmap, targetHeight, targetSlope);
+                            totalScore += ScorePointValidity(x + nx, y + ny, heightmap, targetHeight, targetSlope);
                         }
                     }
-                    if (totalScore < bestScore)
-                    {
-                        bestScore = totalScore;
-                        bestPosition = new Vector2(x, y);
-                    }
+                    positionsByScore.Add(totalScore, new Vector2(x, y));
+                    //if (totalScore < bestScore)
+                    //{
+                    //    bestScore = totalScore;
+                    //    bestPosition = new Vector2(x, y);
+                    //}
                 }
-
-                //positionsByScore.Add(totalScore, new Vector2(x, y));
             }
         }
-        if (validPoints > 0)
-        {
-            Debug.Log(String.Format("Position: {0}, Score: {1}, height: {2}", bestPosition, bestScore, heightmap[(int)bestPosition.x, (int)bestPosition.y]));
+        //TODO: Run profiler on this, Linq can be expensive to run.
+        List<Vector2> possiblePlaces = positionsByScore.Values.ToList();
 
-            float worldSpaceX = terrainGenerator.terrainData.size.x * (bestPosition.x / terrainGenerator.terrainData.heightmapResolution);
-            float worldSpaceY = terrainGenerator.terrainData.size.y * heightmap[(int)bestPosition.x, (int)bestPosition.y];
-            float worldSpaceZ = terrainGenerator.terrainData.size.z * (bestPosition.y / terrainGenerator.terrainData.heightmapResolution);
 
-            terrainGenerator.Terraform((int)bestPosition.x, (int)bestPosition.y, new Vector2(5, 5));
-            GameObject go = Instantiate(stagedAreas[0], new Vector3(worldSpaceZ, worldSpaceY, worldSpaceX), Quaternion.identity);
-            
-        }
-        else
-        {
-            Debug.LogWarning("No valid points found");
-        }
-        //Debug.Log(positionsByScore[positionsByScore.])
 
         // Search in an area of r radius from the position denoted by x and y which is the current player position
         // Find first 10 suitable areas that fulfill scale, height, and slope
@@ -193,7 +185,32 @@ public class NarrativeManager : MonoBehaviour
         return possiblePlaces;               // Return center of found area
     }
 
-    private bool isValidPoint(float minHeight, float maxHeight, float minSlope, float maxSlope, float[,] heightmap, int y, int x)
+    private bool FindBestPosition(List<Vector2> candidates, out Vector2 position)
+    {
+        // candidates[0] is best fit in terms of height and slope, but this function should take other parameters such as distance and direction etc. into account
+        // for now, lets just use [0]
+        if (candidates.Count > 0)
+        {
+            position = candidates[0];
+            return true;
+        }
+        Debug.LogWarning("No Suitable Candidates for staged area.", this);
+        position = Vector2.zero;
+        return false;
+    }
+
+    private void InstantiateStagedArea(Vector2 position)
+    {
+        Vector3 worldSpacePos = new Vector3(
+            position.x / (float)terrainGenerator.terrainData.heightmapResolution * terrainGenerator.terrainData.size.x,
+            heightmap[(int)position.x, (int)position.y] * terrainGenerator.terrainData.size.y,
+            position.y / (float)terrainGenerator.terrainData.heightmapResolution * terrainGenerator.terrainData.size.z
+            );
+        terrainGenerator.Terraform((int)position.x, (int)position.y, new Vector2(5, 5)); //V2(5, 5) should be replaced with details from staged area parameters
+        GameObject go = Instantiate(stagedAreas[0], worldSpacePos, Quaternion.identity);
+    }
+
+    private bool IsValidPoint(float minHeight, float maxHeight, float minSlope, float maxSlope, float[,] heightmap, int y, int x)
     {
         bool isInHeightRange = heightmap[x, y] < maxHeight && heightmap[x, y] > minHeight;
         float slope = terrainGenerator.terrainData.GetSteepness(
@@ -203,7 +220,7 @@ public class NarrativeManager : MonoBehaviour
         return isInHeightRange && isInSlopeRange;
     }
 
-    private float scorePointValidity(int x, int y, float[,] hm, float targetHeight, float targetSlope)
+    private float ScorePointValidity(int x, int y, float[,] hm, float targetHeight, float targetSlope)
     {
         float height = hm[x, y];
         float slope = terrainGenerator.terrainData.GetSteepness(
