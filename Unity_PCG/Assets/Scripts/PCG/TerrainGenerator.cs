@@ -144,18 +144,17 @@ namespace MED10.PCG
 
         public void Terraform(int x, int y, Vector2 area)
         {
-
             float[,] heightmap = GetHeightMap(false);
-
+            float centerHeight = heightmap[x, y];
             for (int j = Mathf.Max(0, (int)(y - (area.y/2))); j < Mathf.Min(heightmap.GetLength(1), (int)(y + (area.y / 2))); j++)
             {
                 for (int i = Mathf.Max(0, (int)(x - (area.x / 2))); i < Mathf.Min(heightmap.GetLength(0), (int)(x + (area.x / 2))); i++)
                 {
-                    heightmap[i, j] = heightmap[x, y];
+                    heightmap[i, j] = centerHeight;
                 }
             }
             terrain.terrainData.SetHeights(0, 0, heightmap);
-            SmoothArea(x, y, area); //TODO
+            //SmoothArea(x, y, area); //TODO
             SplatMaps();
         }
 

@@ -136,8 +136,8 @@ public class NarrativeManager : MonoBehaviour
 
         int r = 15;
         float[,] heightmap = terrainGenerator.GetHeightMap(false);
-        int mappedX = (int)Utils.Map(playerPosition.x, 0, terrainGenerator.terrainData.size.x, 0, heightmap.GetLength(0));
-        int mappedY = (int)Utils.Map(playerPosition.y, 0, terrainGenerator.terrainData.size.z, 0, heightmap.GetLength(1));
+        int mappedY = (int)Utils.Map(playerPosition.x, 0, terrainGenerator.terrainData.size.x, 0, heightmap.GetLength(0));
+        int mappedX = (int)Utils.Map(playerPosition.y, 0, terrainGenerator.terrainData.size.z, 0, heightmap.GetLength(1));
 
 
         // Sorted dictionaries are not very performant, so it may be better to split into lists and sort manually
@@ -202,9 +202,9 @@ public class NarrativeManager : MonoBehaviour
     private void InstantiateStagedArea(Vector2 position)
     {
         Vector3 worldSpacePos = new Vector3(
-            position.x / (float)terrainGenerator.terrainData.heightmapResolution * terrainGenerator.terrainData.size.x,
+            position.y / (float)terrainGenerator.terrainData.heightmapResolution * terrainGenerator.terrainData.size.z,
             heightmap[(int)position.x, (int)position.y] * terrainGenerator.terrainData.size.y,
-            position.y / (float)terrainGenerator.terrainData.heightmapResolution * terrainGenerator.terrainData.size.z
+            position.x / (float)terrainGenerator.terrainData.heightmapResolution * terrainGenerator.terrainData.size.x
             );
         terrainGenerator.Terraform((int)position.x, (int)position.y, new Vector2(5, 5)); //V2(5, 5) should be replaced with details from staged area parameters
         GameObject go = Instantiate(stagedAreas[0], worldSpacePos, Quaternion.identity);
