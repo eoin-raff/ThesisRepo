@@ -142,7 +142,7 @@ namespace MED10.PCG
             }
         }
 
-        public void Terraform(int x, int y, Vector2 area)
+        public void Terraform(int x, int y, float strength, Vector2 area)
         {
             float[,] heightmap = GetHeightMap(false);
             float centerHeight = heightmap[x, y];
@@ -150,7 +150,7 @@ namespace MED10.PCG
             {
                 for (int i = Mathf.Max(0, (int)(x - (area.x / 2))); i < Mathf.Min(heightmap.GetLength(0), (int)(x + (area.x / 2))); i++)
                 {
-                    heightmap[i, j] = centerHeight;
+                    heightmap[i, j] = Mathf.Lerp(heightmap[i, j], centerHeight, strength);
                 }
             }
             terrain.terrainData.SetHeights(0, 0, heightmap);
