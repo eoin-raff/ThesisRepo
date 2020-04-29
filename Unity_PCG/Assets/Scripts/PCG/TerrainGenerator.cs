@@ -674,7 +674,8 @@ namespace MED10.PCG
 
         public void PlantVegetation()
         {
-            TreePrototype[] treePrototypes;
+            //Take the list of tree prefabs from VegetationData object, and convert it into an array of type TreePrototype.
+            TreePrototype[] treePrototypes;                                 
             treePrototypes = new TreePrototype[vegetationData.Count];
             int treeIdx = 0;
             foreach (Vegetation t in vegetationData)
@@ -685,22 +686,29 @@ namespace MED10.PCG
                 };
                 treeIdx++;
             }
+            //Assign the tree prototypes to TerrainData
             terrainData.treePrototypes = treePrototypes;
 
+            //Create a list of TreeInstance which will contain every tree which is instantiated on the terrain
             List<TreeInstance> allVegetation = new List<TreeInstance>();
-            //NEED TO GET VALUES FROM TERRAIN MESH, NOT HEIGHTMAP
-
+            
+            //The position data for trees needs to come from the Terrain, and NOT from the heightmap.
+            //Iterate over the terrain (x, z) in steps determined by the tree spacing (global variable)
             for (int z = 0; z < terrainData.size.z; z += treeSpacing)
             {
                 for (int x = 0; x < terrainData.size.x; x += treeSpacing)
                 {
+
+                    // Run the following code separately for each prototype tree
                     for (int tp = 0; tp < terrainData.treePrototypes.Length; tp++)
                     {
+                        // eliminate trees based on density using simple RMG
                         if (UnityEngine.Random.Range(0.0f, 1.0f) > vegetationData[tp].density)
                         {
                             break;
                         }
 
+                        //Find the heightmap position and check if this area is suitable for the prototype based on it's height and slope bands
                         int hmX = (int)Utils.Map(x, 0, terrainData.size.x, 0, (float)terrainData.heightmapResolution);
                         int hmZ = (int)Utils.Map(z, 0, terrainData.size.z, 0, (float)terrainData.heightmapResolution);
                         float thisHeight = terrainData.GetHeight(hmX, hmZ) / terrainData.size.y;
@@ -710,6 +718,7 @@ namespace MED10.PCG
                         if ((thisHeight >= vegetationData[tp].minHeight && thisHeight <= vegetationData[tp].maxHeight)
                             && (steepness >= vegetationData[tp].minSlope && steepness <= vegetationData[tp].maxSlope))
                         {
+                            //If the tree can be placed, then set its position
                             Vector3 position;
 
                             ////Default: perfect grid
@@ -732,6 +741,8 @@ namespace MED10.PCG
                                 position.y * terrainData.size.y,
                                 position.z * terrainData.size.z)
                                 + this.transform.position;
+
+                            //Perform a raycast on the terrain layer to ensure trees will be grounded properly
                             RaycastHit hit;
                             int layerMask = 1 << terrainLayer;
                             if (Physics.Raycast(treeWorldPos + Vector3.up * 10, -Vector3.up, out hit, 100, layerMask)
@@ -760,6 +771,7 @@ namespace MED10.PCG
                                 allVegetation.Add(instance);
 
                             }
+                            //If we have exceeded maxTrees, then stop creating more
                             if (allVegetation.Count >= maxTrees) goto TREESDONE;
                         }
 
