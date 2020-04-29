@@ -414,9 +414,9 @@ MonoBehaviour:
   vegetationData:
   - remove: 0
     minHeight: 0.05
-    maxHeight: 0.2
+    maxHeight: 1
     minSlope: 0
-    maxSlope: 10
+    maxSlope: 90
     mesh: {fileID: 136824, guid: 393b236c42954a640b513d46de90ac38, type: 3}
     pivotOffset: 0
     minScale: 0.7
@@ -426,12 +426,12 @@ MonoBehaviour:
     lightColor: {r: 1, g: 1, b: 1, a: 1}
     minRotation: 0
     maxRotation: 360
-    density: 0.5
+    density: 0.9
   - remove: 0
-    minHeight: 0.2
-    maxHeight: 0.4
+    minHeight: 0.05
+    maxHeight: 1
     minSlope: 0
-    maxSlope: 30
+    maxSlope: 90
     mesh: {fileID: 123896, guid: c63ea781a273235439e583799176c846, type: 3}
     pivotOffset: 0
     minScale: 0.7
@@ -441,7 +441,7 @@ MonoBehaviour:
     lightColor: {r: 1, g: 1, b: 1, a: 1}
     minRotation: 0
     maxRotation: 360
-    density: 0.5
+    density: 0.1
   - remove: 0
     minHeight: 0.05
     maxHeight: 0.2
@@ -472,7 +472,7 @@ MonoBehaviour:
     minRotation: 0
     maxRotation: 360
     density: 0.5
-  maxTrees: 50000
+  maxTrees: 100000
   treeSpacing: 4
   details:
   - remove: 0
@@ -599,10 +599,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   TerrainFinished: {fileID: 11400000, guid: 1e8cb325b09282f4cb9f243413062ba1, type: 2}
-  seed:
-    UseConstant: 0
-    ConstantValue: 0
-    VariableValue: {fileID: 11400000, guid: c37aec86bb263bd4caca6a81a0d79e88, type: 2}
+  seed: {fileID: 11400000, guid: c37aec86bb263bd4caca6a81a0d79e88, type: 2}
   terrain: {fileID: 29482988}
   GenerationEvents:
     m_PersistentCalls:
@@ -723,7 +720,7 @@ MonoBehaviour:
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
-        m_CallState: 0
+        m_CallState: 2
       - m_Target: {fileID: 29482988}
         m_MethodName: SplatMaps
         m_Mode: 1
@@ -785,6 +782,12 @@ MonoBehaviour:
   windAngle: 232
   windErosionAmount: 0.01
   windErosionStrength: 2.38
+--- !u!1 &130430412 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 100000, guid: 5e9e851c0e142814dac026a256ba2ac0,
+    type: 3}
+  m_PrefabInstance: {fileID: 1686756321}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &631875818
 GameObject:
   m_ObjectHideFlags: 0
@@ -1069,8 +1072,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 87cae8c2066fb4945ac9b94ae4c45cda, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  DEBUG: 0
-  playerCam: {fileID: 1281193149}
+  player: {fileID: 130430412}
   stagedAreas:
   - {fileID: 5672113332432925651, guid: e64aaf750c9ebd341a79fd80ba100df0, type: 3}
   - {fileID: 0}
@@ -1175,12 +1177,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
---- !u!20 &1281193149 stripped
-Camera:
-  m_CorrespondingSourceObject: {fileID: 2000000, guid: 5e9e851c0e142814dac026a256ba2ac0,
-    type: 3}
-  m_PrefabInstance: {fileID: 1686756321}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1591486913
 GameObject:
   m_ObjectHideFlags: 0

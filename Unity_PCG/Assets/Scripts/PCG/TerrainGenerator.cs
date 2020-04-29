@@ -142,26 +142,65 @@ namespace MED10.PCG
             }
         }
 
-        public void Terraform(int x, int y, Vector2 area)
+        public void FlattenAreaAroundPoint(int x, int y, float strength, Vector2 area)
         {
             float[,] heightmap = GetHeightMap(false);
             float centerHeight = heightmap[x, y];
-            for (int j = Mathf.Max(0, (int)(y - (area.y/2))); j < Mathf.Min(heightmap.GetLength(1), (int)(y + (area.y / 2))); j++)
+            for (int j = Mathf.Max(0, (int)(y - (area.y / 2))); j < Mathf.Min(heightmap.GetLength(1), (int)(y + (area.y / 2))); j++)
             {
                 for (int i = Mathf.Max(0, (int)(x - (area.x / 2))); i < Mathf.Min(heightmap.GetLength(0), (int)(x + (area.x / 2))); i++)
                 {
-                    heightmap[i, j] = centerHeight;
+                    heightmap[i, j] = Mathf.Lerp(heightmap[i, j], centerHeight, strength);
                 }
             }
             terrain.terrainData.SetHeights(0, 0, heightmap);
-            //SmoothArea(x, y, area); //TODO
+            //SmoothAreaAroundPoint(x, y, 1, area); //TODO
             SplatMaps();
         }
 
-        private void SmoothArea(int x, int y, Vector2 area)
+        /// <summary>
+        /// This funciton should smooth a small area of the map with a simple mean filter.
+        /// </summary>
+        /// <param name="pointX">X coordinate of the centre point</param>
+        /// <param name="pointY">Y coordinate of the centre point</param>
+        /// <param name="smoothAmount">Number of passes of the mean filter</param>
+        /// <param name="area">Size of the area to be filtered</param>
+        [Obsolete("Do not use this function until pit creating bug has been fixed!")]
+        private void SmoothAreaAroundPoint(int pointX, int pointY, int smoothAmount, Vector2 area)
         {
-            throw new NotImplementedException();
-        }
+            // Don't use GetHeights() in case ResetTerrain is true;
+            float[,] heightMap = GetHeightMap(false);
+
+            float smoothProgress = 0;
+#if UNITY_EDITOR
+            EditorUtility.DisplayProgressBar("Smoothing Area", "Progress", smoothProgress);
+#endif
+            for (int i = 0; i < smoothAmount; i++)
+            {
+                for (int y = Mathf.Max(0, pointY - (int)(area.y / 2)); y < Mathf.Min(terrainData.heightmapResolution, pointY + (int)(area.y / 2)); y++)
+                {
+                    for (int x = Mathf.Max(0, pointX - (int)(area.x / 2)); x < Mathf.Min(terrainData.heightmapResolution, pointX + (int)(area.x / 2)); x++)
+                    {
+                        float avgHeight = heightMap[x, y];
+                        List<Vector2> neighbors = Utils.GetNeighbors(new Vector2(x, y), (int)area.x, (int)area.y);
+                        foreach (Vector2 n in neighbors)
+                        {
+                            avgHeight += heightMap[(int)n.x, (int)n.y];
+                        }
+
+                        heightMap[x, y] = avgHeight / ((float)neighbors.Count + 1);
+                    }
+                }
+                smoothProgress++;
+#if UNITY_EDITOR
+                EditorUtility.DisplayProgressBar("Smoothing Area", "Progress", smoothProgress / smoothAmount);
+#endif
+            }
+            terrainData.SetHeights(0, 0, heightMap);
+#if UNITY_EDITOR
+            EditorUtility.ClearProgressBar();
+#endif        
+        } 
 
         public void SplatMaps()
         {
@@ -423,7 +462,6 @@ namespace MED10.PCG
             }
         }
 
-
         public void GenerateClouds()
         {
             // Create a Cloud Manager Game Object in the scene
@@ -525,7 +563,6 @@ namespace MED10.PCG
                 cloudGO.transform.localScale = Vector3.one;
             }
         }
-
 
         public void AddShore()
         {
@@ -637,7 +674,8 @@ namespace MED10.PCG
 
         public void PlantVegetation()
         {
-            TreePrototype[] treePrototypes;
+            //Take the list of tree prefabs from VegetationData object, and convert it into an array of type TreePrototype.
+            TreePrototype[] treePrototypes;                                 
             treePrototypes = new TreePrototype[vegetationData.Count];
             int treeIdx = 0;
             foreach (Vegetation t in vegetationData)
@@ -648,22 +686,29 @@ namespace MED10.PCG
                 };
                 treeIdx++;
             }
+            //Assign the tree prototypes to TerrainData
             terrainData.treePrototypes = treePrototypes;
 
+            //Create a list of TreeInstance which will contain every tree which is instantiated on the terrain
             List<TreeInstance> allVegetation = new List<TreeInstance>();
-            //NEED TO GET VALUES FROM TERRAIN MESH, NOT HEIGHTMAP
-
+            
+            //The position data for trees needs to come from the Terrain, and NOT from the heightmap.
+            //Iterate over the terrain (x, z) in steps determined by the tree spacing (global variable)
             for (int z = 0; z < terrainData.size.z; z += treeSpacing)
             {
                 for (int x = 0; x < terrainData.size.x; x += treeSpacing)
                 {
+
+                    // Run the following code separately for each prototype tree
                     for (int tp = 0; tp < terrainData.treePrototypes.Length; tp++)
                     {
+                        // eliminate trees based on density using simple RMG
                         if (UnityEngine.Random.Range(0.0f, 1.0f) > vegetationData[tp].density)
                         {
                             break;
                         }
 
+                        //Find the heightmap position and check if this area is suitable for the prototype based on it's height and slope bands
                         int hmX = (int)Utils.Map(x, 0, terrainData.size.x, 0, (float)terrainData.heightmapResolution);
                         int hmZ = (int)Utils.Map(z, 0, terrainData.size.z, 0, (float)terrainData.heightmapResolution);
                         float thisHeight = terrainData.GetHeight(hmX, hmZ) / terrainData.size.y;
@@ -673,6 +718,7 @@ namespace MED10.PCG
                         if ((thisHeight >= vegetationData[tp].minHeight && thisHeight <= vegetationData[tp].maxHeight)
                             && (steepness >= vegetationData[tp].minSlope && steepness <= vegetationData[tp].maxSlope))
                         {
+                            //If the tree can be placed, then set its position
                             Vector3 position;
 
                             ////Default: perfect grid
@@ -695,6 +741,8 @@ namespace MED10.PCG
                                 position.y * terrainData.size.y,
                                 position.z * terrainData.size.z)
                                 + this.transform.position;
+
+                            //Perform a raycast on the terrain layer to ensure trees will be grounded properly
                             RaycastHit hit;
                             int layerMask = 1 << terrainLayer;
                             if (Physics.Raycast(treeWorldPos + Vector3.up * 10, -Vector3.up, out hit, 100, layerMask)
@@ -702,7 +750,6 @@ namespace MED10.PCG
                             {
                                 TreeInstance instance = new TreeInstance
                                 {
-
                                     position = position,
                                     rotation = UnityEngine.Random.Range(0, 360),
                                     prototypeIndex = tp,
@@ -723,6 +770,7 @@ namespace MED10.PCG
                                 allVegetation.Add(instance);
 
                             }
+                            //If we have exceeded maxTrees, then stop creating more
                             if (allVegetation.Count >= maxTrees) goto TREESDONE;
                         }
 
@@ -732,6 +780,42 @@ namespace MED10.PCG
         TREESDONE:
             terrainData.treeInstances = allVegetation.ToArray();
 
+        }
+
+        /// <summary>
+        /// This funtion will search an area of the terrain and remove any trees.
+        /// </summary>
+        /// <param name="centre">Centre of the area in Terrain Coordinates</param>
+        /// <param name="area">Size of the area to be searched</param>
+        public void RemoveTreesInArea(Vector2 centre, Vector2 area)
+        {
+            TreeInstance[] treesInstances = terrainData.treeInstances;
+            List<TreeInstance> newTreeInstances = new List<TreeInstance>();
+
+            //Search the area for TreeInstances
+            int removedTrees = 0;
+
+            foreach (TreeInstance tree in treesInstances)
+            {
+                //tree.position is between 0 and 1, so scale it to fit the terrain size
+                Vector2 treePosition = new Vector2(tree.position.x * terrainData.size.x, tree.position.z * terrainData.size.z);
+                
+                bool treeIsInArea =
+                    treePosition.x > centre.x - (area.x / 2) && treePosition.x < centre.x + (area.x / 2)
+                    && treePosition.y > centre.y - (area.y / 2) && treePosition.y < centre.y + (area.y / 2);
+                
+                //Remove those TreeInstances (i.e., only keep ones which are not in the area)
+                if (!treeIsInArea)
+                {
+                    newTreeInstances.Add(tree);
+                }
+                else
+                {
+                    removedTrees++;
+                }
+            }
+            //Re-Apply Trees to Terrain
+            terrainData.treeInstances = newTreeInstances.ToArray();
         }
 
         public void Voronoi()
