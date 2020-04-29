@@ -265,7 +265,7 @@ public class NarrativeManager : MonoBehaviour
             heightmap[(int)position.x, (int)position.y] * terrainGenerator.terrainData.size.y,
             position.x / (float)terrainGenerator.terrainData.heightmapResolution * terrainGenerator.terrainData.size.x
             );
-        terrainGenerator.Terraform((int)position.x, (int)position.y, 0.75f, new Vector2(5, 5)); //V2(5, 5) should be replaced with details from staged area parameters
+        terrainGenerator.FlattenAreaAroundPoint((int)position.x, (int)position.y, 0.75f, new Vector2(5, 5)); //V2(5, 5) should be replaced with details from staged area parameters
         GameObject go = Instantiate(stagedAreas[0], worldSpacePos, Quaternion.identity);
     }
 

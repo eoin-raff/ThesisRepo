@@ -142,7 +142,7 @@ namespace MED10.PCG
             }
         }
 
-        public void Terraform(int x, int y, float strength, Vector2 area)
+        public void FlattenAreaAroundPoint(int x, int y, float strength, Vector2 area)
         {
             float[,] heightmap = GetHeightMap(false);
             float centerHeight = heightmap[x, y];
