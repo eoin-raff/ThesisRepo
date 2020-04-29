@@ -146,7 +146,7 @@ namespace MED10.PCG
         {
             float[,] heightmap = GetHeightMap(false);
             float centerHeight = heightmap[x, y];
-            for (int j = Mathf.Max(0, (int)(y - (area.y/2))); j < Mathf.Min(heightmap.GetLength(1), (int)(y + (area.y / 2))); j++)
+            for (int j = Mathf.Max(0, (int)(y - (area.y / 2))); j < Mathf.Min(heightmap.GetLength(1), (int)(y + (area.y / 2))); j++)
             {
                 for (int i = Mathf.Max(0, (int)(x - (area.x / 2))); i < Mathf.Min(heightmap.GetLength(0), (int)(x + (area.x / 2))); i++)
                 {
@@ -154,14 +154,53 @@ namespace MED10.PCG
                 }
             }
             terrain.terrainData.SetHeights(0, 0, heightmap);
-            //SmoothArea(x, y, area); //TODO
+            //SmoothAreaAroundPoint(x, y, 1, area); //TODO
             SplatMaps();
         }
 
-        private void SmoothArea(int x, int y, Vector2 area)
+        /// <summary>
+        /// This funciton should smooth a small area of the map with a simple mean filter.
+        /// </summary>
+        /// <param name="pointX">X coordinate of the centre point</param>
+        /// <param name="pointY">Y coordinate of the centre point</param>
+        /// <param name="smoothAmount">Number of passes of the mean filter</param>
+        /// <param name="area">Size of the area to be filtered</param>
+        [Obsolete("Do not use this function until pit creating bug has been fixed!")]
+        private void SmoothAreaAroundPoint(int pointX, int pointY, int smoothAmount, Vector2 area)
         {
-            throw new NotImplementedException();
-        }
+            // Don't use GetHeights() in case ResetTerrain is true;
+            float[,] heightMap = GetHeightMap(false);
+
+            float smoothProgress = 0;
+#if UNITY_EDITOR
+            EditorUtility.DisplayProgressBar("Smoothing Area", "Progress", smoothProgress);
+#endif
+            for (int i = 0; i < smoothAmount; i++)
+            {
+                for (int y = Mathf.Max(0, pointY - (int)(area.y / 2)); y < Mathf.Min(terrainData.heightmapResolution, pointY + (int)(area.y / 2)); y++)
+                {
+                    for (int x = Mathf.Max(0, pointX - (int)(area.x / 2)); x < Mathf.Min(terrainData.heightmapResolution, pointX + (int)(area.x / 2)); x++)
+                    {
+                        float avgHeight = heightMap[x, y];
+                        List<Vector2> neighbors = Utils.GetNeighbors(new Vector2(x, y), (int)area.x, (int)area.y);
+                        foreach (Vector2 n in neighbors)
+                        {
+                            avgHeight += heightMap[(int)n.x, (int)n.y];
+                        }
+
+                        heightMap[x, y] = avgHeight / ((float)neighbors.Count + 1);
+                    }
+                }
+                smoothProgress++;
+#if UNITY_EDITOR
+                EditorUtility.DisplayProgressBar("Smoothing Area", "Progress", smoothProgress / smoothAmount);
+#endif
+            }
+            terrainData.SetHeights(0, 0, heightMap);
+#if UNITY_EDITOR
+            EditorUtility.ClearProgressBar();
+#endif        
+        } 
 
         public void SplatMaps()
         {
@@ -423,7 +462,6 @@ namespace MED10.PCG
             }
         }
 
-
         public void GenerateClouds()
         {
             // Create a Cloud Manager Game Object in the scene
@@ -525,7 +563,6 @@ namespace MED10.PCG
                 cloudGO.transform.localScale = Vector3.one;
             }
         }
-
 
         public void AddShore()
         {
