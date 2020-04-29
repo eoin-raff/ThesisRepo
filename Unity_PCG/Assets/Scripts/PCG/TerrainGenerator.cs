@@ -750,7 +750,6 @@ namespace MED10.PCG
                             {
                                 TreeInstance instance = new TreeInstance
                                 {
-
                                     position = position,
                                     rotation = UnityEngine.Random.Range(0, 360),
                                     prototypeIndex = tp,
@@ -781,6 +780,42 @@ namespace MED10.PCG
         TREESDONE:
             terrainData.treeInstances = allVegetation.ToArray();
 
+        }
+
+        /// <summary>
+        /// This funtion will search an area of the terrain and remove any trees.
+        /// </summary>
+        /// <param name="centre">Centre of the area in Terrain Coordinates</param>
+        /// <param name="area">Size of the area to be searched</param>
+        public void RemoveTreesInArea(Vector2 centre, Vector2 area)
+        {
+            TreeInstance[] treesInstances = terrainData.treeInstances;
+            List<TreeInstance> newTreeInstances = new List<TreeInstance>();
+
+            //Search the area for TreeInstances
+            int removedTrees = 0;
+
+            foreach (TreeInstance tree in treesInstances)
+            {
+                //tree.position is between 0 and 1, so scale it to fit the terrain size
+                Vector2 treePosition = new Vector2(tree.position.x * terrainData.size.x, tree.position.z * terrainData.size.z);
+                
+                bool treeIsInArea =
+                    treePosition.x > centre.x - (area.x / 2) && treePosition.x < centre.x + (area.x / 2)
+                    && treePosition.y > centre.y - (area.y / 2) && treePosition.y < centre.y + (area.y / 2);
+                
+                //Remove those TreeInstances (i.e., only keep ones which are not in the area)
+                if (!treeIsInArea)
+                {
+                    newTreeInstances.Add(tree);
+                }
+                else
+                {
+                    removedTrees++;
+                }
+            }
+            //Re-Apply Trees to Terrain
+            terrainData.treeInstances = newTreeInstances.ToArray();
         }
 
         public void Voronoi()
