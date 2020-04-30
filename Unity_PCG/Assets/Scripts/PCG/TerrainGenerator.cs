@@ -213,11 +213,13 @@ namespace MED10.PCG
                 newSplatPrototypes[spIndex] = new TerrainLayer
                 {
                     diffuseTexture = splatHeight.texture,
+                    normalMapTexture = splatHeight.normalMap,
                     tileOffset = splatHeight.tileOffset,
                     tileSize = splatHeight.tileSize
                 };
                 newSplatPrototypes[spIndex].diffuseTexture.Apply(true);
-                string path = "Assets/New Terrain Layer " + spIndex + ".terrainlayer";
+                newSplatPrototypes[spIndex].normalMapTexture.Apply(true);
+                string path = "Assets/TerrainLayer_" + splatHeight.texture.name + "_" + spIndex + ".terrainlayer";
                 AssetDatabase.CreateAsset(newSplatPrototypes[spIndex], path);
                 spIndex++;
                 Selection.activeObject = this.gameObject;
