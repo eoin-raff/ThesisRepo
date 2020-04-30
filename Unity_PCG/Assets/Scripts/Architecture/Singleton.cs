@@ -21,11 +21,11 @@ namespace MED10.Architecture
             if (instance == null)
             {
                 GameObject singletonObject = new GameObject();
-                Type type = singletonObject.AddComponent<Type>();
-                singletonObject.name = type.name;
+                instance = singletonObject.AddComponent<Type>();
+                singletonObject.name = instance.name;
                 singletonObject.transform.position = Vector3.zero;
                 singletonObject.transform.rotation = Quaternion.identity;
-                return type;
+                return instance;
             }
             else
             {
@@ -34,10 +34,11 @@ namespace MED10.Architecture
         }
         protected void Awake()
         {
+            Debug.Log("Singleton Awake");
             if (instance == null)
             {
                 instance = gameObject.GetComponent<Type>();
-                DontDestroyOnLoad(gameObject);
+
             }
             else
             {

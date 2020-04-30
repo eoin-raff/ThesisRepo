@@ -5,6 +5,7 @@ using System.Collections.Generic;
 namespace MED10.PCG
 {
     [ExecuteAlways]
+    [RequireComponent(typeof(TerrainManager))]
     public class Erosion : MonoBehaviour
     {
         public TerrainGenerator terrain;
@@ -29,12 +30,14 @@ namespace MED10.PCG
         public float windAngle = 0.0f;
         public float windErosionAmount;
         public float windErosionStrength;
+        private TerrainManager terrainManager;
 
         private void OnEnable()
         {
-            terrain = GetComponent<TerrainGenerator>();
-
-            resolution = terrain.terrainData.heightmapResolution;
+            Debug.Log("Initialising Erosion");
+            terrainManager = gameObject.GetOrAddComponent<TerrainManager>();
+            terrainManager.SetErosion(this);
+            terrain = terrainManager.GetTerrainGenerator();
         }
 
         public void Erode()
@@ -85,7 +88,7 @@ namespace MED10.PCG
                           UnityEngine.Random.Range(0, resolution)]
                         -= rainErosionStrength;
             }
-            terrain.terrainData.SetHeights(0, 0, heightMap);
+            terrainManager.SetHeightmap(heightMap);
         }
         public void River()
         {
@@ -122,7 +125,7 @@ namespace MED10.PCG
                     }
                 }
             }
-            terrain.terrainData.SetHeights(0, 0, heightMap);                                            // Apply heightMap to Terrain
+            terrainManager.SetHeightmap(heightMap);                                            // Apply heightMap to Terrain
         }
         private float[,] RunRiver(Vector2 position, float[,] heightMap, float[,] erosionMap, int width, int height)
         {
@@ -178,7 +181,7 @@ namespace MED10.PCG
                     }
                 }
             }
-            terrain.terrainData.SetHeights(0, 0, heightMap);
+            terrainManager.SetHeightmap(heightMap);
         }
         public void Tidal()
         {
@@ -187,7 +190,7 @@ namespace MED10.PCG
              *  like a blend of thermal and shorline
              */
             float[,] heightMap = terrain.GetHeightMap(false);
-
+            float waterHeight = terrainManager.GetPainter().waterHeight;
             for (int y = 0; y < resolution; y++)
             {
                 for (int x = 0; x < resolution; x++)
@@ -196,15 +199,15 @@ namespace MED10.PCG
                     List<Vector2> neighbors = Utils.GetNeighbors(location, resolution, resolution);
                     foreach (Vector2 n in neighbors)
                     {
-                        if (heightMap[x, y] < terrain.waterHeight && heightMap[(int)n.x, (int)n.y] > terrain.waterHeight)
+                        if (heightMap[x, y] < waterHeight && heightMap[(int)n.x, (int)n.y] > waterHeight)
                         {
-                            heightMap[x, y] = Mathf.Lerp(heightMap[x, y], terrain.waterHeight, tidalErosionStrength);
-                            heightMap[(int)n.x, (int)n.y] = Mathf.Lerp(heightMap[(int)n.x, (int)n.y], terrain.waterHeight, tidalErosionStrength);
+                            heightMap[x, y] = Mathf.Lerp(heightMap[x, y], waterHeight, tidalErosionStrength);
+                            heightMap[(int)n.x, (int)n.y] = Mathf.Lerp(heightMap[(int)n.x, (int)n.y], waterHeight, tidalErosionStrength);
                         }
                     }
                 }
             }
-            terrain.terrainData.SetHeights(0, 0, heightMap);
+            terrainManager.SetHeightmap(heightMap);
         }
         public void Wind()
         {
@@ -242,7 +245,7 @@ namespace MED10.PCG
                     }
                 }
             }
-            terrain.terrainData.SetHeights(0, 0, heightMap);
+            terrainManager.SetHeightmap(heightMap);
         }
 
     }
