@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Profiling;
 
 namespace MED10.PCG
 {
@@ -72,6 +73,7 @@ namespace MED10.PCG
         public void SplatMaps()
         {
 #if UNITY_EDITOR
+            Profiler.BeginSample("Assign Splat Maps");
             TerrainLayer[] newSplatPrototypes;
             newSplatPrototypes = new TerrainLayer[splatHeights.Count];
             int spIndex = 0;
@@ -92,8 +94,15 @@ namespace MED10.PCG
                 Selection.activeObject = this.gameObject;
             }
             terrainManager.TerrainData.terrainLayers = newSplatPrototypes;
+            Profiler.EndSample();
 #endif
+            Profiler.BeginSample("Apply Splatmaps");
+            StartCoroutine(ApplySplatmaps());
+            Profiler.EndSample();
+        }
 
+        private IEnumerator ApplySplatmaps()
+        {
             float[,] heightMap = terrainManager.TerrainData.GetHeights(0, 0, terrainManager.HeightmapResolution,
                                                               terrainManager.HeightmapResolution);
             float[,,] splatmapData = new float[terrainManager.TerrainData.alphamapResolution,
@@ -132,9 +141,11 @@ namespace MED10.PCG
                         splatmapData[x, y, z] = splat[z];
                     }
                 }
+                yield return new WaitForEndOfFrame();
             }
+            Debug.Log("Reapplying Ground Textures");
             terrainManager.TerrainData.SetAlphamaps(0, 0, splatmapData);
-
+            yield break;
         }
 
         public void PlantVegetation()

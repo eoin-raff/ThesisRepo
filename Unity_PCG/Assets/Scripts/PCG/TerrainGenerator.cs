@@ -100,9 +100,10 @@ namespace MED10.PCG
                 for (int i = Mathf.Max(0, (int)(x - (area.x / 2))); i < Mathf.Min(heightMap.GetLength(0), (int)(x + (area.x / 2))); i++)
                 {
                     heightMap[i, j] = Mathf.Lerp(heightMap[i, j], centerHeight, strength);
+                    yield return new WaitForEndOfFrame();
                 }
-                yield return new WaitForEndOfFrame(); 
             }
+            Debug.Log("Setting new heights");
             terrainManager.SetHeightmap(heightMap);
             //SmoothAreaAroundPoint(x, y, 1, area); //TODO
             terrainManager.GetPainter().SplatMaps();
