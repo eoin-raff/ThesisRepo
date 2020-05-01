@@ -285,11 +285,11 @@ MonoBehaviour:
   voronoiMinHeight: 0.049375687
   voronoiMaxHeight: 0.25004107
   voronoiType: 2
-  MPminHeight: -0.3
-  MPmaxHeight: 0.3
-  MProughness: 1.25
-  MPheightDampener: 1.5
-  smoothAmount: 1
+  MPminHeight: -0.5
+  MPmaxHeight: 0.5
+  MProughness: 1.75
+  MPheightDampener: 1.35
+  smoothAmount: 3
   terrain: {fileID: 0}
   terrainData: {fileID: 0}
 --- !u!154 &29482989
