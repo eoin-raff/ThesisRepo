@@ -4,6 +4,7 @@ using UnityEngine;
 using System;
 using System.Collections.Generic;
 using Random = UnityEngine.Random;
+using System.Collections;
 
 namespace MED10.PCG
 {
@@ -89,8 +90,9 @@ namespace MED10.PCG
                 return new float[terrainManager.HeightmapResolution, terrainManager.HeightmapResolution];
             }
         }
-        public void FlattenAreaAroundPoint(int x, int y, float strength, Vector2 area)
+        public IEnumerator FlattenAreaAroundPoint(int x, int y, float strength, Vector2 area)
         {
+            Debug.Log("Flattening Area");
             float[,] heightMap = GetHeightMap(false);
             float centerHeight = heightMap[x, y];
             for (int j = Mathf.Max(0, (int)(y - (area.y / 2))); j < Mathf.Min(heightMap.GetLength(1), (int)(y + (area.y / 2))); j++)
@@ -99,10 +101,12 @@ namespace MED10.PCG
                 {
                     heightMap[i, j] = Mathf.Lerp(heightMap[i, j], centerHeight, strength);
                 }
+                yield return new WaitForEndOfFrame(); 
             }
             terrainManager.SetHeightmap(heightMap);
             //SmoothAreaAroundPoint(x, y, 1, area); //TODO
-            //SplatMaps();
+            terrainManager.GetPainter().SplatMaps();
+            yield break;
         }
 
 

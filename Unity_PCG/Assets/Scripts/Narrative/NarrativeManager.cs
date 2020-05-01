@@ -398,9 +398,8 @@ public class NarrativeManager : MonoBehaviour
             position.x / (float)terrainManager.HeightmapResolution * terrainManager.TerrainData.size.x
             );
         Vector2 stagedAreaSize = new Vector2(10, 10); //V2(5, 5) should be replaced with details from staged area parameters
-        terrainManager.GetPainter().RemoveTreesInArea(worldSpacePos.XZ(), stagedAreaSize);
-        terrainManager.GetTerrainGenerator().FlattenAreaAroundPoint((int)position.x, (int)position.y, 0.65f, stagedAreaSize);
-        terrainManager.GetPainter().SplatMaps();
+        StartCoroutine(terrainManager.GetPainter().RemoveTreesInArea(worldSpacePos.XZ(), stagedAreaSize));
+        StartCoroutine(terrainManager.GetTerrainGenerator().FlattenAreaAroundPoint((int)position.x, (int)position.y, 0.65f, stagedAreaSize));
         GameObject go = Instantiate(stagedAreas[0], worldSpacePos, Quaternion.identity);
     }
 

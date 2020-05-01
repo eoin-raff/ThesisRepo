@@ -542,16 +542,18 @@ namespace MED10.PCG
         /// </summary>
         /// <param name="centre">Centre of the area in Terrain Coordinates</param>
         /// <param name="area">Size of the area to be searched</param>
-        public void RemoveTreesInArea(Vector2 centre, Vector2 area)
+        public IEnumerator RemoveTreesInArea(Vector2 centre, Vector2 area)
         {
+            Debug.Log("Clearing Trees");
             TreeInstance[] treesInstances = terrainManager.TerrainData.treeInstances;
             List<TreeInstance> newTreeInstances = new List<TreeInstance>();
 
             //Search the area for TreeInstances
             int removedTrees = 0;
-
+            int numTrees = 0;
             foreach (TreeInstance tree in treesInstances)
             {
+                numTrees++;
                 //tree.position is between 0 and 1, so scale it to fit the terrain size
                 Vector2 treePosition = new Vector2(tree.position.x * terrainManager.TerrainData.size.x, tree.position.z * terrainManager.TerrainData.size.z);
 
@@ -568,9 +570,14 @@ namespace MED10.PCG
                 {
                     removedTrees++;
                 }
+                if (numTrees%100 == 0)
+                {
+                    yield return new WaitForEndOfFrame();
+                }
             }
             //Re-Apply Trees to Terrain
             terrainManager.TerrainData.treeInstances = newTreeInstances.ToArray();
+            yield break;
         }
 
     }
