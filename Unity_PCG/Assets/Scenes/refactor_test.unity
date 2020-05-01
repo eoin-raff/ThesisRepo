@@ -563,7 +563,7 @@ MonoBehaviour:
     minHeight: 0
     maxHeight: 1
     minSlope: 0
-    maxSlope: 45
+    maxSlope: 30
     texture: {fileID: 2800000, guid: 73d10b7d71b269a46b473f2b07877476, type: 3}
     normalMap: {fileID: 2800000, guid: 656dd337f5d9a2b40a277057d95ab9e8, type: 3}
     tileOffset: {x: 0, y: 0}
@@ -574,7 +574,7 @@ MonoBehaviour:
   - remove: 0
     minHeight: 0
     maxHeight: 1
-    minSlope: 35
+    minSlope: 30
     maxSlope: 90
     texture: {fileID: 2800000, guid: 577418be0048f3747a09d06731ed49a5, type: 3}
     normalMap: {fileID: 2800000, guid: 09aaf2fa003388b4a9752ecd706a5e1c, type: 3}
@@ -585,9 +585,33 @@ MonoBehaviour:
     blendNoiseScalar: 0.1
   - remove: 0
     minHeight: 0
+    maxHeight: 0.15
+    minSlope: 0
+    maxSlope: 25
+    texture: {fileID: 2800000, guid: 843cab13a0567d640bcdd4b264846a3b, type: 3}
+    normalMap: {fileID: 2800000, guid: 18e86f0aaf4ea3b4d812ee5dfc4f20ee, type: 3}
+    tileOffset: {x: 0, y: 0}
+    tileSize: {x: 1, y: 1}
+    blendOffset: 0.01
+    blendNoiseScale: {x: 0.01, y: 0.01}
+    blendNoiseScalar: 0.1
+  - remove: 0
+    minHeight: 0.15
+    maxHeight: 0.2
+    minSlope: 0
+    maxSlope: 30
+    texture: {fileID: 2800000, guid: 19329b832ae28e24d990c4728eb4ec37, type: 3}
+    normalMap: {fileID: 2800000, guid: b2830ce353a38b7428a2de48351525b7, type: 3}
+    tileOffset: {x: 0, y: 0}
+    tileSize: {x: 1, y: 1}
+    blendOffset: 0.01
+    blendNoiseScale: {x: 0.01, y: 0.01}
+    blendNoiseScalar: 0.1
+  - remove: 0
+    minHeight: 0.2
     maxHeight: 1
     minSlope: 0
-    maxSlope: 40
+    maxSlope: 90
     texture: {fileID: 2800000, guid: 843cab13a0567d640bcdd4b264846a3b, type: 3}
     normalMap: {fileID: 2800000, guid: 18e86f0aaf4ea3b4d812ee5dfc4f20ee, type: 3}
     tileOffset: {x: 0, y: 0}
@@ -702,7 +726,7 @@ MonoBehaviour:
     maxRotation: 360
     density: 0.1
   maxTrees: 50000
-  treeSpacing: 7
+  treeSpacing: 4
   details:
   - remove: 0
     minHeight: 0.1
@@ -787,11 +811,11 @@ MonoBehaviour:
     noiseSpread: 0.5
     overlap: 0.01
     feather: 0.05
-    density: 0.1
+    density: 1
     bendFactor: 0
   maxDetails: 5211
   detailSpacing: 1
-  waterHeight: 0.015
+  waterHeight: 0.025
   waterGO: {fileID: 1591486913}
   shorelineMaterial: {fileID: 2100000, guid: 901665a29f6bee448bc3f5a56a60348b, type: 2}
   numberOfClouds: 1
@@ -1029,7 +1053,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1280274119
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1152,7 +1176,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1591486913}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 500, y: 1, z: 500}
+  m_LocalPosition: {x: 500, y: 12.44, z: 500}
   m_LocalScale: {x: 1000, y: 1, z: 1000}
   m_Children: []
   m_Father: {fileID: 0}

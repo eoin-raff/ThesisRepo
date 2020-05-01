@@ -32,6 +32,13 @@ public class NarrativeManager : MonoBehaviour
 
     public TerrainManager terrainManager;
     float[,] heightmap;
+
+    private List<StagedAreaCandidatePosition> candidates;
+    private bool candidatesReady = false;
+
+    private Vector2 nextStagedAreaSpawnPosition;
+    private bool foundPosition = false;
+
     private void Start()
     {
         Debug.Assert(terrainManager != null, "No terrain manager assigned", this);
@@ -39,23 +46,40 @@ public class NarrativeManager : MonoBehaviour
 
     private void Update()
     {
-        if (true)
-        {
-            if (heightmap == null)
-            {
-                heightmap = terrainManager.GetHeightmap(false);
-            }
-            Vector2 playerPos = new Vector2(player.transform.position.x, player.transform.position.z);
-            if (Input.GetKeyDown(KeyCode.G))
-            {
-                List<StagedAreaCandidatePosition> candidates = PossibleSpawnPoints(playerPos, new Vector2(5, 5), 0, 1, 0, 1);
 
-                if (FindBestPosition(candidates, new Vector4(5, 1, 1, 2).normalized, out Vector2 spawnPosition))
-                {
-                    InstantiateStagedArea(spawnPosition);
-                }
-            }
+        if (heightmap == null)
+        {
+            heightmap = terrainManager.GetHeightmap(false);
         }
+        Vector2 playerPos = new Vector2(player.transform.position.x, player.transform.position.z);
+        if (Input.GetKeyDown(KeyCode.G))
+        {
+            Debug.Log("Seearching for staged area candidates");
+            candidates = new List<StagedAreaCandidatePosition>();
+            candidatesReady = false;
+            StartCoroutine(AssessSpawnPointsWithCallback(playerPos, new Vector2(5, 5), 0, 1, 0, 1, SetCandidates));
+        }
+        if (candidatesReady && candidates.Count > 0)
+        {
+            candidatesReady = false;
+            Debug.Log("Looking for best candidate position");
+            foundPosition = false;
+            StartCoroutine(FindBestPosition(candidates, new Vector4(5, 1, 1, 2).normalized, SetStagedAreaPosition));
+
+            //if (FindBestPosition(candidates, new Vector4(5, 1, 1, 2).normalized, out Vector2 spawnPosition))
+            //{
+            //    Debug.Log("Instantiating Object");
+            //    InstantiateStagedArea(spawnPosition);
+            //    candidatesReady = false;
+            //}
+        }
+        if (foundPosition)
+        {
+            Debug.Log("Instantiating Object");
+            InstantiateStagedArea(nextStagedAreaSpawnPosition);
+            foundPosition = false;
+        }
+
     }
     public void SpaceTime()                             // Call this method to initiate space-time behavior. Should probably be from another script
     {
@@ -128,6 +152,70 @@ public class NarrativeManager : MonoBehaviour
     }
 
 
+    private IEnumerator AssessSpawnPointsWithCallback(Vector2 playerPosition, Vector2 stagedAreaSize, float minHeight, float maxHeight, float minSlope, float maxSlope, Action<List<StagedAreaCandidatePosition>> addCandidatesCallback)
+    {
+        float targetHeight = minHeight + ((maxHeight - minHeight) / 2);
+        float targetSlope = minSlope + ((maxSlope - minSlope) / 2);
+
+        int r = 50;
+        float[,] heightmap = terrainManager.GetHeightmap(false);
+        int mappedY = (int)Utils.Map(playerPosition.x, 0, terrainManager.TerrainData.size.x, 0, heightmap.GetLength(0));
+        int mappedX = (int)Utils.Map(playerPosition.y, 0, terrainManager.TerrainData.size.z, 0, heightmap.GetLength(1));
+
+
+        List<StagedAreaCandidatePosition> candidates = new List<StagedAreaCandidatePosition>();
+
+        Debug.Log("Checking surrounding area");
+        //Search the area around the player on the HM
+        for (int y = Mathf.Max(0, mappedY - r); y < Mathf.Min(heightmap.GetLength(1), mappedY + r); y++)
+        {
+            for (int x = Mathf.Max(0, mappedX - r); x < Mathf.Min(heightmap.GetLength(0), mappedX + r); x++)
+            {
+                if (IsValidPoint(minHeight, maxHeight, minSlope, maxSlope, heightmap, y, x))
+                {
+                    float totalScore = 0;
+                    float heightScore = 0;
+                    float slopeScore = 0;
+                    Vector2 pointPosition = new Vector2(x, y);
+
+                    for (int ny = -(int)stagedAreaSize.y / 2; ny < (int)stagedAreaSize.y / 2; ny++)
+                    {
+                        for (int nx = -(int)stagedAreaSize.x / 2; nx < (int)stagedAreaSize.x / 2; nx++)
+                        {
+                            totalScore += ScorePointValidity(x + nx, y + ny, heightmap, targetHeight, targetSlope, out float h, out float s);
+                            heightScore += h;
+                            slopeScore += s;
+                        }
+                    }
+
+                    candidates.Add(new StagedAreaCandidatePosition
+                    {
+                        heightmapPosition = pointPosition,
+                        worldPosition = new Vector3(
+                            y / (float)terrainManager.TerrainData.heightmapResolution * terrainManager.TerrainData.size.z,
+                            heightmap[(int)x, (int)y] * terrainManager.TerrainData.size.y,
+                            x / (float)terrainManager.TerrainData.heightmapResolution * terrainManager.TerrainData.size.x
+                        ),
+                        heightScore = heightScore,
+                        slopeScore = slopeScore,
+                        dstFromPlayer = Vector2.Distance(playerPosition, pointPosition)
+                    });
+                }
+
+            }
+            yield return new WaitForEndOfFrame();
+        }
+        addCandidatesCallback(candidates);
+        yield break;
+    }
+
+    private void SetCandidates(List<StagedAreaCandidatePosition> candidates)
+    {
+        Debug.Log("Setting Candidates");
+        candidatesReady = true;
+        this.candidates = candidates;
+    }
+
     private List<StagedAreaCandidatePosition> PossibleSpawnPoints(Vector2 playerPosition, Vector2 stagedAreaSize, float minHeight, float maxHeight, float minSlope, float maxSlope)
     {
         float targetHeight = minHeight + ((maxHeight - minHeight) / 2);
@@ -178,15 +266,59 @@ public class NarrativeManager : MonoBehaviour
                 }
             }
         }
-
-        // Search in an area of r radius from the position denoted by x and y which is the current player position
-        // Find first 10 suitable areas that fulfill scale, height, and slope
-        // Make sure a found area can't be found again
-        // Return up to 10 areas where spawning can happen
-
         return candidates;
     }
 
+    private IEnumerator FindBestPosition(List<StagedAreaCandidatePosition> candidates, Vector4 weights, Action<Vector2> setPositionCallback)
+    {
+        float bestScore = float.MaxValue;
+        StagedAreaCandidatePosition chosenCandidate = new StagedAreaCandidatePosition
+        {
+            heightmapPosition = Vector2.zero
+        };
+        for (int i = 0; i < candidates.Count; i++)
+        {
+            //Evaluate Candidates
+
+            Vector3 directionToCandidate = (candidates[i].worldPosition - player.transform.position);
+            float directionScore = Vector3.Dot(player.transform.forward.normalized, directionToCandidate.normalized);
+
+            if (Mathf.Abs(directionScore) > 0.75f) //Area to ignore infront and behind you
+            {
+                //ignore points behind you
+                Debug.DrawRay(player.transform.position, directionToCandidate, Color.red, 10f);
+
+                continue;
+            }
+            Debug.DrawRay(player.transform.position, directionToCandidate, Color.blue, 10f);
+
+            float totalScore = (
+                (directionScore * weights.x) //Lower score when far from centre of view
+                + (candidates[i].heightScore * weights.y) //lower when closer to target
+                + (candidates[i].slopeScore * weights.z)  //lower when closer to target
+                + 1 - ((candidates[i].dstFromPlayer * -weights.w))
+                ) / 4;
+            if (totalScore < bestScore)
+            {
+                bestScore = totalScore;
+                chosenCandidate = candidates[i];
+                Debug.DrawRay(player.transform.position, directionToCandidate, Color.green, 1f);
+
+            }
+            yield return new WaitForEndOfFrame();
+        }
+        Vector3 dir = (chosenCandidate.worldPosition - player.transform.position);
+        Debug.DrawRay(player.transform.position, dir, Color.cyan, 15f);
+        setPositionCallback(chosenCandidate.heightmapPosition);
+        yield break;
+    }
+
+    private void SetStagedAreaPosition(Vector2 position)
+    {
+        Debug.Log("Found best position.");
+        foundPosition = true;
+        nextStagedAreaSpawnPosition = position;
+    }
     private bool FindBestPosition(List<StagedAreaCandidatePosition> candidates, Vector4 weights, out Vector2 position)
     {
         // candidates[0] is best fit in terms of height and slope, but this function should take other parameters such as distance and direction etc. into account
@@ -266,8 +398,9 @@ public class NarrativeManager : MonoBehaviour
             position.x / (float)terrainManager.HeightmapResolution * terrainManager.TerrainData.size.x
             );
         Vector2 stagedAreaSize = new Vector2(10, 10); //V2(5, 5) should be replaced with details from staged area parameters
-        //terrainGenerator.RemoveTreesInArea(worldSpacePos.XZ(), stagedAreaSize);
-        terrainManager.GetTerrainGenerator().FlattenAreaAroundPoint((int)position.x, (int)position.y, 0.75f, stagedAreaSize); 
+        terrainManager.GetPainter().RemoveTreesInArea(worldSpacePos.XZ(), stagedAreaSize);
+        terrainManager.GetTerrainGenerator().FlattenAreaAroundPoint((int)position.x, (int)position.y, 0.65f, stagedAreaSize);
+        terrainManager.GetPainter().SplatMaps();
         GameObject go = Instantiate(stagedAreas[0], worldSpacePos, Quaternion.identity);
     }
 
