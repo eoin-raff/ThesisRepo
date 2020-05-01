@@ -283,7 +283,7 @@ MonoBehaviour:
   voronoiFallOff: 1.64
   voronoiDropOff: 0.89
   voronoiMinHeight: 0.049375687
-  voronoiMaxHeight: 0.25004107
+  voronoiMaxHeight: 0.36072809
   voronoiType: 2
   MPminHeight: -0.5
   MPmaxHeight: 0.5
@@ -473,7 +473,7 @@ MonoBehaviour:
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
-        m_CallState: 0
+        m_CallState: 2
       - m_Target: {fileID: 29482994}
         m_MethodName: PlantVegetation
         m_Mode: 1
@@ -597,9 +597,9 @@ MonoBehaviour:
     blendNoiseScalar: 0.1
   vegetationData:
   - remove: 0
-    minHeight: 0.11
-    maxHeight: 0.3
-    minSlope: 0
+    minHeight: 0.05
+    maxHeight: 0.1
+    minSlope: 15
     maxSlope: 35
     mesh: {fileID: 1810417286459452, guid: 510a48ee339833a4d87c5b68ee6d2c5c, type: 3}
     pivotOffset: 0
@@ -612,9 +612,9 @@ MonoBehaviour:
     maxRotation: 360
     density: 0.5
   - remove: 0
-    minHeight: 0.15
-    maxHeight: 0.5
-    minSlope: 0
+    minHeight: 0.07
+    maxHeight: 0.15
+    minSlope: 15
     maxSlope: 25
     mesh: {fileID: 1051446682044634, guid: a5a7de34f44d69c41b728e4a640722f0, type: 3}
     pivotOffset: 0
@@ -625,16 +625,159 @@ MonoBehaviour:
     lightColor: {r: 1, g: 1, b: 1, a: 1}
     minRotation: 0
     maxRotation: 360
-    density: 0.5
-  maxTrees: 4766
-  treeSpacing: 5
+    density: 0.3
+  - remove: 0
+    minHeight: 0.075
+    maxHeight: 0.25
+    minSlope: 0
+    maxSlope: 35
+    mesh: {fileID: 8116371648242448168, guid: 7c6754b15094ea8428d077fb805a0992, type: 3}
+    pivotOffset: 0
+    minScale: 0.7
+    maxScale: 1
+    color1: {r: 1, g: 1, b: 1, a: 1}
+    color2: {r: 1, g: 1, b: 1, a: 1}
+    lightColor: {r: 1, g: 1, b: 1, a: 1}
+    minRotation: 0
+    maxRotation: 360
+    density: 0.6
+  - remove: 0
+    minHeight: 0.1
+    maxHeight: 0.2
+    minSlope: 0
+    maxSlope: 35
+    mesh: {fileID: 1859018962090638, guid: 1d891c398e5eab649913dce1fa8d2491, type: 3}
+    pivotOffset: 0
+    minScale: 0.7
+    maxScale: 1
+    color1: {r: 1, g: 1, b: 1, a: 1}
+    color2: {r: 1, g: 1, b: 1, a: 1}
+    lightColor: {r: 1, g: 1, b: 1, a: 1}
+    minRotation: 0
+    maxRotation: 360
+    density: 0.2
+  - remove: 0
+    minHeight: 0.1
+    maxHeight: 0.2
+    minSlope: 0
+    maxSlope: 35
+    mesh: {fileID: 1816056481384768, guid: 8caaae7618ba29444b6fbfc686a4af34, type: 3}
+    pivotOffset: 0
+    minScale: 0.7
+    maxScale: 1
+    color1: {r: 1, g: 1, b: 1, a: 1}
+    color2: {r: 1, g: 1, b: 1, a: 1}
+    lightColor: {r: 1, g: 1, b: 1, a: 1}
+    minRotation: 0
+    maxRotation: 360
+    density: 0.2
+  - remove: 0
+    minHeight: 0.2
+    maxHeight: 0.3
+    minSlope: 0
+    maxSlope: 15
+    mesh: {fileID: 6154447348670770674, guid: 2bfaf4f3a07065740953dc2cff9d7a5c, type: 3}
+    pivotOffset: 0
+    minScale: 0.7
+    maxScale: 1
+    color1: {r: 1, g: 1, b: 1, a: 1}
+    color2: {r: 1, g: 1, b: 1, a: 1}
+    lightColor: {r: 1, g: 1, b: 1, a: 1}
+    minRotation: 0
+    maxRotation: 360
+    density: 0.1
+  - remove: 0
+    minHeight: 0.2
+    maxHeight: 0.3
+    minSlope: 15
+    maxSlope: 35
+    mesh: {fileID: 6154447348670770674, guid: 8b031f23044c22049b4ec5b3bf7fbfae, type: 3}
+    pivotOffset: 0
+    minScale: 0.7
+    maxScale: 1
+    color1: {r: 1, g: 1, b: 1, a: 1}
+    color2: {r: 1, g: 1, b: 1, a: 1}
+    lightColor: {r: 1, g: 1, b: 1, a: 1}
+    minRotation: 0
+    maxRotation: 360
+    density: 0.1
+  maxTrees: 50000
+  treeSpacing: 7
   details:
+  - remove: 0
+    minHeight: 0.1
+    maxHeight: 1
+    minSlope: 0
+    maxSlope: 20
+    prototype: {fileID: 100000, guid: 015122f6e5a8e7a44996dd4346bd689d, type: 3}
+    prototypeTexture: {fileID: 0}
+    renderMode: 2
+    dryColor: {r: 1, g: 1, b: 1, a: 1}
+    healthyColor: {r: 1, g: 1, b: 1, a: 1}
+    heightRange: {x: 1, y: 1}
+    widthRange: {x: 1, y: 1}
+    noiseSpread: 0.5
+    overlap: 0.01
+    feather: 0.05
+    density: 1
+    bendFactor: 1
+  - remove: 0
+    minHeight: 0.1
+    maxHeight: 1
+    minSlope: 0
+    maxSlope: 10
+    prototype: {fileID: 100000, guid: 55e887002e0cf3145a514b2b57b9d9ab, type: 3}
+    prototypeTexture: {fileID: 0}
+    renderMode: 2
+    dryColor: {r: 1, g: 1, b: 1, a: 1}
+    healthyColor: {r: 1, g: 1, b: 1, a: 1}
+    heightRange: {x: 1, y: 1}
+    widthRange: {x: 1, y: 1}
+    noiseSpread: 0.5
+    overlap: 0.01
+    feather: 0.05
+    density: 0.5
+    bendFactor: 1
+  - remove: 0
+    minHeight: 0.1
+    maxHeight: 1
+    minSlope: 0
+    maxSlope: 10
+    prototype: {fileID: 100000, guid: 10cc26cad04b44e42b24efe2fb0a0066, type: 3}
+    prototypeTexture: {fileID: 0}
+    renderMode: 2
+    dryColor: {r: 1, g: 1, b: 1, a: 1}
+    healthyColor: {r: 1, g: 1, b: 1, a: 1}
+    heightRange: {x: 1, y: 1}
+    widthRange: {x: 1, y: 1}
+    noiseSpread: 0.5
+    overlap: 0.01
+    feather: 0.05
+    density: 0.3
+    bendFactor: 1
+  - remove: 0
+    minHeight: 0.1
+    maxHeight: 1
+    minSlope: 0
+    maxSlope: 10
+    prototype: {fileID: 100026, guid: 8a44e9b2414bd044b85e2c7d3d4e1c43, type: 3}
+    prototypeTexture: {fileID: 0}
+    renderMode: 2
+    dryColor: {r: 1, g: 1, b: 1, a: 1}
+    healthyColor: {r: 1, g: 1, b: 1, a: 1}
+    heightRange: {x: 1, y: 1}
+    widthRange: {x: 1, y: 1}
+    noiseSpread: 0.5
+    overlap: 0.01
+    feather: 0.05
+    density: 0.1
+    bendFactor: 1
   - remove: 0
     minHeight: 0
     maxHeight: 1
     minSlope: 0
-    maxSlope: 90
-    prototype: {fileID: 0}
+    maxSlope: 15
+    prototype: {fileID: 100000, guid: 7015710bf1d27ee4daef75adca58e556, type: 3}
     prototypeTexture: {fileID: 0}
     renderMode: 1
     dryColor: {r: 1, g: 1, b: 1, a: 1}
@@ -644,10 +787,10 @@ MonoBehaviour:
     noiseSpread: 0.5
     overlap: 0.01
     feather: 0.05
-    density: 0.5
+    density: 0.1
     bendFactor: 0
   maxDetails: 5211
-  detailSpacing: 6
+  detailSpacing: 1
   waterHeight: 0.015
   waterGO: {fileID: 1591486913}
   shorelineMaterial: {fileID: 2100000, guid: 901665a29f6bee448bc3f5a56a60348b, type: 2}
@@ -1115,4 +1258,83 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 6
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1941675814
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1941675818}
+  - component: {fileID: 1941675817}
+  - component: {fileID: 1941675816}
+  m_Layer: 0
+  m_Name: Plane
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!23 &1941675816
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1941675814}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: 6bc319e6c00d8a74da3198db9aa4ed85, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+--- !u!33 &1941675817
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1941675814}
+  m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!4 &1941675818
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1941675814}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 500, y: 0, z: 500}
+  m_LocalScale: {x: 500, y: 1, z: 500}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
