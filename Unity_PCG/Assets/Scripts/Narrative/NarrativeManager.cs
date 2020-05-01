@@ -400,7 +400,9 @@ public class NarrativeManager : MonoBehaviour
         Vector2 stagedAreaSize = new Vector2(10, 10); //V2(5, 5) should be replaced with details from staged area parameters
         StartCoroutine(terrainManager.GetPainter().RemoveTreesInArea(worldSpacePos.XZ(), stagedAreaSize));
         StartCoroutine(terrainManager.GetTerrainGenerator().FlattenAreaAroundPoint((int)position.x, (int)position.y, 0.65f, stagedAreaSize));
-        GameObject go = Instantiate(stagedAreas[0], worldSpacePos, Quaternion.identity);
+        //GameObject go = Instantiate(stagedAreas[0], worldSpacePos, Quaternion.identity);
+        stagedAreas[0].transform.position = worldSpacePos;
+        stagedAreas[0].SetActive(true);
     }
 
     private bool IsValidPoint(float minHeight, float maxHeight, float minSlope, float maxSlope, float[,] heightmap, int y, int x)
