@@ -8,7 +8,7 @@ using System.Collections.Generic;
 public class SpaceTimeManager : MonoBehaviour
 {
 
-    public GameObject player;        
+    public GameObject player;
 
     public NarrativeManager narrativeManager;
 
@@ -55,72 +55,62 @@ public class SpaceTimeManager : MonoBehaviour
     {
         Debug.Log("Starting Space-Time");
 
-
         Vector2 playerPos = new Vector2(player.transform.position.x, player.transform.position.z);
 
         List<StagedAreaCandidatePosition> candidates = narrativeManager.PossibleSpawnPoints(playerPos, new Vector2(5, 5), 0, 1, 0, 1);
 
-        //if (narrativeManager.FindBestPosition(candidates, new Vector4(5, 1, 1, 2).normalized, out Vector2 spawnPosition))
-        //{
-        //    narrativeManager.InstantiateStagedArea(spawnPosition);
-        //    Debug.Log("SA " + eventNum + " Instantiated!");
-        //    eventNum++;
-        //    positionAtLastSA = player.transform.position;
-        //    lookForNextSA = true;                             // Move this to cinematicsequence if that gets working
-        //    timeAtLastSA = Time.time;
-        //}
-
-
-        Debug.Log("SA " + saNum + " Instantiated!");
-
-        saNum++;
-        positionAtLastSA = player.transform.position;
-        lookForNextSA = true;
-        timeAtLastSA = Time.time;
-
-        //cinematicCoroutine = WaitToStartCinematic(player.transform);
-        //StartCoroutine(cinematicCoroutine);
+        if (narrativeManager.FindBestPosition(candidates, new Vector4(5, 1, 1, 2).normalized, out Vector2 spawnPosition))
+        {
+            narrativeManager.InstantiateStagedArea(spawnPosition);
+            positionAtLastSA = player.transform.position;
+            //cinematicCoroutine = WaitToStartCinematic(spawnPosition);
+            //StartCoroutine(cinematicCoroutine);
+            Debug.Log("SA " + saNum + " Instantiated!");
+            saNum++;
+            lookForNextSA = true;                             // Move this to cinematicsequence if that gets working
+            timeAtLastSA = Time.time;
+        }
     }
 
 
-    private IEnumerator WaitToStartCinematic(Transform locationOfSA)        // Check if the player is close enough to the SA to start the cinematic sequence
+    private IEnumerator WaitToStartCinematic(Vector2 locationOfSA)        // Check if the player is close enough to the SA to start the cinematic sequence
     {
 
-        if (player.transform.position.x >= locationOfSA.position.x - withinSA &&
-            player.transform.position.x <= locationOfSA.position.x + withinSA &&
-            player.transform.position.y >= locationOfSA.position.y - withinSA &&
-            player.transform.position.y <= locationOfSA.position.y + withinSA)
+        if (player.transform.position.x >= locationOfSA.x - withinSA &&
+            player.transform.position.x <= locationOfSA.x + withinSA &&
+            player.transform.position.y >= locationOfSA.y - withinSA &&
+            player.transform.position.y <= locationOfSA.y + withinSA)
         {
+            Debug.Log("Starting cinematic sequence...");
             CinematicSequence(locationOfSA);
             yield return null;
         }
         else
         {
+            Debug.Log("NOT starting cinematic sequence...");
             yield return WaitToStartCinematic(locationOfSA);
         }
     }
 
 
-    private void CinematicSequence(Transform target)
+    private void CinematicSequence(Vector2 target)
     {
         playerHasControl = false;
 
-        Vector3 lookAtPosition = target.transform.position;
-
         float speed = 5.0f;                 // this is the speed at which the camera moves
 
-        player.transform.position = Vector3.Lerp(transform.position, lookAtPosition, speed);
+        player.transform.position = Vector3.Lerp(transform.position, target, speed);
 
-        player.transform.LookAt(lookAtPosition);
 
-        LookAtSA(5.0f);                     // Stare at the SA before moving again
-
+        LookAtSA(5.0f, target);                     // Stare at the SA before moving again
+        Debug.Log("looked at SA");
         lookForNextSA = true;
     }
 
 
-    private IEnumerator LookAtSA(float time)                                // Controls how long the cinematic sequence lasts
+    private IEnumerator LookAtSA(float time, Vector2 target)                                // Controls how long the cinematic sequence lasts
     {
+        player.transform.LookAt(target);
         yield return new WaitForSeconds(time);
         playerHasControl = true;
     }

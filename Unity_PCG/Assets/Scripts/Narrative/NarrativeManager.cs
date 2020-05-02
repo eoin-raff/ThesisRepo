@@ -128,7 +128,7 @@ public class NarrativeManager : MonoBehaviour
     }
 
 
-    private List<StagedAreaCandidatePosition> PossibleSpawnPoints(Vector2 playerPosition, Vector2 stagedAreaSize, float minHeight, float maxHeight, float minSlope, float maxSlope)
+    public List<StagedAreaCandidatePosition> PossibleSpawnPoints(Vector2 playerPosition, Vector2 stagedAreaSize, float minHeight, float maxHeight, float minSlope, float maxSlope)
     {
         float targetHeight = minHeight + ((maxHeight - minHeight) / 2);
         float targetSlope = minSlope + ((maxSlope - minSlope) / 2);
@@ -187,7 +187,7 @@ public class NarrativeManager : MonoBehaviour
         return candidates;
     }
 
-    private bool FindBestPosition(List<StagedAreaCandidatePosition> candidates, Vector4 weights, out Vector2 position)
+    public bool FindBestPosition(List<StagedAreaCandidatePosition> candidates, Vector4 weights, out Vector2 position)
     {
         // candidates[0] is best fit in terms of height and slope, but this function should take other parameters such as distance and direction etc. into account
         // for now, lets just use [0]
@@ -258,7 +258,7 @@ public class NarrativeManager : MonoBehaviour
         return false;
     }
 
-    private void InstantiateStagedArea(Vector2 position)
+    public void InstantiateStagedArea(Vector2 position)
     {
         Vector3 worldSpacePos = new Vector3(
             position.y / (float)terrainGenerator.terrainData.heightmapResolution * terrainGenerator.terrainData.size.z,
