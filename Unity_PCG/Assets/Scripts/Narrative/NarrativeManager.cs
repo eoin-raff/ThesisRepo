@@ -54,7 +54,7 @@ public class NarrativeManager : MonoBehaviour
         Vector2 playerPos = new Vector2(player.transform.position.x, player.transform.position.z);
         if (Input.GetKeyDown(KeyCode.G))
         {
-            Debug.Log("Seearching for staged area candidates");
+           //Debug.Log("Seearching for staged area candidates");
             candidates = new List<StagedAreaCandidatePosition>();
             candidatesReady = false;
             StartCoroutine(AssessSpawnPointsWithCallback(playerPos, new Vector2(5, 5), 0, 1, 0, 1, SetCandidates));
@@ -62,7 +62,7 @@ public class NarrativeManager : MonoBehaviour
         if (candidatesReady && candidates.Count > 0)
         {
             candidatesReady = false;
-            Debug.Log("Looking for best candidate position");
+            //Debug.Log("Looking for best candidate position");
             foundPosition = false;
             StartCoroutine(FindBestPosition(candidates, new Vector4(5, 1, 1, 2).normalized, SetStagedAreaPosition));
 
@@ -75,7 +75,7 @@ public class NarrativeManager : MonoBehaviour
         }
         if (foundPosition)
         {
-            Debug.Log("Instantiating Object");
+            //Debug.Log("Instantiating Object");
             InstantiateStagedArea(nextStagedAreaSpawnPosition);
             foundPosition = false;
         }
@@ -165,7 +165,7 @@ public class NarrativeManager : MonoBehaviour
 
         List<StagedAreaCandidatePosition> candidates = new List<StagedAreaCandidatePosition>();
 
-        Debug.Log("Checking surrounding area");
+        //Debug.Log("Checking surrounding area");
         //Search the area around the player on the HM
         for (int y = Mathf.Max(0, mappedY - r); y < Mathf.Min(heightmap.GetLength(1), mappedY + r); y++)
         {
@@ -211,7 +211,7 @@ public class NarrativeManager : MonoBehaviour
 
     private void SetCandidates(List<StagedAreaCandidatePosition> candidates)
     {
-        Debug.Log("Setting Candidates");
+        //Debug.Log("Setting Candidates");
         candidatesReady = true;
         this.candidates = candidates;
     }
@@ -315,7 +315,7 @@ public class NarrativeManager : MonoBehaviour
 
     private void SetStagedAreaPosition(Vector2 position)
     {
-        Debug.Log("Found best position.");
+        //Debug.Log("Found best position.");
         foundPosition = true;
         nextStagedAreaSpawnPosition = position;
     }
@@ -385,25 +385,32 @@ public class NarrativeManager : MonoBehaviour
 
             return true;
         }
-        Debug.LogWarning("No Suitable Candidates for staged area.", this);
+        //Debug.LogWarning("No Suitable Candidates for staged area.", this);
         position = Vector2.zero;
         return false;
     }
 
-    private void InstantiateStagedArea(Vector2 position)
+    public void InstantiateStagedArea(Vector2 position)
     {
         Vector3 worldSpacePos = new Vector3(
             position.y / (float)terrainManager.HeightmapResolution * terrainManager.TerrainData.size.z,
             heightmap[(int)position.x, (int)position.y] * terrainManager.TerrainData.size.y,
             position.x / (float)terrainManager.HeightmapResolution * terrainManager.TerrainData.size.x
             );
+        InstantiateStagedArea(worldSpacePos);
+    }
+
+    public void InstantiateStagedArea(Vector3 position)
+    {
         Vector2 stagedAreaSize = new Vector2(10, 10); //V2(5, 5) should be replaced with details from staged area parameters
-        StartCoroutine(terrainManager.GetPainter().RemoveTreesInArea(worldSpacePos.XZ(), stagedAreaSize));
+        StartCoroutine(terrainManager.GetPainter().RemoveTreesInArea(position.XZ(), stagedAreaSize));
         StartCoroutine(terrainManager.GetTerrainGenerator().FlattenAreaAroundPoint((int)position.x, (int)position.y, 0.65f, stagedAreaSize));
         //GameObject go = Instantiate(stagedAreas[0], worldSpacePos, Quaternion.identity);
-        stagedAreas[0].transform.position = worldSpacePos;
+        stagedAreas[0].transform.position = position;
         stagedAreas[0].SetActive(true);
     }
+
+
 
     private bool IsValidPoint(float minHeight, float maxHeight, float minSlope, float maxSlope, float[,] heightmap, int y, int x)
     {

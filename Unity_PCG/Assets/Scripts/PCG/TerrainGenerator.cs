@@ -109,8 +109,6 @@ namespace MED10.PCG
             terrainManager.GetPainter().SplatMaps();
             yield break;
         }
-
-
         public void MidpointDisplacement()
         {
 
@@ -223,8 +221,6 @@ namespace MED10.PCG
             terrainManager.SetHeightmap(heightMap);
 
         }
-
-
         public void Voronoi()
         {
             float[,] heightMap = GetHeightMap();
@@ -286,7 +282,6 @@ namespace MED10.PCG
 
             terrainManager.SetHeightmap(heightMap);
         }
-
         public void Smooth()
         {
             // Don't use GetHeights() in case ResetTerrain is true;
@@ -322,7 +317,6 @@ namespace MED10.PCG
             EditorUtility.ClearProgressBar();
 #endif
         }
-
         public void Perlin()
         {
             float[,] heightMap = GetHeightMap();
@@ -373,7 +367,6 @@ namespace MED10.PCG
             }
             terrainManager.SetHeightmap(heightMap);
         }
-
         public void RandomTerrain()
         {
             float[,] heightMap = GetHeightMap();
@@ -403,7 +396,6 @@ namespace MED10.PCG
             }
             terrainManager.SetHeightmap(heightMap);
         }
-
         public void AddFalloffMap()
         {
             float[,] heightMap = GetHeightMap(false);
@@ -420,7 +412,6 @@ namespace MED10.PCG
             terrainManager.SetHeightmap(heightMap);
 
         }
-
         public void ResetTerrain()
         {
             float[,] heightMap = new float[terrainManager.HeightmapResolution, terrainManager.HeightmapResolution];
@@ -434,7 +425,6 @@ namespace MED10.PCG
             }
             terrainManager.SetHeightmap(heightMap);
         }
-
 
         void OnEnable()
         {
