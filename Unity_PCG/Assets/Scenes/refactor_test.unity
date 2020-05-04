@@ -957,7 +957,6 @@ GameObject:
   - component: {fileID: 985107146}
   - component: {fileID: 985107145}
   - component: {fileID: 985107148}
-  - component: {fileID: 985107147}
   m_Layer: 0
   m_Name: SpaceTime Manager
   m_TagString: Untagged
@@ -1032,6 +1031,8 @@ MonoBehaviour:
   - 20
   terrainManager: {fileID: 29482995}
   StagedAreaCreated: {fileID: 11400000, guid: 6da41754ccddd634bbc6f20ef2341e87, type: 2}
+  SAStarted: {fileID: 0}
+  SAEnded: {fileID: 0}
 --- !u!4 &985107146
 Transform:
   m_ObjectHideFlags: 0
@@ -1046,32 +1047,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &985107147
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 985107144}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 22562a5533367410ca440dc716c0a46e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  player: {fileID: 130430412}
-  narrativeManager: {fileID: 985107145}
-  StartSASearch: {fileID: 11400000, guid: 9ef38da7d6a872b4d9ae704623eb5afd, type: 2}
-  timeBetweenEvents:
-  - 0
-  - 0
-  - 0
-  - 0
-  - 0
-  - 0
-  playerHasControl: 0
-  withinSA: 0
-  distanceBetweenSAs: []
-  terrainGenerator: {fileID: 29482988}
 --- !u!114 &985107148
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1084,12 +1059,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 02e8d0a5d935ff54bbcfc2ba7c87354e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Event: {fileID: 11400000, guid: 9ef38da7d6a872b4d9ae704623eb5afd, type: 2}
+  Event: {fileID: 11400000, guid: 9a69aaec540773142803a83083803a27, type: 2}
   Response:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 985107145}
-        m_MethodName: SpaceTime
+        m_MethodName: PrepareForNextSA
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1599,11 +1574,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: 1_Campsite
-      objectReference: {fileID: 0}
-    - target: {fileID: 509730228368293134, guid: 256ae43d19ded7647b55404fa1485263,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1060704020975630950, guid: 256ae43d19ded7647b55404fa1485263,
         type: 3}

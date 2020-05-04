@@ -9,13 +9,15 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1060704020975630950}
+  - component: {fileID: 8069091192312664965}
+  - component: {fileID: 21478757124550572}
   m_Layer: 0
   m_Name: 1_Campsite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1060704020975630950
 Transform:
   m_ObjectHideFlags: 0
@@ -31,6 +33,34 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &8069091192312664965
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 509730228368293134}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 10, y: 10, z: 10}
+  m_Center: {x: 0, y: 5, z: 0}
+--- !u!114 &21478757124550572
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 509730228368293134}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1f75615967c06c246914358704986622, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  StagedAreaIndex: {fileID: 11400000, guid: 5d7cf40bf98a31e46af5a5ed8453736e, type: 2}
+  EnteredStagedArea: {fileID: 11400000, guid: 149d64adb31850d47b6e57672378cf36, type: 2}
+  ExitStagedArea: {fileID: 11400000, guid: 9a69aaec540773142803a83083803a27, type: 2}
 --- !u!1 &8140717360986973130
 GameObject:
   m_ObjectHideFlags: 0
@@ -58,8 +88,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8140717360986973130}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 2.5, z: 0}
-  m_LocalScale: {x: 10, y: 5, z: 10}
+  m_LocalPosition: {x: 0, y: 0.5, z: 0}
+  m_LocalScale: {x: 3, y: 1, z: 3}
   m_Children: []
   m_Father: {fileID: 1060704020975630950}
   m_RootOrder: 0

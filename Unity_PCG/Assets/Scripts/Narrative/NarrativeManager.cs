@@ -45,8 +45,11 @@ public class NarrativeManager : MonoBehaviour
     private Vector2 playerPos;
 
     private IEnumerator cinematicCoroutine;
-    private int saNum = 0;                                  // Which SA are we at (Can also be used for event in between SAs)
+    private int saNum = -1;                                  // Which SA are we at (Can also be used for event in between SAs)
     private float timeAtLastSA;
+
+    public GameEvent SAStarted;
+    public GameEvent SAEnded;
 
     private void Start()
     {
@@ -54,8 +57,9 @@ public class NarrativeManager : MonoBehaviour
         PrepareForNextSA();
     }
 
-    private void PrepareForNextSA()
+    public void PrepareForNextSA()
     {
+        saNum++;
         positionAtLastSA = player.transform.position;
         lookForNextSA = true;
         timeAtLastSA = Time.time;
@@ -329,7 +333,7 @@ public class NarrativeManager : MonoBehaviour
             Vector2 stagedAreaSize = new Vector2(10, 10); //V2(5, 5) should be replaced with details from staged area parameters
             StartCoroutine(terrainManager.GetPainter().RemoveTreesInArea(position.XZ(), stagedAreaSize));
             StartCoroutine(terrainManager.GetTerrainGenerator().FlattenAreaAroundPoint((int)position.x, (int)position.y, 0.65f, stagedAreaSize));
-            GameObject stagedArea = stagedAreas[saNum++];
+            GameObject stagedArea = stagedAreas[saNum];
             stagedArea.transform.position = position;
             stagedArea.SetActive(true);
         }
@@ -362,14 +366,9 @@ public class NarrativeManager : MonoBehaviour
     {
         while (lookForNextSA == false)
         {
-            Vector3 worldSpacePos = new Vector3(
-            locationOfSA.y / (float)terrainManager.TerrainData.heightmapResolution * terrainManager.TerrainData.size.z,
-            heightmap[(int)locationOfSA.x, (int)locationOfSA.y] * terrainManager.TerrainData.size.y,
-            locationOfSA.x / (float)terrainManager.TerrainData.heightmapResolution * terrainManager.TerrainData.size.x
-            );
+            Vector3 SAPosition = stagedAreas[saNum].transform.position;
 
-            float distance = Vector3.Distance(player.transform.position, worldSpacePos);
-            Debug.Log(distance);
+            float distance = Vector3.Distance(player.transform.position, SAPosition);
 
             if (distance <= withinSA)
             {
