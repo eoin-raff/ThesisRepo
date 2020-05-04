@@ -64,7 +64,8 @@ namespace MED10.PCG
 
         private void OnEnable()
         {
-            Debug.Log("Initialising Terrain Painter");
+            
+            //Debug.Log("Initialising Terrain Painter");
             terrainManager = gameObject.GetOrAddComponent<TerrainManager>();
             terrainManager.SetPainter(this);
         }
@@ -143,7 +144,7 @@ namespace MED10.PCG
                 }
                 yield return new WaitForEndOfFrame();
             }
-            Debug.Log("Reapplying Ground Textures");
+            //Debug.Log("Reapplying Ground Textures");
             terrainManager.TerrainData.SetAlphamaps(0, 0, splatmapData);
             yield break;
         }
@@ -530,7 +531,7 @@ namespace MED10.PCG
 
         public void AddWater()
         {
-            Debug.Log("Setting water plane to height " + waterHeight * terrainManager.TerrainData.size.y);
+            //Debug.Log("Setting water plane to height " + waterHeight * terrainManager.TerrainData.size.y);
             // If the water plane already exists, remove it and create a new one.
             GameObject water = GameObject.Find("water");
             if (!water)
@@ -555,7 +556,7 @@ namespace MED10.PCG
         /// <param name="area">Size of the area to be searched</param>
         public IEnumerator RemoveTreesInArea(Vector2 centre, Vector2 area)
         {
-            Debug.Log("Clearing Trees");
+            //Debug.Log("Clearing Trees");
             TreeInstance[] treesInstances = terrainManager.TerrainData.treeInstances;
             List<TreeInstance> newTreeInstances = new List<TreeInstance>();
 

@@ -4,6 +4,7 @@ using System;
 using MED10.PCG;
 using MED10.Utilities;
 using System.Collections.Generic;
+using MED10.Architecture.Events;
 
 public class SpaceTimeManager : MonoBehaviour
 {
@@ -11,6 +12,8 @@ public class SpaceTimeManager : MonoBehaviour
     public GameObject player;
 
     public NarrativeManager narrativeManager;
+
+    public GameEvent StartSASearch;
 
     private IEnumerator cinematicCoroutine;
     private int saNum = 1;                                  // Which SA are we at (Can also be used for event in between SAs)
@@ -47,47 +50,50 @@ public class SpaceTimeManager : MonoBehaviour
 
         if (lookForNextSA)
         {
+            // If enough time has passed since last SA
             if (Time.time - timeAtLastSA >= timeBetweenEvents[saNum])
             {
                 float distance = Vector3.Distance(player.transform.position, positionAtLastSA);
-                Debug.Log("Current Distance: " + distance);
+            //    Debug.Log("Current Distance: " + distance);
 
+                // If you are far enough away from last SA
                 if (distance >= distanceBetweenSAs[saNum])
                 {
+                    StartSASearch.Raise();
+                    /*
+                    //Vector2 playerPos = new Vector2(player.transform.position.x, player.transform.position.z);
 
-                    Vector2 playerPos = new Vector2(player.transform.position.x, player.transform.position.z);
+                    //List<StagedAreaCandidatePosition> candidates = narrativeManager.PossibleSpawnPoints(playerPos, new Vector2(5, 5), 0, 1, 0, 1);
 
-                    List<StagedAreaCandidatePosition> candidates = narrativeManager.PossibleSpawnPoints(playerPos, new Vector2(5, 5), 0, 1, 0, 1);
+                    //if (narrativeManager.FindBestPosition(candidates, new Vector4(5, 1, 1, 2).normalized, out Vector2 spawnPosition))
+                    //{
+                    //    lookForNextSA = false;
 
-                    if (narrativeManager.FindBestPosition(candidates, new Vector4(5, 1, 1, 2).normalized, out Vector2 spawnPosition))
-                    {
-                        lookForNextSA = false;
+                    //    narrativeManager.InstantiateStagedArea(spawnPosition);
 
-                        narrativeManager.InstantiateStagedArea(spawnPosition);
+                    //    WaitToStartCinematic(spawnPosition);
 
-                        WaitToStartCinematic(spawnPosition);
+                    //    cinematicCoroutine = WaitToStartCinematic(spawnPosition);
 
-                        cinematicCoroutine = WaitToStartCinematic(spawnPosition);
-
-                        if (saNum <= 5)
-                        {
-                            StartCoroutine(cinematicCoroutine);
-                            Debug.Log("Starting coroutine " + saNum);
-                        }
-                        else
-                        {
-                            StopCoroutine(cinematicCoroutine);
-                        }
+                    //    if (saNum <= 5)
+                    //    {
+                    //        StartCoroutine(cinematicCoroutine);
+                    //        Debug.Log("Starting coroutine " + saNum);
+                    //    }
+                    //    else
+                    //    {
+                    //        StopCoroutine(cinematicCoroutine);
+                    //    }
 
 
-                        Debug.Log("SA " + saNum + " Instantiated!");
+                    //    Debug.Log("SA " + saNum + " Instantiated!");
 
-                        positionAtLastSA = spawnPosition;
+                    //    positionAtLastSA = spawnPosition;
 
-                        saNum++;
-                        //lookForNextSA = true;                             // Move this to cinematicsequence if that gets working
-                        timeAtLastSA = Time.time;
-                    }
+                    //    saNum++;
+                    //    //lookForNextSA = true;                             // Move this to cinematicsequence if that gets working
+                    //    timeAtLastSA = Time.time;
+                    //}*/
                 }
             }
         }

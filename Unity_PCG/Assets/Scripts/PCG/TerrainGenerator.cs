@@ -92,7 +92,7 @@ namespace MED10.PCG
         }
         public IEnumerator FlattenAreaAroundPoint(int x, int y, float strength, Vector2 area)
         {
-            Debug.Log("Flattening Area");
+            //Debug.Log("Flattening Area");
             float[,] heightMap = GetHeightMap(false);
             float centerHeight = heightMap[x, y];
             for (int j = Mathf.Max(0, (int)(y - (area.y / 2))); j < Mathf.Min(heightMap.GetLength(1), (int)(y + (area.y / 2))); j++)
@@ -103,7 +103,7 @@ namespace MED10.PCG
                     yield return new WaitForEndOfFrame();
                 }
             }
-            Debug.Log("Setting new heights");
+            //Debug.Log("Setting new heights");
             terrainManager.SetHeightmap(heightMap);
             //SmoothAreaAroundPoint(x, y, 1, area); //TODO
             terrainManager.GetPainter().SplatMaps();
@@ -225,7 +225,7 @@ namespace MED10.PCG
         {
             float[,] heightMap = GetHeightMap();
             Random.InitState(seed);
-            Debug.Log(terrainManager);
+            //Debug.Log(terrainManager);
             for (int p = 0; p < voronoiPeakCount; p++)
             {
                 // Random Peak
@@ -428,7 +428,7 @@ namespace MED10.PCG
 
         void OnEnable()
         {
-            Debug.Log("Initialising Terrain Generator");
+            //Debug.Log("Initialising Terrain Generator");
             terrainManager = gameObject.GetOrAddComponent<TerrainManager>();
             terrainManager.SetTerrainGenerator(this);
             terrain = terrainManager.Terrain;

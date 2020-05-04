@@ -64,8 +64,8 @@ public class PlayerSpawn : MonoBehaviour
 
         Vector3 highestPointWorldSpace = new Vector3(posz, posy, posx);
 
-        narrativeManager.InstantiateStagedArea (highestPointWorldSpace);
-
+        //narrativeManager.InstantiateStagedArea (highestPointWorldSpace);
+        narrativeManager.SpawnWeenie(highestPointWorldSpace);
         Vector3 bestPlayerSpawn = Vector3.zero;
         float closestDistance = float.MaxValue;
         float distanceFromTower = float.MaxValue;
