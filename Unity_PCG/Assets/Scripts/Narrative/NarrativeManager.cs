@@ -74,22 +74,24 @@ public class NarrativeManager : MonoBehaviour
         playerPos = new Vector2(player.transform.position.x, player.transform.position.z);
 
         //TODO: Make sure lookForNextSA flags as true
-
-        if (lookForNextSA)
+        if (saNum < stagedAreas.Length)
         {
-            Debug.Log("looking for SA " + saNum);
-            // If enough time has passed since last SA
-            if (Time.time - timeAtLastSA >= timeBetweenEvents[saNum])
+            if (lookForNextSA)
             {
-                Debug.Log("enough time passed");
-                float distance = Vector3.Distance(player.transform.position, positionAtLastSA);
-
-                // If you are far enough away from last SA
-                if (distance >= distanceBetweenSAs[saNum])
+                Debug.Log("looking for SA " + saNum);
+                // If enough time has passed since last SA
+                if (Time.time - timeAtLastSA >= timeBetweenEvents[saNum])
                 {
-                    Debug.Log("enough distance");
-                    lookForNextSA = false;
-                    SearchForCandidates(playerPos);
+                    Debug.Log("enough time passed");
+                    float distance = Vector3.Distance(player.transform.position, positionAtLastSA);
+
+                    // If you are far enough away from last SA
+                    if (distance >= distanceBetweenSAs[saNum])
+                    {
+                        Debug.Log("enough distance");
+                        lookForNextSA = false;
+                        SearchForCandidates(playerPos);
+                    }
                 }
             }
         }
@@ -330,12 +332,23 @@ public class NarrativeManager : MonoBehaviour
     {        
         if (saNum < stagedAreas.Length)
         {
-            Vector2 stagedAreaSize = new Vector2(10, 10); //V2(5, 5) should be replaced with details from staged area parameters
-            StartCoroutine(terrainManager.GetPainter().RemoveTreesInArea(position.XZ(), stagedAreaSize));
-            StartCoroutine(terrainManager.GetTerrainGenerator().FlattenAreaAroundPoint((int)position.x, (int)position.y, 0.65f, stagedAreaSize));
+
             GameObject stagedArea = stagedAreas[saNum];
-            stagedArea.transform.position = position;
-            stagedArea.SetActive(true);
+            if (!stagedArea.activeSelf)
+            {
+                Debug.Log("Activating area");
+
+                Vector2 stagedAreaSize = new Vector2(10, 10); //V2(5, 5) should be replaced with details from staged area parameters
+                StartCoroutine(terrainManager.GetPainter().RemoveTreesInArea(position.XZ(), stagedAreaSize));
+                StartCoroutine(terrainManager.GetTerrainGenerator().FlattenAreaAroundPoint((int)position.x, (int)position.y, 0.65f, stagedAreaSize));
+
+                stagedArea.transform.position = position;
+                stagedArea.SetActive(true);
+            }
+            else
+            {
+                Debug.Log("Area already active");
+            }
         }
     }
 
