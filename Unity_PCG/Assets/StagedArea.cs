@@ -9,7 +9,19 @@ public class StagedArea : MonoBehaviour
     private bool stagedAreaStarted = false;
     private bool stagedAreaEnded = false;
 
-//public IntVariable StagedAreaIndex;
+    //public IntVariable StagedAreaIndex;
+
+    public Vector2 size;
+    [Range(0, 1)]
+    public float minHeight;
+    [Range(0, 1)] 
+    public float maxHeight;
+    [Range(0, 90)]
+    public float minSlope;
+    [Range(0, 90)]
+    public float maxSlope;
+    [Range(0, 1)]
+    public float flattenPower;
 
     public GameEvent EnteredStagedArea;
     public GameEvent ExitStagedArea;

@@ -57,5 +57,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1f75615967c06c246914358704986622, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  size: {x: 10, y: 10}
+  minHeight: 0.03
+  maxHeight: 0.2
+  minSlope: 0
+  maxSlope: 35
+  flattenPower: 0.8
   EnteredStagedArea: {fileID: 11400000, guid: 149d64adb31850d47b6e57672378cf36, type: 2}
   ExitStagedArea: {fileID: 11400000, guid: 9a69aaec540773142803a83083803a27, type: 2}

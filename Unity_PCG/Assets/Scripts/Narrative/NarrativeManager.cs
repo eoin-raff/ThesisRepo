@@ -13,6 +13,7 @@ public class NarrativeManager : MonoBehaviour
 
     // Prefabs for staged areas - Should be designed first and then instatiated at a possible location
     public GameObject[] stagedAreas = new GameObject[5];
+    private StagedArea nextSA;
     public int weenieIdx = 2;
 
     // Requirements for placement of SAs
@@ -59,10 +60,13 @@ public class NarrativeManager : MonoBehaviour
 
     public void PrepareForNextSA()
     {
-        saNum++;
-        positionAtLastSA = player.transform.position;
-        lookForNextSA = true;
-        timeAtLastSA = Time.time;
+        if (saNum < stagedAreas.Length -1)
+        {
+            positionAtLastSA = player.transform.position;
+            lookForNextSA = true;
+            timeAtLastSA = Time.time;
+            nextSA = stagedAreas[++saNum].GetComponent<StagedArea>();
+        }
     }
 
     private void Update()
@@ -149,7 +153,7 @@ public class NarrativeManager : MonoBehaviour
         candidatesReady = false;
         //TODO: Get Values from SAs
         Debug.Log("Searching for Candidates");
-        StartCoroutine(AssessSpawnPointsWithCallback(playerPos, new Vector2(5, 5), 0, 1, 0, 1, SetCandidates));
+        StartCoroutine(AssessSpawnPointsWithCallback(playerPos, nextSA.size, nextSA.minHeight, nextSA.maxHeight, nextSA.minSlope, nextSA.maxSlope, SetCandidates));
     }
 
     private IEnumerator AssessSpawnPointsWithCallback(Vector2 playerPosition, Vector2 stagedAreaSize, float minHeight, float maxHeight, float minSlope, float maxSlope, Action<List<StagedAreaCandidatePosition>> addCandidatesCallback)
@@ -340,7 +344,7 @@ public class NarrativeManager : MonoBehaviour
 
                 Vector2 stagedAreaSize = new Vector2(10, 10); //V2(5, 5) should be replaced with details from staged area parameters
                 StartCoroutine(terrainManager.GetPainter().RemoveTreesInArea(position.XZ(), stagedAreaSize));
-                StartCoroutine(terrainManager.GetTerrainGenerator().FlattenAreaAroundPoint((int)position.x, (int)position.y, 0.65f, stagedAreaSize));
+                StartCoroutine(terrainManager.GetTerrainGenerator().FlattenAreaAroundPoint((int)position.x, (int)position.y, nextSA.flattenPower, stagedAreaSize));
 
                 stagedArea.transform.position = position;
                 stagedArea.SetActive(true);
