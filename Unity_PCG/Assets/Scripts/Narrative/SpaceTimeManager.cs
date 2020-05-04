@@ -16,7 +16,7 @@ public class SpaceTimeManager : MonoBehaviour
     public GameEvent StartSASearch;
 
     private IEnumerator cinematicCoroutine;
-    private int saNum = 1;                                  // Which SA are we at (Can also be used for event in between SAs)
+    private int saNum = 0;                                  // Which SA are we at (Can also be used for event in between SAs)
     public float[] timeBetweenEvents = new float[6];        // Add how much time should elapse from end of last SA until next area can be loaded
 
     public bool playerHasControl = false;                   // Used to control cinematic sequences. Should also be accessed from other scripts to e.g. start the game.
@@ -34,6 +34,7 @@ public class SpaceTimeManager : MonoBehaviour
 
     private void Start()
     {
+        saNum = 0;
         positionAtLastSA = player.transform.position;
         lookForNextSA = true;
         timeAtLastSA = Time.time;

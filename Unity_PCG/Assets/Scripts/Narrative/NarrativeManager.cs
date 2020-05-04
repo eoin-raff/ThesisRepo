@@ -13,6 +13,7 @@ public class NarrativeManager : MonoBehaviour
 
     // Prefabs for staged areas - Should be designed first and then instatiated at a possible location
     public GameObject[] stagedAreas = new GameObject[5];
+    private StagedArea nextSA;
     public int weenieIdx = 2;
 
     // Requirements for placement of SAs
@@ -45,8 +46,11 @@ public class NarrativeManager : MonoBehaviour
     private Vector2 playerPos;
 
     private IEnumerator cinematicCoroutine;
-    private int saNum = 0;                                  // Which SA are we at (Can also be used for event in between SAs)
+    private int saNum = -1;                                  // Which SA are we at (Can also be used for event in between SAs)
     private float timeAtLastSA;
+
+    public GameEvent SAStarted;
+    public GameEvent SAEnded;
 
     private void Start()
     {
@@ -54,11 +58,15 @@ public class NarrativeManager : MonoBehaviour
         PrepareForNextSA();
     }
 
-    private void PrepareForNextSA()
+    public void PrepareForNextSA()
     {
-        positionAtLastSA = player.transform.position;
-        lookForNextSA = true;
-        timeAtLastSA = Time.time;
+        if (saNum < stagedAreas.Length -1)
+        {
+            positionAtLastSA = player.transform.position;
+            lookForNextSA = true;
+            timeAtLastSA = Time.time;
+            nextSA = stagedAreas[++saNum].GetComponent<StagedArea>();
+        }
     }
 
     private void Update()
@@ -70,22 +78,24 @@ public class NarrativeManager : MonoBehaviour
         playerPos = new Vector2(player.transform.position.x, player.transform.position.z);
 
         //TODO: Make sure lookForNextSA flags as true
-
-        if (lookForNextSA)
+        if (saNum < stagedAreas.Length)
         {
-            Debug.Log("looking for SA " + saNum);
-            // If enough time has passed since last SA
-            if (Time.time - timeAtLastSA >= timeBetweenEvents[saNum])
+            if (lookForNextSA)
             {
-                Debug.Log("enough time passed");
-                float distance = Vector3.Distance(player.transform.position, positionAtLastSA);
-
-                // If you are far enough away from last SA
-                if (distance >= distanceBetweenSAs[saNum])
+                Debug.Log("looking for SA " + saNum);
+                // If enough time has passed since last SA
+                if (Time.time - timeAtLastSA >= timeBetweenEvents[saNum])
                 {
-                    Debug.Log("enough distance");
-                    lookForNextSA = false;
-                    SearchForCandidates(playerPos);
+                    Debug.Log("enough time passed");
+                    float distance = Vector3.Distance(player.transform.position, positionAtLastSA);
+
+                    // If you are far enough away from last SA
+                    if (distance >= distanceBetweenSAs[saNum])
+                    {
+                        Debug.Log("enough distance");
+                        lookForNextSA = false;
+                        SearchForCandidates(playerPos);
+                    }
                 }
             }
         }
@@ -143,7 +153,7 @@ public class NarrativeManager : MonoBehaviour
         candidatesReady = false;
         //TODO: Get Values from SAs
         Debug.Log("Searching for Candidates");
-        StartCoroutine(AssessSpawnPointsWithCallback(playerPos, new Vector2(5, 5), 0, 1, 0, 1, SetCandidates));
+        StartCoroutine(AssessSpawnPointsWithCallback(playerPos, nextSA.size, nextSA.minHeight, nextSA.maxHeight, nextSA.minSlope, nextSA.maxSlope, SetCandidates));
     }
 
     private IEnumerator AssessSpawnPointsWithCallback(Vector2 playerPosition, Vector2 stagedAreaSize, float minHeight, float maxHeight, float minSlope, float maxSlope, Action<List<StagedAreaCandidatePosition>> addCandidatesCallback)
@@ -326,12 +336,23 @@ public class NarrativeManager : MonoBehaviour
     {        
         if (saNum < stagedAreas.Length)
         {
-            Vector2 stagedAreaSize = new Vector2(10, 10); //V2(5, 5) should be replaced with details from staged area parameters
-            StartCoroutine(terrainManager.GetPainter().RemoveTreesInArea(position.XZ(), stagedAreaSize));
-            StartCoroutine(terrainManager.GetTerrainGenerator().FlattenAreaAroundPoint((int)position.x, (int)position.y, 0.65f, stagedAreaSize));
-            GameObject stagedArea = stagedAreas[saNum++];
-            stagedArea.transform.position = position;
-            stagedArea.SetActive(true);
+
+            GameObject stagedArea = stagedAreas[saNum];
+            if (!stagedArea.activeSelf)
+            {
+                Debug.Log("Activating area");
+
+                Vector2 stagedAreaSize = new Vector2(10, 10); //V2(5, 5) should be replaced with details from staged area parameters
+                StartCoroutine(terrainManager.GetPainter().RemoveTreesInArea(position.XZ(), stagedAreaSize));
+                StartCoroutine(terrainManager.GetTerrainGenerator().FlattenAreaAroundPoint((int)position.x, (int)position.y, nextSA.flattenPower, stagedAreaSize));
+
+                stagedArea.transform.position = position;
+                stagedArea.SetActive(true);
+            }
+            else
+            {
+                Debug.Log("Area already active");
+            }
         }
     }
 
@@ -362,14 +383,9 @@ public class NarrativeManager : MonoBehaviour
     {
         while (lookForNextSA == false)
         {
-            Vector3 worldSpacePos = new Vector3(
-            locationOfSA.y / (float)terrainManager.TerrainData.heightmapResolution * terrainManager.TerrainData.size.z,
-            heightmap[(int)locationOfSA.x, (int)locationOfSA.y] * terrainManager.TerrainData.size.y,
-            locationOfSA.x / (float)terrainManager.TerrainData.heightmapResolution * terrainManager.TerrainData.size.x
-            );
+            Vector3 SAPosition = stagedAreas[saNum].transform.position;
 
-            float distance = Vector3.Distance(player.transform.position, worldSpacePos);
-            Debug.Log(distance);
+            float distance = Vector3.Distance(player.transform.position, SAPosition);
 
             if (distance <= withinSA)
             {
