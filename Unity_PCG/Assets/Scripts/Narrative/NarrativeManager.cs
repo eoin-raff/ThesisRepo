@@ -4,7 +4,6 @@ using System;
 using MED10.PCG;
 using MED10.Utilities;
 using System.Collections.Generic;
-using System.Linq;
 using MED10.Architecture.Events;
 
 public class NarrativeManager : MonoBehaviour
@@ -60,7 +59,7 @@ public class NarrativeManager : MonoBehaviour
 
     public void PrepareForNextSA()
     {
-        if (saNum < stagedAreas.Length -1)
+        if (saNum < stagedAreas.Length - 1)
         {
             positionAtLastSA = player.transform.position;
             lookForNextSA = true;
@@ -94,7 +93,7 @@ public class NarrativeManager : MonoBehaviour
                     {
                         //Debug.Log("enough distance");
                         lookForNextSA = false;
-                       // SearchForCandidates(playerPos);
+                        // SearchForCandidates(playerPos);
                     }
                 }
             }
@@ -128,13 +127,20 @@ public class NarrativeManager : MonoBehaviour
 
     internal void SpawnWeenie(Vector3 position, int weenieIdx)
     {
-
-            Vector2 stagedAreaSize = new Vector2(10, 10); //V2(5, 5) should be replaced with details from staged area parameters
-            StartCoroutine(terrainManager.GetPainter().RemoveTreesInArea(position.XZ(), stagedAreaSize));
-            StartCoroutine(terrainManager.GetTerrainGenerator().FlattenAreaAroundPoint((int)position.x, (int)position.y, 0.9f, stagedAreaSize));
-            GameObject stagedArea = stagedAreas[weenieIdx];
-            stagedArea.transform.position = position;
-            stagedArea.SetActive(true);
+        if (weenieIdx > stagedAreas.Length - 1)
+        {
+            return;
+        }
+        GameObject SAPrefab = stagedAreas[weenieIdx];
+        StagedArea SA = stagedAreas[weenieIdx].GetComponent<StagedArea>();
+        Vector2 stagedAreaSize = SA.size; //V2(5, 5) should be replaced with details from staged area parameters
+        StartCoroutine(terrainManager.GetPainter().RemoveTreesInArea(position.XZ(), stagedAreaSize));
+        int hmX =(int)Utils.Map(position.x, 0, terrainManager.TerrainData.size.x, 0, terrainManager.HeightmapResolution);
+        int hmY =(int)Utils.Map(position.z, 0, terrainManager.TerrainData.size.z, 0, terrainManager.HeightmapResolution);
+        StartCoroutine(terrainManager.GetTerrainGenerator().FlattenAreaAroundPoint(hmY, hmX, 0.9f, stagedAreaSize)); 
+        
+        SAPrefab.transform.position = position;
+        SAPrefab.SetActive(true);
     }
 
     private void CreateStagedArea()
@@ -334,7 +340,7 @@ public class NarrativeManager : MonoBehaviour
     }
 
     public void InstantiateStagedArea(Vector3 position)
-    {        
+    {
         if (saNum < stagedAreas.Length)
         {
 
@@ -345,6 +351,7 @@ public class NarrativeManager : MonoBehaviour
 
                 Vector2 stagedAreaSize = new Vector2(10, 10); //V2(5, 5) should be replaced with details from staged area parameters
                 StartCoroutine(terrainManager.GetPainter().RemoveTreesInArea(position.XZ(), stagedAreaSize));
+
                 StartCoroutine(terrainManager.GetTerrainGenerator().FlattenAreaAroundPoint((int)position.x, (int)position.y, nextSA.flattenPower, stagedAreaSize));
 
                 stagedArea.transform.position = position;

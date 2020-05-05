@@ -92,7 +92,7 @@ namespace MED10.PCG
         }
         public IEnumerator FlattenAreaAroundPoint(int x, int y, float strength, Vector2 area)
         {
-            //Debug.Log("Flattening Area");
+            Debug.Log("Flattening Area");
             float[,] heightMap = GetHeightMap(false);
 
             for (int j = Mathf.Max(0, (int)(y - (area.y / 2))); j < Mathf.Min(heightMap.GetLength(1), (int)(y + (area.y / 2))); j++)
@@ -104,7 +104,7 @@ namespace MED10.PCG
                     yield return null;
                 }
             }
-            //Debug.Log("Setting new heights");
+            Debug.Log("Setting new heights of Flattened Area");
             terrainManager.SetHeightmap(heightMap);
             //SmoothAreaAroundPoint(x, y, 1, area); //TODO
             terrainManager.GetPainter().SplatMaps();

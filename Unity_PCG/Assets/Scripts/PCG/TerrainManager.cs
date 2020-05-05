@@ -33,13 +33,13 @@ namespace MED10.PCG
             {
                 this.terrainGenerator = terrainGenerator;
             }
-            else if (this.terrainGenerator == terrainGenerator)
-            {
-                Debug.LogWarning("This generator has already been assigned to the terrain manager", terrainGenerator);
-            }
-            else{
-                Debug.LogWarning("Terrain Manager already has another terrain generator", this);
-            }
+            //else if (this.terrainGenerator == terrainGenerator)
+            //{
+            //    Debug.LogWarning("This generator has already been assigned to the terrain manager", terrainGenerator);
+            //}
+            //else{
+            //    Debug.LogWarning("Terrain Manager already has another terrain generator", this);
+            //}
         }
         public TerrainGenerator GetTerrainGenerator()
         {
@@ -56,14 +56,14 @@ namespace MED10.PCG
             {
                 this.erosion = erosion;
             }
-            else if (this.erosion == erosion)
-            {
-                Debug.LogWarning("This erosion has already been assigned to the terrain manager", terrainGenerator);
-            }
-            else
-            {
-                Debug.LogWarning("Terrain Manager already has erosion", this);
-            }
+            //else if (this.erosion == erosion)
+            //{
+            //    Debug.LogWarning("This erosion has already been assigned to the terrain manager", terrainGenerator);
+            //}
+            //else
+            //{
+            //    Debug.LogWarning("Terrain Manager already has erosion", this);
+            //}
         }
         public void SetPainter(TerrainPainter painter)
         {
@@ -71,21 +71,21 @@ namespace MED10.PCG
             {
                 this.painter = painter;
             }
-            else if (this.painter == painter)
-            {
-//                Debug.LogWarning("This painter has already been assigned to the terrain manager", painter);
-            }
+//            else if (this.painter == painter)
+//            {
+////                Debug.LogWarning("This painter has already been assigned to the terrain manager", painter);
+//            }
 
-            else
-            {
-                Debug.LogWarning("Terrain Manager already has a painter", this);
-            }
+//            else
+//            {
+//                Debug.LogWarning("Terrain Manager already has a painter", this);
+//            }
         }
         public TerrainPainter GetPainter()
         {
             if (painter == null)
             {
-                Debug.LogWarning("Terrain Manager has no painter", this);
+                //Debug.LogWarning("Terrain Manager has no painter", this);
                 return null;
             }
             return painter;

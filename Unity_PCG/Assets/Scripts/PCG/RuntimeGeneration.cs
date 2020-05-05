@@ -34,6 +34,7 @@ namespace MED10.PCG
         {
             //terrain.SetRandomSeed();
             seed.Value = terrainGenerator.Seed;
+            terrainGenerator.ResetTerrain();
             GenerateHeightmap();
             PerformErosion();
 
