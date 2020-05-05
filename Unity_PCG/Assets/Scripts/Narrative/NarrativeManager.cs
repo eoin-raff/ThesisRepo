@@ -120,6 +120,7 @@ public class NarrativeManager : MonoBehaviour
         }
         if (foundPosition)
         {
+            foundPosition = false;
             Debug.Log("Spawning SA " + saNum);
             CreateStagedArea();
         }
