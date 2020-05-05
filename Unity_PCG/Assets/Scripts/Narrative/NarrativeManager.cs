@@ -205,7 +205,7 @@ public class NarrativeManager : MonoBehaviour
                 }
 
             }
-            yield return new WaitForEndOfFrame();
+            yield return null;
         }
         addCandidatesCallback(candidates);
         yield break;
@@ -307,7 +307,7 @@ public class NarrativeManager : MonoBehaviour
                 Debug.DrawRay(player.transform.position, directionToCandidate, Color.green, 1f);
 
             }
-            yield return new WaitForEndOfFrame();
+            yield return null;
         }
         Vector3 dir = (chosenCandidate.worldPosition - player.transform.position);
         Debug.DrawRay(player.transform.position, dir, Color.cyan, 15f);

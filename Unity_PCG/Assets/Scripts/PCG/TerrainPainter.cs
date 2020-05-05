@@ -142,7 +142,7 @@ namespace MED10.PCG
                         splatmapData[x, y, z] = splat[z];
                     }
                 }
-                yield return new WaitForEndOfFrame();
+                yield return null;
             }
             //Debug.Log("Reapplying Ground Textures");
             terrainManager.TerrainData.SetAlphamaps(0, 0, splatmapData);
@@ -584,7 +584,7 @@ namespace MED10.PCG
                 }
                 if (numTrees%100 == 0)
                 {
-                    yield return new WaitForEndOfFrame();
+                    yield return null;
                 }
             }
             //Re-Apply Trees to Terrain
