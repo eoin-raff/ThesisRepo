@@ -94,11 +94,12 @@ namespace MED10.PCG
         {
             //Debug.Log("Flattening Area");
             float[,] heightMap = GetHeightMap(false);
-            float centerHeight = heightMap[x, y];
+
             for (int j = Mathf.Max(0, (int)(y - (area.y / 2))); j < Mathf.Min(heightMap.GetLength(1), (int)(y + (area.y / 2))); j++)
             {
                 for (int i = Mathf.Max(0, (int)(x - (area.x / 2))); i < Mathf.Min(heightMap.GetLength(0), (int)(x + (area.x / 2))); i++)
                 {
+                    float centerHeight = heightMap[x, y];
                     heightMap[i, j] = Mathf.Lerp(heightMap[i, j], centerHeight, strength);
                     yield return null;
                 }

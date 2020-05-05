@@ -82,7 +82,7 @@ public class NarrativeManager : MonoBehaviour
         {
             if (lookForNextSA)
             {
-                Debug.Log("looking for SA " + saNum);
+                //Debug.Log("looking for SA " + saNum);
                 // If enough time has passed since last SA
                 if (Time.time - timeAtLastSA >= timeBetweenEvents[saNum])
                 {

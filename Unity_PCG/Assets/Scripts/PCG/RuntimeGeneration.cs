@@ -7,7 +7,11 @@ namespace MED10.PCG
 {
     public class RuntimeGeneration : MonoBehaviour
     {
-        public GameEvent TerrainFinished;
+        public GameEvent heightmapDone;
+        public GameEvent erosionDone;
+        public GameEvent paintingDone;
+        public GameEvent smoothingDone;
+
         public IntVariable seed;
         public TerrainGenerator terrainGenerator;
         public UnityEvent GenerationEvents;
@@ -21,35 +25,61 @@ namespace MED10.PCG
             Debug.Assert(GenerationEvents != null, "No Generation Events found", this);
             Debug.Assert(ErosionEvents != null, "No Erosion Events found", this);
             Debug.Assert(PaintingEvents != null, "No Painting Events found", this);
-            
+
         }
 
         private void Start()
         {
-            Generate();
+            //Generate();
         }
 
         public void Generate()
         {
             //terrain.SetRandomSeed();
             seed.Value = terrainGenerator.Seed;
-            if (GenerationEvents != null)
-            {
-                GenerationEvents.Invoke();
-            }
-            for (int i = 0; i < ErosionGenerations; i++)
-            {
-                if (ErosionEvents != null)
-                {
-                    ErosionEvents.Invoke();
-                }
-            }
+            GenerateHeightmap();
+            PerformErosion();
+
+            SmoothTerrain();
+
+            PaintTerrainDetails();
+            heightmapDone.Raise();
+        }
+
+        public void SmoothTerrain()
+        {
             terrainGenerator.Smooth();
+            smoothingDone.Raise();
+        }
+
+        public void PaintTerrainDetails()
+        {
             if (PaintingEvents != null)
             {
                 PaintingEvents.Invoke();
+                paintingDone.Raise();
             }
-            TerrainFinished.Raise();
+        }
+
+        public void PerformErosion()
+        {
+            if (ErosionEvents != null)
+            {
+                for (int i = 0; i < ErosionGenerations; i++)
+                {
+                    ErosionEvents.Invoke();
+                }
+                erosionDone.Raise();
+            }
+        }
+
+        public void GenerateHeightmap()
+        {
+            if (GenerationEvents != null)
+            {
+                GenerationEvents.Invoke();
+                heightmapDone.Raise();
+            }
         }
     }
 

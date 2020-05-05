@@ -11,6 +11,7 @@ namespace MED10.Architecture.Events
 
         public void Raise()
         {
+            Debug.Log("Raised Event: " + name);
             // Loop backwards through the listeners in case the respone involves removing it from the list
             for (int i = listeners.Count - 1; i >= 0; i--)
             {

@@ -104,7 +104,7 @@ public class PlayerSpawn : MonoBehaviour
             }
             #endregion
 
-            if (Physics.Raycast(weenieTopOrigin, direction, out RaycastHit boatSpawnHitInfo, maxDistance: 300.0f))
+            if (Physics.Raycast(weenieTopOrigin, direction, out RaycastHit boatSpawnHitInfo, maxDistance: 500.0f))
             {
                 if (Vector3.Distance(boatSpawnHitInfo.point, position) < 1)
                 {
