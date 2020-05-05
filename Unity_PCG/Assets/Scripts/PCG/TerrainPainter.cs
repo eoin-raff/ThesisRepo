@@ -78,6 +78,9 @@ namespace MED10.PCG
             if (detailsDone && treesDone && splatmapsDone)
             {
                 paintingDone.Raise();
+                detailsDone = false;
+                treesDone = false;
+                splatmapsDone = false;
             }
         }
         public void SplatMaps()

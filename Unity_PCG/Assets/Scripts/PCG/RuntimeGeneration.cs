@@ -8,9 +8,6 @@ namespace MED10.PCG
     public class RuntimeGeneration : MonoBehaviour
     {
         public GameEvent heightmapDone;
-        public GameEvent erosionDone;
-        public GameEvent paintingDone;
-        public GameEvent smoothingDone;
 
         public IntVariable seed;
         public TerrainGenerator terrainGenerator;
@@ -57,7 +54,6 @@ namespace MED10.PCG
             if (PaintingEvents != null)
             {
                 PaintingEvents.Invoke();
-                //paintingDone.Raise();
             }
         }
 
@@ -69,7 +65,6 @@ namespace MED10.PCG
                 {
                     ErosionEvents.Invoke();
                 }
-                //erosionDone.Raise();
             }
         }
 
@@ -78,7 +73,6 @@ namespace MED10.PCG
             if (GenerationEvents != null)
             {
                 GenerationEvents.Invoke();
-                //heightmapDone.Raise();
             }
         }
     }
