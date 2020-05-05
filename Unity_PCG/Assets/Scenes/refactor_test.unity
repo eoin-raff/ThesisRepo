@@ -322,7 +322,7 @@ Terrain:
   m_TreeBillboardDistance: 100
   m_TreeCrossFadeLength: 5
   m_TreeMaximumFullLODCount: 50
-  m_DetailObjectDistance: 5211
+  m_DetailObjectDistance: 3000
   m_DetailObjectDensity: 1
   m_HeightmapPixelError: 5
   m_SplatMapDistance: 1000
@@ -582,75 +582,7 @@ MonoBehaviour:
     feather: 0.05
     density: 1
     bendFactor: 1
-  - remove: 0
-    minHeight: 0.1
-    maxHeight: 1
-    minSlope: 0
-    maxSlope: 10
-    prototype: {fileID: 100000, guid: 55e887002e0cf3145a514b2b57b9d9ab, type: 3}
-    prototypeTexture: {fileID: 0}
-    renderMode: 2
-    dryColor: {r: 1, g: 1, b: 1, a: 1}
-    healthyColor: {r: 1, g: 1, b: 1, a: 1}
-    heightRange: {x: 1, y: 1}
-    widthRange: {x: 1, y: 1}
-    noiseSpread: 0.5
-    overlap: 0.01
-    feather: 0.05
-    density: 0.5
-    bendFactor: 1
-  - remove: 0
-    minHeight: 0.1
-    maxHeight: 1
-    minSlope: 0
-    maxSlope: 10
-    prototype: {fileID: 100000, guid: 10cc26cad04b44e42b24efe2fb0a0066, type: 3}
-    prototypeTexture: {fileID: 0}
-    renderMode: 2
-    dryColor: {r: 1, g: 1, b: 1, a: 1}
-    healthyColor: {r: 1, g: 1, b: 1, a: 1}
-    heightRange: {x: 1, y: 1}
-    widthRange: {x: 1, y: 1}
-    noiseSpread: 0.5
-    overlap: 0.01
-    feather: 0.05
-    density: 0.3
-    bendFactor: 1
-  - remove: 0
-    minHeight: 0.1
-    maxHeight: 1
-    minSlope: 0
-    maxSlope: 10
-    prototype: {fileID: 100026, guid: 8a44e9b2414bd044b85e2c7d3d4e1c43, type: 3}
-    prototypeTexture: {fileID: 0}
-    renderMode: 2
-    dryColor: {r: 1, g: 1, b: 1, a: 1}
-    healthyColor: {r: 1, g: 1, b: 1, a: 1}
-    heightRange: {x: 1, y: 1}
-    widthRange: {x: 1, y: 1}
-    noiseSpread: 0.5
-    overlap: 0.01
-    feather: 0.05
-    density: 0.1
-    bendFactor: 1
-  - remove: 0
-    minHeight: 0
-    maxHeight: 1
-    minSlope: 0
-    maxSlope: 15
-    prototype: {fileID: 100000, guid: 7015710bf1d27ee4daef75adca58e556, type: 3}
-    prototypeTexture: {fileID: 0}
-    renderMode: 1
-    dryColor: {r: 1, g: 1, b: 1, a: 1}
-    healthyColor: {r: 1, g: 1, b: 1, a: 1}
-    heightRange: {x: 1, y: 1}
-    widthRange: {x: 1, y: 1}
-    noiseSpread: 0.5
-    overlap: 0.01
-    feather: 0.05
-    density: 1
-    bendFactor: 0
-  maxDetails: 5211
+  maxDetails: 3000
   detailSpacing: 1
   waterHeight: 0.025
   waterGO: {fileID: 17041823}
@@ -808,7 +740,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 02e8d0a5d935ff54bbcfc2ba7c87354e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Event: {fileID: 11400000, guid: 7d302b286d85e8f4e8c9475978379288, type: 2}
+  Event: {fileID: 11400000, guid: e4493da0c51af9340861f30f8659a1c0, type: 2}
   Response:
     m_PersistentCalls:
       m_Calls:
