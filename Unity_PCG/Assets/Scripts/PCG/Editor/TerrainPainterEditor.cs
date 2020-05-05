@@ -43,6 +43,8 @@ namespace MED10.PCG
         private SerializedProperty maxSpeed;
         private SerializedProperty distanceTravelled;
 
+        private SerializedProperty paintingDone;
+
         private bool showSplatMaps = false;
         private bool showVegetation = false;
         private bool showDetail = false;
@@ -81,12 +83,15 @@ namespace MED10.PCG
             minSpeed = serializedObject.FindProperty("minSpeed");
             maxSpeed = serializedObject.FindProperty("maxSpeed");
             distanceTravelled = serializedObject.FindProperty("distanceTravelled");
+
+            paintingDone = serializedObject.FindProperty("paintingDone");
         }
 
         public override void OnInspectorGUI()
         {
             TerrainPainter painter = (TerrainPainter)target;
 
+            EditorGUILayout.PropertyField(paintingDone);
 
             showSplatMaps = EditorGUILayout.Foldout(showSplatMaps, "Splat Maps");
             if (showSplatMaps)
@@ -149,6 +154,10 @@ namespace MED10.PCG
                 EditorGUILayout.IntSlider(detailSpacing, 1, 20, new GUIContent("Detail Spacing"));
                 //
                 EditorGUILayout.Slider(waterHeight, 0, 1, new GUIContent("Water Height"));
+                EditorGUILayout.PropertyField(waterGO, new GUIContent("Water Game Object"));
+
+                EditorGUILayout.PropertyField(paintingDone);
+
 
 
                 detailTable = GUITableLayout.DrawTable(detailTable, details);

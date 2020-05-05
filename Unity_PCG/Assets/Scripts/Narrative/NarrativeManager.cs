@@ -86,15 +86,15 @@ public class NarrativeManager : MonoBehaviour
                 // If enough time has passed since last SA
                 if (Time.time - timeAtLastSA >= timeBetweenEvents[saNum])
                 {
-                    Debug.Log("enough time passed");
+                    //Debug.Log("enough time passed");
                     float distance = Vector3.Distance(player.transform.position, positionAtLastSA);
 
                     // If you are far enough away from last SA
                     if (distance >= distanceBetweenSAs[saNum])
                     {
-                        Debug.Log("enough distance");
+                        //Debug.Log("enough distance");
                         lookForNextSA = false;
-                        SearchForCandidates(playerPos);
+                       // SearchForCandidates(playerPos);
                     }
                 }
             }

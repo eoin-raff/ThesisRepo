@@ -1,4 +1,5 @@
-﻿using MED10.Utilities;
+﻿using MED10.Architecture.Events;
+using MED10.Utilities;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
@@ -60,6 +61,8 @@ namespace MED10.PCG
         public float distanceTravelled = 500f;
 
         #endregion
+        public GameEvent paintingDone;
+        public bool detailsDone, treesDone, splatmapsDone;
 
 
         private void OnEnable()
@@ -70,7 +73,13 @@ namespace MED10.PCG
             terrainManager.SetPainter(this);
         }
 
-
+        private void RaiseEventIfComplete()
+        {
+            if (detailsDone && treesDone && splatmapsDone)
+            {
+                paintingDone.Raise();
+            }
+        }
         public void SplatMaps()
         {
 #if UNITY_EDITOR
@@ -104,6 +113,7 @@ namespace MED10.PCG
 
         private IEnumerator ApplySplatmaps()
         {
+            splatmapsDone = false;
             float[,] heightMap = terrainManager.TerrainData.GetHeights(0, 0, terrainManager.HeightmapResolution,
                                                               terrainManager.HeightmapResolution);
             float[,,] splatmapData = new float[terrainManager.TerrainData.alphamapResolution,
@@ -146,11 +156,14 @@ namespace MED10.PCG
             }
             //Debug.Log("Reapplying Ground Textures");
             terrainManager.TerrainData.SetAlphamaps(0, 0, splatmapData);
+            splatmapsDone = true;
+            RaiseEventIfComplete();
             yield break;
         }
 
         public void PlantVegetation()
         {
+            treesDone = false;
             //Take the list of tree prefabs from VegetationData object, and convert it into an array of type TreePrototype.
             TreePrototype[] treePrototypes;
             treePrototypes = new TreePrototype[vegetationData.Count];
@@ -256,11 +269,13 @@ namespace MED10.PCG
             }
         TREESDONE:
             terrainManager.TerrainData.treeInstances = allVegetation.ToArray();
-
+            treesDone = true;
+            RaiseEventIfComplete();
         }
 
         public void PaintDetails()
         {
+            detailsDone = false;
             DetailPrototype[] detailPrototypes;
             detailPrototypes = new DetailPrototype[details.Count];
             int detailIndex = 0;
@@ -336,6 +351,8 @@ namespace MED10.PCG
                 }
                 terrainManager.TerrainData.SetDetailLayer(0, 0, i, detailMap);
             }
+            detailsDone = true;
+            RaiseEventIfComplete();
         }
 
         public void GenerateClouds()

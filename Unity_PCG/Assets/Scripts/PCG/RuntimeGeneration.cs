@@ -49,7 +49,7 @@ namespace MED10.PCG
         public void SmoothTerrain()
         {
             terrainGenerator.Smooth();
-            smoothingDone.Raise();
+            //smoothingDone.Raise();
         }
 
         public void PaintTerrainDetails()
@@ -57,7 +57,7 @@ namespace MED10.PCG
             if (PaintingEvents != null)
             {
                 PaintingEvents.Invoke();
-                paintingDone.Raise();
+                //paintingDone.Raise();
             }
         }
 
@@ -69,7 +69,7 @@ namespace MED10.PCG
                 {
                     ErosionEvents.Invoke();
                 }
-                erosionDone.Raise();
+                //erosionDone.Raise();
             }
         }
 
