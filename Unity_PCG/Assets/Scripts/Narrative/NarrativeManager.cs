@@ -130,7 +130,7 @@ public class NarrativeManager : MonoBehaviour
 
             Vector2 stagedAreaSize = new Vector2(10, 10); //V2(5, 5) should be replaced with details from staged area parameters
             StartCoroutine(terrainManager.GetPainter().RemoveTreesInArea(position.XZ(), stagedAreaSize));
-            StartCoroutine(terrainManager.GetTerrainGenerator().FlattenAreaAroundPoint((int)position.x, (int)position.y, 0.65f, stagedAreaSize));
+            StartCoroutine(terrainManager.GetTerrainGenerator().FlattenAreaAroundPoint((int)position.x, (int)position.y, 0.9f, stagedAreaSize));
             GameObject stagedArea = stagedAreas[weenieIdx];
             stagedArea.transform.position = position;
             stagedArea.SetActive(true);
