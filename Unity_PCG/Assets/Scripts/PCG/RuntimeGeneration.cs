@@ -78,7 +78,7 @@ namespace MED10.PCG
             if (GenerationEvents != null)
             {
                 GenerationEvents.Invoke();
-                heightmapDone.Raise();
+                //heightmapDone.Raise();
             }
         }
     }

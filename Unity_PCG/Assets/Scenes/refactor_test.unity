@@ -150,7 +150,7 @@ Light:
   serializedVersion: 10
   m_Type: 1
   m_Shape: 0
-  m_Color: {r: 1, g: 0.909804, b: 0.70980394, a: 1}
+  m_Color: {r: 0.9215687, g: 0.6627451, b: 0.43921572, a: 1}
   m_Intensity: 0.7
   m_Range: 10
   m_SpotAngle: 30
@@ -1948,7 +1948,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 02e8d0a5d935ff54bbcfc2ba7c87354e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Event: {fileID: 11400000, guid: f2a5819d34fc35f4d8584afd022ef47f, type: 2}
+  Event: {fileID: 11400000, guid: e4e912e6735bef74388fc3d6c2c8614f, type: 2}
   Response:
     m_PersistentCalls:
       m_Calls:
