@@ -584,7 +584,7 @@ MonoBehaviour:
     blendNoiseScale: {x: 0.01, y: 0.01}
     blendNoiseScalar: 0.1
   - remove: 0
-    minHeight: 0
+    minHeight: 0.02
     maxHeight: 0.15
     minSlope: 0
     maxSlope: 25

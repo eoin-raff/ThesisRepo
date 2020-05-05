@@ -100,7 +100,7 @@ namespace MED10.PCG
                 for (int i = Mathf.Max(0, (int)(x - (area.x / 2))); i < Mathf.Min(heightMap.GetLength(0), (int)(x + (area.x / 2))); i++)
                 {
                     heightMap[i, j] = Mathf.Lerp(heightMap[i, j], centerHeight, strength);
-                    yield return new WaitForEndOfFrame();
+                    yield return null;
                 }
             }
             //Debug.Log("Setting new heights");

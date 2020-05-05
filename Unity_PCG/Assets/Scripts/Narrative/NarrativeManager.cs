@@ -125,7 +125,7 @@ public class NarrativeManager : MonoBehaviour
         }
     }
 
-    internal void SpawnWeenie(Vector3 position)
+    internal void SpawnWeenie(Vector3 position, int weenieIdx)
     {
 
             Vector2 stagedAreaSize = new Vector2(10, 10); //V2(5, 5) should be replaced with details from staged area parameters
