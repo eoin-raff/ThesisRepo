@@ -31,7 +31,7 @@ public class NarrativeManager : MonoBehaviour
     private Vector3 positionAtLastSA;
     public float[] distanceBetweenSAs;                    // How far should player travel before starting to look for next SA 
 
-    public TerrainManager terrainManager;
+    //public TerrainManager TerrainManager.Instance;
     float[,] heightmap;
 
     private List<StagedAreaCandidatePosition> temp_candidates;
@@ -54,7 +54,6 @@ public class NarrativeManager : MonoBehaviour
 
     private void Start()
     {
-        Debug.Assert(terrainManager != null, "No terrain manager assigned", this);
         StagedAreaCandidates = new Dictionary<StagedArea, List<StagedAreaCandidatePosition>>();
         FindStagedAreaCandidates();
     }
@@ -85,7 +84,7 @@ public class NarrativeManager : MonoBehaviour
     {
         if (heightmap == null)
         {
-            heightmap = terrainManager.GetHeightmap(false);
+            heightmap = TerrainManager.Instance.GetHeightmap(false);
         }
         playerPos = new Vector2(player.transform.position.x, player.transform.position.z);
 
@@ -146,11 +145,11 @@ public class NarrativeManager : MonoBehaviour
         }
         GameObject SAPrefab = stagedAreas[weenieIdx];
         StagedArea SA = stagedAreas[weenieIdx].GetComponent<StagedArea>();
-        Vector2 stagedAreaSize = SA.size; //V2(5, 5) should be replaced with details from staged area parameters
-        StartCoroutine(terrainManager.GetPainter().RemoveTreesInArea(position.XZ(), stagedAreaSize));
-        int hmX = (int)Utils.Map(position.x, 0, terrainManager.TerrainData.size.x, 0, terrainManager.HeightmapResolution);
-        int hmY = (int)Utils.Map(position.z, 0, terrainManager.TerrainData.size.z, 0, terrainManager.HeightmapResolution);
-        StartCoroutine(terrainManager.GetTerrainGenerator().FlattenAreaAroundPoint(hmY, hmX, 0.9f, stagedAreaSize, position, SAPrefab, SA.flattenType, SpawnWeenie));
+        Vector2 stagedAreaSize = SA.size;
+        StartCoroutine(TerrainManager.Instance.GetPainter().RemoveTreesInArea(position.XZ(), stagedAreaSize));
+        int hmX = (int)Utils.Map(position.x, 0, TerrainManager.Instance.TerrainData.size.x, 0, TerrainManager.Instance.HeightmapResolution);
+        int hmY = (int)Utils.Map(position.z, 0, TerrainManager.Instance.TerrainData.size.z, 0, TerrainManager.Instance.HeightmapResolution);
+        StartCoroutine(TerrainManager.Instance.GetTerrainGenerator().FlattenAreaAroundPoint(hmY, hmX, 0.9f, stagedAreaSize, position, SAPrefab, SA.flattenType, SpawnWeenie));
 
         //SpawnWeenie(position, SAPrefab);
     }
@@ -193,7 +192,7 @@ public class NarrativeManager : MonoBehaviour
         float targetHeight = minHeight + ((maxHeight - minHeight) / 2);
         float targetSlope = minSlope + ((maxSlope - minSlope) / 2);
 
-        float[,] heightmap = terrainManager.GetHeightmap(false);
+        float[,] heightmap = TerrainManager.Instance.GetHeightmap(false);
 
 
         List<StagedAreaCandidatePosition> candidates = new List<StagedAreaCandidatePosition>();
@@ -225,9 +224,9 @@ public class NarrativeManager : MonoBehaviour
                     {
                         heightmapPosition = pointPosition,
                         worldPosition = new Vector3(
-                            y / (float)terrainManager.TerrainData.heightmapResolution * terrainManager.TerrainData.size.z,
-                            heightmap[(int)x, (int)y] * terrainManager.TerrainData.size.y,
-                            x / (float)terrainManager.TerrainData.heightmapResolution * terrainManager.TerrainData.size.x
+                            y / (float)TerrainManager.Instance.TerrainData.heightmapResolution * TerrainManager.Instance.TerrainData.size.z,
+                            heightmap[(int)x, (int)y] * TerrainManager.Instance.TerrainData.size.y,
+                            x / (float)TerrainManager.Instance.TerrainData.heightmapResolution * TerrainManager.Instance.TerrainData.size.x
                         ),
                         heightScore = heightScore,
                         slopeScore = slopeScore,
@@ -237,6 +236,8 @@ public class NarrativeManager : MonoBehaviour
             }
             yield return null;
         }
+        stagedArea.progress.Value = 0;
+        stagedArea.candidatesReady = true;
         addCandidatesCallback(stagedArea, candidates);
         yield break;
     }
@@ -256,9 +257,9 @@ public class NarrativeManager : MonoBehaviour
         float targetSlope = minSlope + ((maxSlope - minSlope) / 2);
 
         int r = 50;
-        float[,] heightmap = terrainManager.GetHeightmap(false);
-        int mappedY = (int)Utils.Map(playerPosition.x, 0, terrainManager.TerrainData.size.x, 0, heightmap.GetLength(0));
-        int mappedX = (int)Utils.Map(playerPosition.y, 0, terrainManager.TerrainData.size.z, 0, heightmap.GetLength(1));
+        float[,] heightmap = TerrainManager.Instance.GetHeightmap(false);
+        int mappedY = (int)Utils.Map(playerPosition.x, 0, TerrainManager.Instance.TerrainData.size.x, 0, heightmap.GetLength(0));
+        int mappedX = (int)Utils.Map(playerPosition.y, 0, TerrainManager.Instance.TerrainData.size.z, 0, heightmap.GetLength(1));
 
 
         List<StagedAreaCandidatePosition> candidates = new List<StagedAreaCandidatePosition>();
@@ -289,9 +290,9 @@ public class NarrativeManager : MonoBehaviour
                     {
                         heightmapPosition = pointPosition,
                         worldPosition = new Vector3(
-                            y / (float)terrainManager.TerrainData.heightmapResolution * terrainManager.TerrainData.size.z,
-                            heightmap[(int)x, (int)y] * terrainManager.TerrainData.size.y,
-                            x / (float)terrainManager.TerrainData.heightmapResolution * terrainManager.TerrainData.size.x
+                            y / (float)TerrainManager.Instance.TerrainData.heightmapResolution * TerrainManager.Instance.TerrainData.size.z,
+                            heightmap[(int)x, (int)y] * TerrainManager.Instance.TerrainData.size.y,
+                            x / (float)TerrainManager.Instance.TerrainData.heightmapResolution * TerrainManager.Instance.TerrainData.size.x
                         ),
                         heightScore = heightScore,
                         slopeScore = slopeScore,
@@ -356,9 +357,9 @@ public class NarrativeManager : MonoBehaviour
     public void InstantiateStagedArea(Vector2 position)
     {
         Vector3 worldSpacePos = new Vector3(
-            position.y / (float)terrainManager.HeightmapResolution * terrainManager.TerrainData.size.z,
-            heightmap[(int)position.x, (int)position.y] * terrainManager.TerrainData.size.y,
-            position.x / (float)terrainManager.HeightmapResolution * terrainManager.TerrainData.size.x
+            position.y / (float)TerrainManager.Instance.HeightmapResolution * TerrainManager.Instance.TerrainData.size.z,
+            heightmap[(int)position.x, (int)position.y] * TerrainManager.Instance.TerrainData.size.y,
+            position.x / (float)TerrainManager.Instance.HeightmapResolution * TerrainManager.Instance.TerrainData.size.x
             );
         InstantiateStagedArea(worldSpacePos);
     }
@@ -375,9 +376,9 @@ public class NarrativeManager : MonoBehaviour
                 Debug.Log("Activating " + stagedArea.name)  ;
 
                 Vector2 stagedAreaSize = nextSA.size;
-                StartCoroutine(terrainManager.GetPainter().RemoveTreesInArea(position.XZ(), stagedAreaSize));
+                StartCoroutine(TerrainManager.Instance.GetPainter().RemoveTreesInArea(position.XZ(), stagedAreaSize));
 
-                StartCoroutine(terrainManager.GetTerrainGenerator().FlattenAreaAroundPoint((int)position.x, (int)position.y, nextSA.flattenPower, stagedAreaSize, position, stagedArea, nextSA.flattenType, SpawnWeenie));
+                StartCoroutine(TerrainManager.Instance.GetTerrainGenerator().FlattenAreaAroundPoint((int)position.x, (int)position.y, nextSA.flattenPower, stagedAreaSize, position, stagedArea, nextSA.flattenType, SpawnWeenie));
             }
             else
             {
@@ -389,9 +390,9 @@ public class NarrativeManager : MonoBehaviour
     private bool IsValidPoint(float minHeight, float maxHeight, float minSlope, float maxSlope, float[,] heightmap, int y, int x)
     {
         bool isInHeightRange = heightmap[x, y] < maxHeight && heightmap[x, y] > minHeight;
-        float slope = terrainManager.TerrainData.GetSteepness(
-            x / (float)terrainManager.TerrainData.alphamapResolution,
-            y / (float)terrainManager.TerrainData.alphamapResolution);
+        float slope = TerrainManager.Instance.TerrainData.GetSteepness(
+            x / (float)TerrainManager.Instance.TerrainData.alphamapResolution,
+            y / (float)TerrainManager.Instance.TerrainData.alphamapResolution);
         bool isInSlopeRange = slope > minSlope && slope < maxSlope;
         return isInHeightRange && isInSlopeRange;
     }
@@ -399,9 +400,9 @@ public class NarrativeManager : MonoBehaviour
     private float ScorePointValidity(int x, int y, float[,] hm, float targetHeight, float targetSlope, out float heightScore, out float slopeScore)
     {
         float height = hm[x, y];
-        float slope = terrainManager.TerrainData.GetSteepness(
-            x / (float)terrainManager.TerrainData.alphamapResolution,
-            y / (float)terrainManager.TerrainData.alphamapResolution);
+        float slope = TerrainManager.Instance.TerrainData.GetSteepness(
+            x / (float)TerrainManager.Instance.TerrainData.alphamapResolution,
+            y / (float)TerrainManager.Instance.TerrainData.alphamapResolution);
 
         heightScore = Mathf.Abs(targetHeight - height);
         slopeScore = Mathf.Abs(targetSlope - slope);

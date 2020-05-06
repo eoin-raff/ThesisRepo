@@ -10,10 +10,7 @@ public class PlayerSpawn : MonoBehaviour
     public GameObject PlayerPrefab;
     public Camera playerCam;
     public float targetDistance = 100;
-
-
-    [SerializeField]
-    private TerrainManager terrainManager;    
+  
     [SerializeField]
     private NarrativeManager narrativeManager;
     public float weenieHeight;
@@ -27,9 +24,9 @@ public class PlayerSpawn : MonoBehaviour
 
     public IEnumerator SpawnAtShoreVisibleFromWeenie()
     {
-        float[,] heightMap = terrainManager.GetHeightmap(false);
-        int resolution = terrainManager.HeightmapResolution;
-        float waterHeight = terrainManager.GetPainter().waterHeight;
+        float[,] heightMap = TerrainManager.Instance.GetHeightmap(false);
+        int resolution = TerrainManager.Instance.HeightmapResolution;
+        float waterHeight = TerrainManager.Instance.GetPainter().waterHeight;
         float highestValue = float.MinValue;
         Vector2 highestPoint = Vector2.zero;
         List<Vector3> shorePositions = new List<Vector3>();
@@ -51,9 +48,9 @@ public class PlayerSpawn : MonoBehaviour
                 {
                     if (heightMap[x, y] < waterHeight && heightMap[(int)n.x, (int)n.y] > waterHeight)
                     {
-                        float posX = Utils.Map(x, 0, resolution, 0, terrainManager.TerrainData.size.x);
-                        float posY = heightMap[x, y] * terrainManager.TerrainData.size.y;
-                        float posZ = Utils.Map(y, 0, resolution, 0, terrainManager.TerrainData.size.z);
+                        float posX = Utils.Map(x, 0, resolution, 0, TerrainManager.Instance.TerrainData.size.x);
+                        float posY = heightMap[x, y] * TerrainManager.Instance.TerrainData.size.y;
+                        float posZ = Utils.Map(y, 0, resolution, 0, TerrainManager.Instance.TerrainData.size.z);
 
                         Vector3 position = new Vector3(posZ, posY, posX);
                         shorePositions.Add(position);
@@ -65,9 +62,9 @@ public class PlayerSpawn : MonoBehaviour
             //yield return null;
         }
 
-        float posx = Utils.Map(highestPoint.x, 0, resolution, 0, terrainManager.TerrainData.size.x);
-        float posy = heightMap[(int)highestPoint.x, (int)highestPoint.y] * terrainManager.TerrainData.size.y;
-        float posz = Utils.Map(highestPoint.y, 0, resolution, 0, terrainManager.TerrainData.size.z);
+        float posx = Utils.Map(highestPoint.x, 0, resolution, 0, TerrainManager.Instance.TerrainData.size.x);
+        float posy = heightMap[(int)highestPoint.x, (int)highestPoint.y] * TerrainManager.Instance.TerrainData.size.y;
+        float posz = Utils.Map(highestPoint.y, 0, resolution, 0, TerrainManager.Instance.TerrainData.size.z);
 
         Vector3 highestPointWorldSpace = new Vector3(posz, posy, posx);
 

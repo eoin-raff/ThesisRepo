@@ -82,6 +82,18 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 11400000, guid: 105e811b10dfacc48bf665c8ec5d882f,
         type: 2}
+    - target: {fileID: 21478757124550572, guid: 256ae43d19ded7647b55404fa1485263,
+        type: 3}
+      propertyPath: candidatesDoneEvent
+      value: 
+      objectReference: {fileID: 11400000, guid: 969f1f21cbe12da4f808a40ccde323be,
+        type: 2}
+    - target: {fileID: 21478757124550572, guid: 256ae43d19ded7647b55404fa1485263,
+        type: 3}
+      propertyPath: areaSpawned
+      value: 
+      objectReference: {fileID: 11400000, guid: a503712b37127db45b2b1da557d92c1f,
+        type: 2}
     - target: {fileID: 509730228368293134, guid: 256ae43d19ded7647b55404fa1485263,
         type: 3}
       propertyPath: m_Name

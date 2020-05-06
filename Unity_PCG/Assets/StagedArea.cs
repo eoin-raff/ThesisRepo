@@ -29,12 +29,15 @@ public class StagedArea : MonoBehaviour
 
     public FlattenType flattenType;
     public FloatVariable progress;
+    public GameEvent candidatesDoneEvent;
+    public GameEvent areaSpawned;
+    public bool candidatesReady;
+    public bool spawned;
 
     private void OnTriggerEnter(Collider other)
     {
         if (!stagedAreaStarted)
         {
-//StagedAreaIndex.Value++;
             stagedAreaStarted = true;
             EnteredStagedArea.Raise();
         }

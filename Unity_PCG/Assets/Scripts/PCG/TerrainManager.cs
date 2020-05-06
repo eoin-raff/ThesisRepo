@@ -12,7 +12,7 @@ namespace MED10.PCG
     [RequireComponent(typeof(TerrainGenerator))]
     [RequireComponent(typeof(Erosion))]
     [RequireComponent(typeof(TerrainPainter))]
-    public class TerrainManager : MonoBehaviour
+    public class TerrainManager : Singleton<TerrainManager>
     {
         public int seed;
         public Terrain Terrain { get; private set; }
@@ -130,9 +130,9 @@ namespace MED10.PCG
         {
             Terrain = GetComponent<Terrain>();
             TerrainData = Terrain.activeTerrain.terrainData;
-            SetErosion(GetComponent<Erosion>());
-            SetTerrainGenerator(GetComponent<TerrainGenerator>());
-            SetPainter(GetComponent<TerrainPainter>());
+            //SetErosion(GetComponent<Erosion>());
+            //SetTerrainGenerator(GetComponent<TerrainGenerator>());
+            //SetPainter(GetComponent<TerrainPainter>());
         }
 
 #if UNITY_EDITOR
@@ -183,6 +183,7 @@ namespace MED10.PCG
 #endif
         private new void Awake()
         {
+            base.Awake();
             InitTerrainManager();
 #if UNITY_EDITOR
             SerializedObject tagManager = new SerializedObject(

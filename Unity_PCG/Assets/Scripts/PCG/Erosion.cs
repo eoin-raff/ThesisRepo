@@ -30,14 +30,11 @@ namespace MED10.PCG
         public float windAngle = 0.0f;
         public float windErosionAmount;
         public float windErosionStrength;
-        private TerrainManager terrainManager;
 
-        private void OnEnable()
+        private void Start()
         {
-            Debug.Log("Initialising Erosion");
-            terrainManager = gameObject.GetOrAddComponent<TerrainManager>();
-            terrainManager.SetErosion(this);
-            terrain = terrainManager.GetTerrainGenerator();
+            TerrainManager.Instance.SetErosion(this);
+            terrain = TerrainManager.Instance.GetTerrainGenerator();
         }
 
         public void Erode()
@@ -88,7 +85,7 @@ namespace MED10.PCG
                           UnityEngine.Random.Range(0, resolution)]
                         -= rainErosionStrength;
             }
-            terrainManager.SetHeightmap(heightMap);
+            TerrainManager.Instance.SetHeightmap(heightMap);
         }
         public void River()
         {
@@ -125,7 +122,7 @@ namespace MED10.PCG
                     }
                 }
             }
-            terrainManager.SetHeightmap(heightMap);                                            // Apply heightMap to Terrain
+            TerrainManager.Instance.SetHeightmap(heightMap);                                            // Apply heightMap to Terrain
         }
         private float[,] RunRiver(Vector2 position, float[,] heightMap, float[,] erosionMap, int width, int height)
         {
@@ -181,7 +178,7 @@ namespace MED10.PCG
                     }
                 }
             }
-            terrainManager.SetHeightmap(heightMap);
+            TerrainManager.Instance.SetHeightmap(heightMap);
         }
         public void Tidal()
         {
@@ -190,7 +187,7 @@ namespace MED10.PCG
              *  like a blend of thermal and shorline
              */
             float[,] heightMap = terrain.GetHeightMap(false);
-            float waterHeight = terrainManager.GetPainter().waterHeight;
+            float waterHeight = TerrainManager.Instance.GetPainter().waterHeight;
             for (int y = 0; y < resolution; y++)
             {
                 for (int x = 0; x < resolution; x++)
@@ -207,7 +204,7 @@ namespace MED10.PCG
                     }
                 }
             }
-            terrainManager.SetHeightmap(heightMap);
+            TerrainManager.Instance.SetHeightmap(heightMap);
         }
         public void Wind()
         {
@@ -245,7 +242,7 @@ namespace MED10.PCG
                     }
                 }
             }
-            terrainManager.SetHeightmap(heightMap);
+            TerrainManager.Instance.SetHeightmap(heightMap);
         }
 
     }
