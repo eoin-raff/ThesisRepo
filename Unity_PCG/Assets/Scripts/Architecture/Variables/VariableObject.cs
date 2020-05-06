@@ -2,7 +2,6 @@
 
 namespace MED10.Architecture.Variables
 {
-	[CreateAssetMenu]
 	public abstract class VariableObject<T> : ScriptableObject
 	{
 		public T Value;
