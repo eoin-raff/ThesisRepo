@@ -26,7 +26,7 @@ namespace MED10.PCG
 
         private void Start()
         {
-            //Generate();
+            Generate();
         }
 
         public void Generate()
