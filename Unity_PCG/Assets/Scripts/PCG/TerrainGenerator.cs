@@ -90,22 +90,43 @@ namespace MED10.PCG
                 return new float[terrainManager.HeightmapResolution, terrainManager.HeightmapResolution];
             }
         }
-        public IEnumerator FlattenAreaAroundPoint(int x, int y, float strength, Vector2 area)
+        public IEnumerator FlattenAreaAroundPoint(int x, int y, float strength, Vector2 area, Vector3 worldPos, GameObject go, Action<Vector3, GameObject> setPosition)
         {
             Debug.Log("Flattening Area");
             float[,] heightMap = GetHeightMap(false);
+            float centerHeight = heightMap[x, y];
+            float averageHeight = 0;
+            float lowestHeight = float.MaxValue;
+            int N = 0;
+            for (int j = Mathf.Max(0, (int)(y - (area.y / 2))); j < Mathf.Min(heightMap.GetLength(1), (int)(y + (area.y / 2))); j++)
+            {
+                for (int i = Mathf.Max(0, (int)(x - (area.x / 2))); i < Mathf.Min(heightMap.GetLength(0), (int)(x + (area.x / 2))); i++)
+                {
+                    if (heightMap[i, j] < lowestHeight)
+                    {
+                        lowestHeight = heightMap[i, j];
+                    }
+                    averageHeight += heightMap[i, j];
+                    N++;
+                }
+            }
+            averageHeight /= N;
+
+            //float targetHeight = centerHeight;
+            //float targetHeight = averageHeight;
+            float targetHeight = lowestHeight;
 
             for (int j = Mathf.Max(0, (int)(y - (area.y / 2))); j < Mathf.Min(heightMap.GetLength(1), (int)(y + (area.y / 2))); j++)
             {
                 for (int i = Mathf.Max(0, (int)(x - (area.x / 2))); i < Mathf.Min(heightMap.GetLength(0), (int)(x + (area.x / 2))); i++)
                 {
-                    float centerHeight = heightMap[x, y];
-                    heightMap[i, j] = Mathf.Lerp(heightMap[i, j], centerHeight, strength);
+                    heightMap[i, j] = Mathf.Lerp(heightMap[i, j], targetHeight, strength);
                     yield return null;
                 }
             }
             Debug.Log("Setting new heights of Flattened Area");
             terrainManager.SetHeightmap(heightMap);
+            setPosition(worldPos, go);
             //SmoothAreaAroundPoint(x, y, 1, area); //TODO
             terrainManager.GetPainter().SplatMaps();
             yield break;

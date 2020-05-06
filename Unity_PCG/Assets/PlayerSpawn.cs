@@ -72,7 +72,7 @@ public class PlayerSpawn : MonoBehaviour
         Vector3 highestPointWorldSpace = new Vector3(posz, posy, posx);
 
         //TODO: Include Terraforming here
-        narrativeManager.SpawnWeenie(highestPointWorldSpace, 2);
+        narrativeManager.FindWeenieLocation(highestPointWorldSpace, 2);
         Vector3 bestPlayerSpawn = Vector3.zero;
         float closestDistance = float.MaxValue;
         float distanceFromTower = float.MaxValue;
@@ -126,7 +126,7 @@ public class PlayerSpawn : MonoBehaviour
             }
         }
         //Need to clarify which weenie
-        narrativeManager.SpawnWeenie(bestBoatPosition, 4);
+        narrativeManager.FindWeenieLocation(bestBoatPosition, 4);
 
         PlayerPrefab.transform.position = bestPlayerSpawn + Vector3.up;
         //TODO: Look at weenie at launch

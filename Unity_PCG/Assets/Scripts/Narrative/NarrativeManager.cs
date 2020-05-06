@@ -125,7 +125,7 @@ public class NarrativeManager : MonoBehaviour
         }
     }
 
-    internal void SpawnWeenie(Vector3 position, int weenieIdx)
+    internal void FindWeenieLocation(Vector3 position, int weenieIdx)
     {
         if (weenieIdx > stagedAreas.Length - 1)
         {
@@ -135,10 +135,15 @@ public class NarrativeManager : MonoBehaviour
         StagedArea SA = stagedAreas[weenieIdx].GetComponent<StagedArea>();
         Vector2 stagedAreaSize = SA.size; //V2(5, 5) should be replaced with details from staged area parameters
         StartCoroutine(terrainManager.GetPainter().RemoveTreesInArea(position.XZ(), stagedAreaSize));
-        int hmX =(int)Utils.Map(position.x, 0, terrainManager.TerrainData.size.x, 0, terrainManager.HeightmapResolution);
-        int hmY =(int)Utils.Map(position.z, 0, terrainManager.TerrainData.size.z, 0, terrainManager.HeightmapResolution);
-        StartCoroutine(terrainManager.GetTerrainGenerator().FlattenAreaAroundPoint(hmY, hmX, 0.9f, stagedAreaSize)); 
-        
+        int hmX = (int)Utils.Map(position.x, 0, terrainManager.TerrainData.size.x, 0, terrainManager.HeightmapResolution);
+        int hmY = (int)Utils.Map(position.z, 0, terrainManager.TerrainData.size.z, 0, terrainManager.HeightmapResolution);
+        StartCoroutine(terrainManager.GetTerrainGenerator().FlattenAreaAroundPoint(hmY, hmX, 0.9f, stagedAreaSize, position, SAPrefab, SpawnWeenie));
+
+        //SpawnWeenie(position, SAPrefab);
+    }
+
+    private static void SpawnWeenie(Vector3 position, GameObject SAPrefab)
+    {
         SAPrefab.transform.position = position;
         SAPrefab.SetActive(true);
     }
@@ -347,15 +352,13 @@ public class NarrativeManager : MonoBehaviour
             GameObject stagedArea = stagedAreas[saNum];
             if (!stagedArea.activeSelf)
             {
-                Debug.Log("Activating area");
+                Debug.Log("Activating " + stagedArea.name)  ;
 
                 Vector2 stagedAreaSize = new Vector2(10, 10); //V2(5, 5) should be replaced with details from staged area parameters
                 StartCoroutine(terrainManager.GetPainter().RemoveTreesInArea(position.XZ(), stagedAreaSize));
 
-                StartCoroutine(terrainManager.GetTerrainGenerator().FlattenAreaAroundPoint((int)position.x, (int)position.y, nextSA.flattenPower, stagedAreaSize));
+                StartCoroutine(terrainManager.GetTerrainGenerator().FlattenAreaAroundPoint((int)position.x, (int)position.y, nextSA.flattenPower, stagedAreaSize, position, stagedArea, SpawnWeenie));
 
-                stagedArea.transform.position = position;
-                stagedArea.SetActive(true);
             }
             else
             {
