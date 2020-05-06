@@ -14,6 +14,10 @@ namespace MED10.PCG
     public class TerrainGenerator : MonoBehaviour
     {
         public enum SeedType { Fixed, Random };
+        public enum FlattenType
+        {
+            Highest, Average, Lowest
+        };
         public SeedType seedType = SeedType.Fixed;
         public int fixedSeed = 0;
         private int seed;
@@ -22,7 +26,7 @@ namespace MED10.PCG
         public Vector2 randomHeightRange = new Vector2(0, 0.1f);
         public Texture2D heightMapImage;
         public Vector3 heightMapScale = new Vector3(2, 0.5f, 2);
-        
+
         [SerializeField]
         private bool resetTerrain = true;
 
@@ -90,7 +94,8 @@ namespace MED10.PCG
                 return new float[terrainManager.HeightmapResolution, terrainManager.HeightmapResolution];
             }
         }
-        public IEnumerator FlattenAreaAroundPoint(int x, int y, float strength, Vector2 area, Vector3 worldPos, GameObject go, Action<Vector3, GameObject> setPosition)
+
+        public IEnumerator FlattenAreaAroundPoint(int x, int y, float strength, Vector2 area, Vector3 worldPos, GameObject go, FlattenType type, Action<Vector3, GameObject> setPosition)
         {
             Debug.Log("Flattening Area");
             float[,] heightMap = GetHeightMap(false);
@@ -112,9 +117,22 @@ namespace MED10.PCG
             }
             averageHeight /= N;
 
-            //float targetHeight = centerHeight;
-            //float targetHeight = averageHeight;
-            float targetHeight = lowestHeight;
+            float targetHeight;
+            switch (type)
+            {
+                case FlattenType.Highest:
+                    targetHeight = centerHeight;
+                    break;
+                case FlattenType.Average:
+                    targetHeight = averageHeight;
+                    break;
+                case FlattenType.Lowest:
+                    targetHeight = lowestHeight;
+                    break;
+                default:
+                    targetHeight = centerHeight;
+                    break;
+            }
 
             for (int j = Mathf.Max(0, (int)(y - (area.y / 2))); j < Mathf.Min(heightMap.GetLength(1), (int)(y + (area.y / 2))); j++)
             {
@@ -126,7 +144,11 @@ namespace MED10.PCG
             }
             Debug.Log("Setting new heights of Flattened Area");
             terrainManager.SetHeightmap(heightMap);
-            setPosition(worldPos, go);
+            Vector3 spawnPosition = new Vector3(
+                worldPos.x,
+                targetHeight * terrainManager.TerrainData.size.y,
+                worldPos.z);
+            setPosition(spawnPosition, go);
             //SmoothAreaAroundPoint(x, y, 1, area); //TODO
             terrainManager.GetPainter().SplatMaps();
             yield break;

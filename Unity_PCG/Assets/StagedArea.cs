@@ -3,6 +3,7 @@ using MED10.Architecture.Variables;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static MED10.PCG.TerrainGenerator;
 
 public class StagedArea : MonoBehaviour
 {
@@ -25,6 +26,8 @@ public class StagedArea : MonoBehaviour
 
     public GameEvent EnteredStagedArea;
     public GameEvent ExitStagedArea;
+
+    public FlattenType flattenType;
 
     private void OnTriggerEnter(Collider other)
     {
