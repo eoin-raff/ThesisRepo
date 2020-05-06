@@ -59,10 +59,6 @@ Material:
         m_Texture: {fileID: 2800000, guid: 8fc46b04ba05ddf45a25ad66815b2113, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - _MetallicGlossMap2:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
     - _Normal:
         m_Texture: {fileID: 2800000, guid: 0900d62a76914014f982fc871dd92766, type: 3}
         m_Scale: {x: 1, y: 1}
@@ -132,17 +128,13 @@ Material:
     - _FlatLighting: 0
     - _GlossMapScale: 1
     - _Glossiness: 0.15
-    - _Glossiness2: 0.15
     - _GlossyReflections: 1
     - _GradientBrightness: 1
     - _Hue: 0
     - _Lightness: 0
     - _METALLICGLOSSMAP: 0
-    - _METALLICGLOSSMAP2: 0
-    - _METALLICGLOSSMAP3: 0
     - _MaxWindStrength: 0.1164738
     - _Metallic: 0
-    - _Metallic2: 0
     - _Mode: 0
     - _OcclusionProbesIndirect: 1
     - _OcclusionProbesStrength: 0.7058824
@@ -174,7 +166,6 @@ Material:
     - _Color0: {r: 0.49803907, g: 0.49803907, b: 0.49803907, a: 0}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _GlossRemap: {r: 0, g: 1, b: 0, a: 0}
-    - _GlossRemap2: {r: 0, g: 1, b: 0, a: 0}
     - _HueVariation: {r: 1, g: 0.5, b: 0, a: 0.184}
     - _OcclusionRemap: {r: 0, g: 1, b: 0, a: 0}
     - _Shiver: {r: 1, g: 1, b: 1, a: 1}

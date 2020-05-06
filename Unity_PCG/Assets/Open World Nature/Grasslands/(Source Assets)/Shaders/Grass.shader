@@ -45,7 +45,7 @@ Shader "Open World Nature/Grass"
 		#pragma shader_feature _VERTEXPOSITIONMASK_ON
 		#pragma shader_feature _DEBUGGUST_ON
 		#pragma shader_feature _METALLICGLOSSMAP_ON
-		#pragma surface surf Standard keepalpha addshadow fullforwardshadows exclude_path:deferred dithercrossfade vertex:vertexDataFunc 
+		#pragma surface surf Standard keepalpha addshadow fullforwardshadows dithercrossfade vertex:vertexDataFunc 
 		struct Input
 		{
 			float3 worldPos;
