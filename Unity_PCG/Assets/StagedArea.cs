@@ -28,6 +28,7 @@ public class StagedArea : MonoBehaviour
     public GameEvent ExitStagedArea;
 
     public FlattenType flattenType;
+    public FloatVariable progress;
 
     private void OnTriggerEnter(Collider other)
     {
