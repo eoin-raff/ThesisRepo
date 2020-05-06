@@ -10,6 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2a715f52e3b133649a5fe3cc5159fead, type: 3}
-  m_Name: sa3
+  m_Name: sa5_progress
   m_EditorClassIdentifier: 
   Value: 1
+  FixedValue: 1

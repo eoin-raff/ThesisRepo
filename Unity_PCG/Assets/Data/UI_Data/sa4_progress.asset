@@ -9,7 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 03387d88023934d49b8a8b6e7b0f56fc, type: 3}
-  m_Name: UI Display Text
+  m_Script: {fileID: 11500000, guid: 2a715f52e3b133649a5fe3cc5159fead, type: 3}
+  m_Name: sa4_progress
   m_EditorClassIdentifier: 
-  Value: 
+  Value: 0
+  FixedValue: 0
