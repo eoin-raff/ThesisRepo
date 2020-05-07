@@ -81,6 +81,14 @@ public class NarrativeManager : MonoBehaviour
             lookForNextSA = true;
             timeAtLastSA = Time.time;
             nextSA = stagedAreas[++saNum].GetComponent<StagedArea>();
+            if (saNum == weenieIndices[weenieIndex])
+            {
+                weenieIndex++;
+                if (weenieIndex < weenieIndices.Length)
+                {
+                    targetWeenie =stagedAreas[weenieIndices[weenieIndex]];
+                }
+            }
         }
     }
 
@@ -95,6 +103,7 @@ public class NarrativeManager : MonoBehaviour
 
         Vector3 playerToWeenie = targetWeenie.transform.position - player.transform.position;
         Vector3 startingPoint = player.transform.position;
+        
         if (nextSA.gameObject.activeSelf)
         {
             Vector3 playerToStagedArea = nextSA.transform.position - player.transform.position;
@@ -103,6 +112,7 @@ public class NarrativeManager : MonoBehaviour
             {
                 //&& it hasn't been visited
                 nextSA.gameObject.SetActive(false);
+                lookForNextSA = true;
             }
         }
 
@@ -123,7 +133,7 @@ public class NarrativeManager : MonoBehaviour
                     Vector3 playerToCandidate = pos.worldPosition - player.transform.position;
                     float distanceFromPath = Vector3.Cross(ray.direction, pos.worldPosition - ray.origin).magnitude;
 
-                    if (distanceFromPath < 20 && playerToCandidate.magnitude > 10 && playerToCandidate.magnitude < 100 && Vector3.Angle(playerToWeenie, playerToCandidate) < 35)
+                    if (distanceFromPath < 20 && playerToCandidate.magnitude > 50 && playerToCandidate.magnitude < 100 && Vector3.Angle(playerToWeenie, playerToCandidate) < 35)
                     {
                         if (Physics.Raycast(new Ray(startingPoint, playerToCandidate), out RaycastHit hitinfo))
                         {
@@ -140,14 +150,16 @@ public class NarrativeManager : MonoBehaviour
                         }
                     }
                 }
+                //TODO: Better Assesment
                 if (bestCandidates.Count > 0)
                 {
                     SetStagedAreaPosition(bestCandidates[0].heightmapPosition);
                 }
             }
-            if (Input.GetKeyDown(KeyCode.G) && foundPosition)
+            if (//Input.GetKeyDown(KeyCode.G) && 
+                foundPosition)
             {
-                //lookForNextSA = false;
+                lookForNextSA = false;
                 CreateStagedArea();
             }
         }
