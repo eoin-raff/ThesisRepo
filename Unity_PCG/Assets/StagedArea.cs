@@ -7,8 +7,8 @@ using static MED10.PCG.TerrainGenerator;
 
 public class StagedArea : MonoBehaviour
 {
-    private bool stagedAreaStarted = false;
-    private bool stagedAreaEnded = false;
+    public bool stagedAreaStarted = false;
+    public bool stagedAreaEnded = false;
 
     //public IntVariable StagedAreaIndex;
 
