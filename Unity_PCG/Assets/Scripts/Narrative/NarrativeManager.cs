@@ -12,7 +12,7 @@ public class NarrativeManager : MonoBehaviour
 
     // Prefabs for staged areas - Should be designed first and then instatiated at a possible location
     public GameObject[] stagedAreas = new GameObject[5];
-    //private StagedArea nextSA;
+    public int[] weenieIndices;
 
     // Requirements for placement of SAs
     public SAParameters[] requirementSA = new SAParameters[5];
@@ -46,16 +46,20 @@ public class NarrativeManager : MonoBehaviour
     private IEnumerator cinematicCoroutine;
     private int saNum = -1;                                  // Which SA are we at (Can also be used for event in between SAs)
     private float timeAtLastSA;
-
+    private StagedArea nextSA;
+    private GameObject targetWeenie;
     public GameEvent SAStarted;
     public GameEvent SAEnded;
 
     Dictionary<StagedArea, List<StagedAreaCandidatePosition>> StagedAreaCandidates;
+    private int weenieIndex = 0;
 
     private void Start()
     {
         StagedAreaCandidates = new Dictionary<StagedArea, List<StagedAreaCandidatePosition>>();
         FindStagedAreaCandidates();
+        PrepareForNextSA();
+        targetWeenie = stagedAreas[weenieIndices[weenieIndex]];
     }
 
     public void FindStagedAreaCandidates()
@@ -69,16 +73,16 @@ public class NarrativeManager : MonoBehaviour
         }
     }
 
-    //public void PrepareForNextSA()
-    //{
-    //    if (saNum < stagedAreas.Length - 1)
-    //    {
-    //        positionAtLastSA = player.transform.position;
-    //        lookForNextSA = true;
-    //        timeAtLastSA = Time.time;
-    //        nextSA = stagedAreas[++saNum].GetComponent<StagedArea>();
-    //    }
-    //}
+    public void PrepareForNextSA()
+    {
+        if (saNum < stagedAreas.Length - 1)
+        {
+            positionAtLastSA = player.transform.position;
+            lookForNextSA = true;
+            timeAtLastSA = Time.time;
+            nextSA = stagedAreas[++saNum].GetComponent<StagedArea>();
+        }
+    }
 
     private void Update()
     {
@@ -87,6 +91,55 @@ public class NarrativeManager : MonoBehaviour
             heightmap = TerrainManager.Instance.GetHeightmap(false);
         }
         playerPos = new Vector2(player.transform.position.x, player.transform.position.z);
+
+        //Check if We need to spawn a new SA
+        Debug.DrawLine(player.transform.position, targetWeenie.transform.position);
+        Debug.DrawRay(player.transform.position, player.transform.forward * 50f);
+        if (lookForNextSA)
+        {
+            if (StagedAreaCandidates.ContainsKey(nextSA) && lookForNextSA)
+            {
+                List<StagedAreaCandidatePosition> nextSACandidates = StagedAreaCandidates[nextSA];
+                List<StagedAreaCandidatePosition> bestCandidates = new List<StagedAreaCandidatePosition>();
+
+                Vector3 playerToWeenie = targetWeenie.transform.position - player.transform.position;
+
+                Vector3 startingPoint = player.transform.position;
+
+                Ray ray = new Ray(startingPoint, playerToWeenie);
+                foreach (var pos in nextSACandidates)
+                {
+                    Vector3 playerToCandidate = pos.worldPosition - player.transform.position;
+                    float distanceFromPath = Vector3.Cross(ray.direction, pos.worldPosition - ray.origin).magnitude;
+
+                    if (distanceFromPath < 20 && playerToCandidate.magnitude > 10 && playerToCandidate.magnitude < 100 && Vector3.Angle(playerToWeenie, playerToCandidate) < 35)
+                    {
+                        if (Physics.Raycast(new Ray(startingPoint, playerToCandidate), out RaycastHit hitinfo))
+                        {
+                            if (Vector3.Distance(hitinfo.point, pos.worldPosition) > 1)
+                            {
+                                //Something obscuring target, could spawn there?
+                                Debug.DrawLine(player.transform.position, pos.worldPosition, Color.green);
+                                bestCandidates.Add(pos);
+                            }
+                            else
+                            {
+                                Debug.DrawLine(player.transform.position, pos.worldPosition, Color.red);
+                            }
+                        }
+                    }
+                }
+                if (bestCandidates.Count > 0)
+                {
+                    SetStagedAreaPosition(bestCandidates[0].heightmapPosition);
+                }
+            }
+            if (Input.GetKeyDown(KeyCode.G) && foundPosition)
+            {
+                //lookForNextSA = false;
+                CreateStagedArea();
+            }
+        }
 
         //TODO: Make sure lookForNextSA flags as true
         //if (saNum < stagedAreas.Length)
@@ -198,11 +251,11 @@ public class NarrativeManager : MonoBehaviour
         List<StagedAreaCandidatePosition> candidates = new List<StagedAreaCandidatePosition>();
         int progress = 0;
         stagedArea.progress.Value = progress;
-        for (int y = (int)area.y/2 ; y < heightmap.GetLength(1) - (int) (area.y/2); y++)
+        for (int y = (int)area.y / 2; y < heightmap.GetLength(1) - (int)(area.y / 2); y++)
         {
             for (int x = (int)area.x / 2; x < heightmap.GetLength(0) - (int)(area.x / 2); x++)
             {
-                stagedArea.progress.Value = (float)++ progress / (heightmap.GetLength(0) * heightmap.GetLength(1));
+                stagedArea.progress.Value = (float)++progress / (heightmap.GetLength(0) * heightmap.GetLength(1));
                 if (IsValidPoint(minHeight, maxHeight, minSlope, maxSlope, heightmap, y, x))
                 {
                     float totalScore = 0;
@@ -330,7 +383,7 @@ public class NarrativeManager : MonoBehaviour
                 (directionScore * weights.x) //Lower score when far from centre of view
                 + (candidates[i].heightScore * weights.y) //lower when closer to target
                 + (candidates[i].slopeScore * weights.z)  //lower when closer to target
-                
+
                 ) / 3;
             if (totalScore < bestScore)
             {
@@ -373,12 +426,13 @@ public class NarrativeManager : MonoBehaviour
             StagedArea nextSA = stagedArea.GetComponent<StagedArea>();
             if (!stagedArea.activeSelf)
             {
-                Debug.Log("Activating " + stagedArea.name)  ;
+                Debug.Log("Activating " + stagedArea.name);
 
                 Vector2 stagedAreaSize = nextSA.size;
                 StartCoroutine(TerrainManager.Instance.GetPainter().RemoveTreesInArea(position.XZ(), stagedAreaSize));
-
-                StartCoroutine(TerrainManager.Instance.GetTerrainGenerator().FlattenAreaAroundPoint((int)position.x, (int)position.y, nextSA.flattenPower, stagedAreaSize, position, stagedArea, nextSA.flattenType, SpawnWeenie));
+                int hmX = (int)Utils.Map(position.x, 0, TerrainManager.Instance.TerrainData.size.x, 0, TerrainManager.Instance.HeightmapResolution);
+                int hmY = (int)Utils.Map(position.z, 0, TerrainManager.Instance.TerrainData.size.z, 0, TerrainManager.Instance.HeightmapResolution);
+                StartCoroutine(TerrainManager.Instance.GetTerrainGenerator().FlattenAreaAroundPoint(hmY, hmX, nextSA.flattenPower, stagedAreaSize, position, stagedArea, nextSA.flattenType, SpawnWeenie));
             }
             else
             {

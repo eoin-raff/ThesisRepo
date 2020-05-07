@@ -295,8 +295,8 @@ MonoBehaviour:
   MProughness: 1.75
   MPheightDampener: 1.35
   smoothAmount: 3
-  terrain: {fileID: 0}
-  terrainData: {fileID: 0}
+  terrain: {fileID: 29482990}
+  terrainData: {fileID: 15600000, guid: 2a158fba47a64d44092107bef6194558, type: 2}
 --- !u!154 &29482989
 TerrainCollider:
   m_ObjectHideFlags: 0
@@ -740,6 +740,12 @@ PrefabInstance:
       propertyPath: minSlope
       value: 5
       objectReference: {fileID: 0}
+    - target: {fileID: 3802423815650902336, guid: 25ec0b9d315d28642807b2701bd7be5a,
+        type: 3}
+      propertyPath: progress
+      value: 
+      objectReference: {fileID: 11400000, guid: a56892bc439a24f41afc421367babd67,
+        type: 2}
     - target: {fileID: 4193064761408033930, guid: 25ec0b9d315d28642807b2701bd7be5a,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -995,6 +1001,12 @@ PrefabInstance:
       propertyPath: candidatesReady
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 8643488505855236637, guid: 9cc767dff41eeb74582d7b37298d6614,
+        type: 3}
+      propertyPath: progress
+      value: 
+      objectReference: {fileID: 11400000, guid: 0efc4814fc8e1924aac9a4f47426cc84,
+        type: 2}
     - target: {fileID: 8721213527502147543, guid: 9cc767dff41eeb74582d7b37298d6614,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1228,12 +1240,33 @@ PrefabInstance:
     - target: {fileID: 6581012929609995032, guid: 44c8786548440ef4e9aeda26a7e45a1b,
         type: 3}
       propertyPath: maxSlope
-      value: 25
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 6581012929609995032, guid: 44c8786548440ef4e9aeda26a7e45a1b,
         type: 3}
       propertyPath: minSlope
       value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6581012929609995032, guid: 44c8786548440ef4e9aeda26a7e45a1b,
+        type: 3}
+      propertyPath: progress
+      value: 
+      objectReference: {fileID: 11400000, guid: 105e811b10dfacc48bf665c8ec5d882f,
+        type: 2}
+    - target: {fileID: 6581012929609995032, guid: 44c8786548440ef4e9aeda26a7e45a1b,
+        type: 3}
+      propertyPath: flattenPower
+      value: 0.75
+      objectReference: {fileID: 0}
+    - target: {fileID: 6581012929609995032, guid: 44c8786548440ef4e9aeda26a7e45a1b,
+        type: 3}
+      propertyPath: size.x
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 6581012929609995032, guid: 44c8786548440ef4e9aeda26a7e45a1b,
+        type: 3}
+      propertyPath: size.y
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 6632348996220453306, guid: 44c8786548440ef4e9aeda26a7e45a1b,
         type: 3}
@@ -1497,6 +1530,12 @@ PrefabInstance:
       propertyPath: minSlope
       value: 5
       objectReference: {fileID: 0}
+    - target: {fileID: 3609135559456540396, guid: b634be7b84cc1e44b9fbf06a8c07050d,
+        type: 3}
+      propertyPath: progress
+      value: 
+      objectReference: {fileID: 11400000, guid: 9096c8f7ff32d474daf64a711eef2fd2,
+        type: 2}
     - target: {fileID: 3839489702128833614, guid: b634be7b84cc1e44b9fbf06a8c07050d,
         type: 3}
       propertyPath: m_Name
@@ -1631,6 +1670,12 @@ PrefabInstance:
       propertyPath: candidatesReady
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 3384670091252144801, guid: f0ffe15841e91244fa28a8b23b66bd3b,
+        type: 3}
+      propertyPath: progress
+      value: 
+      objectReference: {fileID: 11400000, guid: ee783613a041968408ea265561fdfac6,
+        type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f0ffe15841e91244fa28a8b23b66bd3b, type: 3}
 --- !u!1001 &759949538
@@ -1753,7 +1798,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 09ad2b6f1e91cc94bba114b673dc60e8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  progress: {fileID: 0}
+  progress: {fileID: 11400000, guid: a56892bc439a24f41afc421367babd67, type: 2}
   slider: {fileID: 787714199}
 --- !u!114 &787714199
 MonoBehaviour:
@@ -2081,6 +2126,7 @@ MonoBehaviour:
   - {fileID: 1530899233}
   - {fileID: 880392548}
   - {fileID: 1776607239}
+  weenieIndices: 0200000004000000
   requirementSA:
   - remove: 0
     scale: {x: 5, y: 5}
@@ -2126,7 +2172,6 @@ MonoBehaviour:
   - 20
   - 20
   - 20
-  terrainManager: {fileID: 29482995}
   StagedAreaCreated: {fileID: 11400000, guid: 6da41754ccddd634bbc6f20ef2341e87, type: 2}
   SAStarted: {fileID: 0}
   SAEnded: {fileID: 0}
@@ -2222,7 +2267,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 09ad2b6f1e91cc94bba114b673dc60e8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  progress: {fileID: 0}
+  progress: {fileID: 11400000, guid: 105e811b10dfacc48bf665c8ec5d882f, type: 2}
   slider: {fileID: 1033692142}
 --- !u!114 &1033692142
 MonoBehaviour:
@@ -2483,7 +2528,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 09ad2b6f1e91cc94bba114b673dc60e8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  progress: {fileID: 0}
+  progress: {fileID: 11400000, guid: 9096c8f7ff32d474daf64a711eef2fd2, type: 2}
   slider: {fileID: 1340919323}
 --- !u!114 &1340919323
 MonoBehaviour:
@@ -2859,7 +2904,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 09ad2b6f1e91cc94bba114b673dc60e8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  progress: {fileID: 0}
+  progress: {fileID: 11400000, guid: ee783613a041968408ea265561fdfac6, type: 2}
   slider: {fileID: 1563790651}
 --- !u!114 &1563790651
 MonoBehaviour:
@@ -3112,7 +3157,6 @@ MonoBehaviour:
   PlayerPrefab: {fileID: 130430412}
   playerCam: {fileID: 1430230225}
   targetDistance: 400
-  terrainManager: {fileID: 29482995}
   narrativeManager: {fileID: 985107145}
   weenieHeight: 25
   playerInstantiated: {fileID: 11400000, guid: e4493da0c51af9340861f30f8659a1c0, type: 2}
@@ -3438,7 +3482,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 09ad2b6f1e91cc94bba114b673dc60e8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  progress: {fileID: 0}
+  progress: {fileID: 11400000, guid: 0efc4814fc8e1924aac9a4f47426cc84, type: 2}
   slider: {fileID: 2029985806}
 --- !u!114 &2029985806
 MonoBehaviour:
