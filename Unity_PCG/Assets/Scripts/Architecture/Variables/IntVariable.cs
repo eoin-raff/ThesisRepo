@@ -3,8 +3,7 @@
 namespace MED10.Architecture.Variables
 {
 	[CreateAssetMenu]
-	public class IntVariable : ScriptableObject
+	public class IntVariable : VariableObject<int>
 	{
-		public int Value;
 	} 
 }

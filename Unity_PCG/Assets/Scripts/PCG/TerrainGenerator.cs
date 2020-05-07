@@ -14,6 +14,10 @@ namespace MED10.PCG
     public class TerrainGenerator : MonoBehaviour
     {
         public enum SeedType { Fixed, Random };
+        public enum FlattenType
+        {
+            Highest, Average, Lowest
+        };
         public SeedType seedType = SeedType.Fixed;
         public int fixedSeed = 0;
         private int seed;
@@ -22,7 +26,7 @@ namespace MED10.PCG
         public Vector2 randomHeightRange = new Vector2(0, 0.1f);
         public Texture2D heightMapImage;
         public Vector3 heightMapScale = new Vector3(2, 0.5f, 2);
-        
+
         [SerializeField]
         private bool resetTerrain = true;
 
@@ -65,7 +69,6 @@ namespace MED10.PCG
 
         public Terrain terrain;
         public TerrainData terrainData;
-        private TerrainManager terrainManager;
 
         public int Seed { get => seed; set => seed = value; }
 
@@ -83,30 +86,70 @@ namespace MED10.PCG
         {
             if (!reset)
             {
-                return terrainManager.TerrainData.GetHeights(0, 0, terrainManager.HeightmapResolution, terrainManager.HeightmapResolution);
+                return TerrainManager.Instance.TerrainData.GetHeights(0, 0, TerrainManager.Instance.HeightmapResolution, TerrainManager.Instance.HeightmapResolution);
             }
             else
             {
-                return new float[terrainManager.HeightmapResolution, terrainManager.HeightmapResolution];
+                return new float[TerrainManager.Instance.HeightmapResolution, TerrainManager.Instance.HeightmapResolution];
             }
         }
-        public IEnumerator FlattenAreaAroundPoint(int x, int y, float strength, Vector2 area)
+
+        public IEnumerator FlattenAreaAroundPoint(int x, int y, float strength, Vector2 area, Vector3 worldPos, GameObject go, FlattenType type, Action<Vector3, GameObject> setPosition)
         {
-            //Debug.Log("Flattening Area");
+            Debug.Log("Flattening Area");
             float[,] heightMap = GetHeightMap(false);
             float centerHeight = heightMap[x, y];
+            float averageHeight = 0;
+            float lowestHeight = float.MaxValue;
+            int N = 0;
             for (int j = Mathf.Max(0, (int)(y - (area.y / 2))); j < Mathf.Min(heightMap.GetLength(1), (int)(y + (area.y / 2))); j++)
             {
                 for (int i = Mathf.Max(0, (int)(x - (area.x / 2))); i < Mathf.Min(heightMap.GetLength(0), (int)(x + (area.x / 2))); i++)
                 {
-                    heightMap[i, j] = Mathf.Lerp(heightMap[i, j], centerHeight, strength);
-                    yield return new WaitForEndOfFrame();
+                    if (heightMap[i, j] < lowestHeight)
+                    {
+                        lowestHeight = heightMap[i, j];
+                    }
+                    averageHeight += heightMap[i, j];
+                    N++;
                 }
             }
-            //Debug.Log("Setting new heights");
-            terrainManager.SetHeightmap(heightMap);
+            averageHeight /= N;
+
+            float targetHeight;
+            switch (type)
+            {
+                case FlattenType.Highest:
+                    targetHeight = centerHeight;
+                    break;
+                case FlattenType.Average:
+                    targetHeight = averageHeight;
+                    break;
+                case FlattenType.Lowest:
+                    targetHeight = lowestHeight;
+                    break;
+                default:
+                    targetHeight = centerHeight;
+                    break;
+            }
+
+            for (int j = Mathf.Max(0, (int)(y - (area.y / 2))); j < Mathf.Min(heightMap.GetLength(1), (int)(y + (area.y / 2))); j++)
+            {
+                for (int i = Mathf.Max(0, (int)(x - (area.x / 2))); i < Mathf.Min(heightMap.GetLength(0), (int)(x + (area.x / 2))); i++)
+                {
+                    heightMap[i, j] = Mathf.Lerp(heightMap[i, j], targetHeight, strength);
+                    yield return null;
+                }
+            }
+            Debug.Log("Setting new heights of Flattened Area");
+            TerrainManager.Instance.SetHeightmap(heightMap);
+            Vector3 spawnPosition = new Vector3(
+                worldPos.x,
+                targetHeight * TerrainManager.Instance.TerrainData.size.y,
+                worldPos.z);
+            setPosition(spawnPosition, go);
             //SmoothAreaAroundPoint(x, y, 1, area); //TODO
-            terrainManager.GetPainter().SplatMaps();
+            TerrainManager.Instance.GetPainter().SplatMaps();
             yield break;
         }
         public void MidpointDisplacement()
@@ -123,7 +166,7 @@ namespace MED10.PCG
              */
 
             float[,] heightMap = GetHeightMap();
-            int width = terrainManager.HeightmapResolution - 1;  //return to 512 to be power of 2
+            int width = TerrainManager.Instance.HeightmapResolution - 1;  //return to 512 to be power of 2
             int squareSize = width;                         //dimensions of working area
             float heightMin = MPminHeight;
             float heightMax = MPmaxHeight;
@@ -134,11 +177,6 @@ namespace MED10.PCG
             int midX, midY;                                 //center of working area
             int pmidXR, pmidXL, pmidYU, pmidYD;             //points opposite edge midpoints for square step
 
-            ////Set Terrain Corners to random heights
-            //heightMap[0, 0] = UnityEngine.Random.Range(0.0f, 0.2f);
-            //heightMap[0, terrainManager.terrainManager.HeightmapResolution - 2] = UnityEngine.Random.Range(0.0f, 0.2f);
-            //heightMap[terrainManager.terrainManager.HeightmapResolution - 2, 0] = UnityEngine.Random.Range(0.0f, 0.2f);
-            //heightMap[terrainManager.terrainManager.HeightmapResolution - 2, terrainManager.terrainManager.HeightmapResolution - 2] = UnityEngine.Random.Range(0.0f, 0.2f);
 
             while (squareSize > 0)
             {
@@ -218,21 +256,21 @@ namespace MED10.PCG
                 heightMin *= heightDampener;
                 heightMax *= heightDampener;
             }
-            terrainManager.SetHeightmap(heightMap);
+            TerrainManager.Instance.SetHeightmap(heightMap);
 
         }
         public void Voronoi()
         {
             float[,] heightMap = GetHeightMap();
             Random.InitState(seed);
-            //Debug.Log(terrainManager);
             for (int p = 0; p < voronoiPeakCount; p++)
             {
                 // Random Peak
+                int resolution = TerrainManager.Instance.HeightmapResolution;
                 Vector3 peak = new Vector3(
-                     Random.Range(0, terrainManager.HeightmapResolution),
+                     Random.Range(0, resolution),
                      Random.Range(voronoiMinHeight, voronoiMaxHeight),
-                     Random.Range(0, terrainManager.HeightmapResolution));
+                     Random.Range(0, resolution));
 
                 if (heightMap[(int)peak.x, (int)peak.z] < peak.y)
                 {
@@ -243,11 +281,11 @@ namespace MED10.PCG
                     continue;
                 }
                 Vector2 peakLocation = new Vector2(peak.x, peak.z);
-                float maxDistance = Vector2.Distance(Vector2.zero, new Vector2(terrainManager.HeightmapResolution, terrainManager.HeightmapResolution));
+                float maxDistance = Vector2.Distance(Vector2.zero, new Vector2(resolution, resolution));
 
-                for (int y = 0; y < terrainManager.HeightmapResolution; y++)
+                for (int y = 0; y < resolution; y++)
                 {
-                    for (int x = 0; x < terrainManager.HeightmapResolution; x++)
+                    for (int x = 0; x < resolution; x++)
                     {
                         if (!(x == peakLocation.x && y == peakLocation.y))
                         {
@@ -280,7 +318,7 @@ namespace MED10.PCG
             }
 
 
-            terrainManager.SetHeightmap(heightMap);
+            TerrainManager.Instance.SetHeightmap(heightMap);
         }
         public void Smooth()
         {
@@ -291,14 +329,16 @@ namespace MED10.PCG
 #if UNITY_EDITOR
             EditorUtility.DisplayProgressBar("Smoothing Terrain", "Progress", smoothProgress);
 #endif
+            int heightmapResolution = TerrainManager.Instance.HeightmapResolution;
+
             for (int i = 0; i < smoothAmount; i++)
             {
-                for (int y = 0; y < terrainManager.HeightmapResolution; y++)
+                for (int y = 0; y < heightmapResolution; y++)
                 {
-                    for (int x = 0; x < terrainManager.HeightmapResolution; x++)
+                    for (int x = 0; x < heightmapResolution; x++)
                     {
                         float avgHeight = heightMap[x, y];
-                        List<Vector2> neighbors = Utils.GetNeighbors(new Vector2(x, y), terrainManager.HeightmapResolution, terrainManager.HeightmapResolution);
+                        List<Vector2> neighbors = Utils.GetNeighbors(new Vector2(x, y), heightmapResolution, heightmapResolution);
                         foreach (Vector2 n in neighbors)
                         {
                             avgHeight += heightMap[(int)n.x, (int)n.y];
@@ -312,7 +352,7 @@ namespace MED10.PCG
                 EditorUtility.DisplayProgressBar("Smoothing Terrain", "Progress", smoothProgress / smoothAmount);
 #endif
             }
-            terrainManager.SetHeightmap(heightMap);
+            TerrainManager.Instance.SetHeightmap(heightMap);
 #if UNITY_EDITOR
             EditorUtility.ClearProgressBar();
 #endif
@@ -320,9 +360,10 @@ namespace MED10.PCG
         public void Perlin()
         {
             float[,] heightMap = GetHeightMap();
-            for (int y = 0; y < terrainManager.HeightmapResolution; y++)
+            int heightmapResolution = TerrainManager.Instance.HeightmapResolution;
+            for (int y = 0; y < heightmapResolution; y++)
             {
-                for (int x = 0; x < terrainManager.HeightmapResolution; x++)
+                for (int x = 0; x < heightmapResolution; x++)
                 {
                     heightMap[x, y] += Utils.fBM(
                             (seed + x + perlinOffsetX) * perlinScaleX,
@@ -332,16 +373,17 @@ namespace MED10.PCG
                         * perlinHeightScale;
                 }
             }
-            terrainManager.SetHeightmap(heightMap);
+            TerrainManager.Instance.SetHeightmap(heightMap);
         }
         public void MultiplePerlinTerrain()
         {
             float[,] heightMap = GetHeightMap();
             float highestPoint = 0;
             float lowestPoint = float.MaxValue;
-            for (int y = 0; y < terrainManager.HeightmapResolution; y++)
+            int heightmapResolution = TerrainManager.Instance.HeightmapResolution;
+            for (int y = 0; y < heightmapResolution; y++)
             {
-                for (int x = 0; x < terrainManager.HeightmapResolution; x++)
+                for (int x = 0; x < heightmapResolution; x++)
                 {
                     float totalMax = 0;
 
@@ -357,82 +399,84 @@ namespace MED10.PCG
                     }
                 }
             }
-            for (int y = 0; y < terrainManager.HeightmapResolution; y++)
+            for (int y = 0; y < heightmapResolution; y++)
             {
-                for (int x = 0; x < terrainManager.HeightmapResolution; x++)
+                for (int x = 0; x < heightmapResolution; x++)
                 {
                     //heightMap[x, y] = Mathf.InverseLerp(lowestPoint, highestPoint, heightMap[x, y]);
                     heightMap[x, y] = Utils.Map(heightMap[x, y], lowestPoint, highestPoint, 0, 1);
                 }
             }
-            terrainManager.SetHeightmap(heightMap);
+            TerrainManager.Instance.SetHeightmap(heightMap);
         }
         public void RandomTerrain()
         {
             float[,] heightMap = GetHeightMap();
 
-            for (int x = 0; x < terrainManager.HeightmapResolution; x++)
+            int heightmapResolution = TerrainManager.Instance.HeightmapResolution;
+            for (int x = 0; x < heightmapResolution; x++)
             {
-                for (int y = 0; y < terrainManager.HeightmapResolution; y++)
+                for (int y = 0; y < heightmapResolution; y++)
                 {
                     heightMap[x, y] += UnityEngine.Random.Range(randomHeightRange.x, randomHeightRange.y);
                 }
             }
-            terrainManager.SetHeightmap(heightMap);
+            TerrainManager.Instance.SetHeightmap(heightMap);
 
         }
         public void LoadTexture()
         {
             float[,] heightMap = GetHeightMap();
 
-            for (int x = 0; x < terrainManager.HeightmapResolution; x++)
+            for (int x = 0; x < TerrainManager.Instance.HeightmapResolution; x++)
             {
-                for (int y = 0; y < terrainManager.HeightmapResolution; y++)
+                for (int y = 0; y < TerrainManager.Instance.HeightmapResolution; y++)
                 {
                     heightMap[x, y] += heightMapImage.GetPixel((int)(x * heightMapScale.x),
                                                               (int)(y * heightMapScale.z)).grayscale
                                                               * heightMapScale.y;
                 }
             }
-            terrainManager.SetHeightmap(heightMap);
+            TerrainManager.Instance.SetHeightmap(heightMap);
         }
         public void AddFalloffMap()
         {
             float[,] heightMap = GetHeightMap(false);
-            float[,] falloffMap = FalloffGenerator.GenerateFalloffMap(terrainManager.HeightmapResolution);
-            for (int y = 0; y < terrainManager.HeightmapResolution; y++)
+            int heightmapResolution = TerrainManager.Instance.HeightmapResolution;
+            float[,] falloffMap = FalloffGenerator.GenerateFalloffMap(heightmapResolution);
+            for (int y = 0; y < heightmapResolution; y++)
             {
-                for (int x = 0; x < terrainManager.HeightmapResolution; x++)
+                for (int x = 0; x < heightmapResolution; x++)
                 {
 
                     //heightMap[x, y] -= falloffMap[x, y];
                     heightMap[x, y] *= 1 - falloffMap[x, y];
                 }
             }
-            terrainManager.SetHeightmap(heightMap);
+            TerrainManager.Instance.SetHeightmap(heightMap);
 
         }
         public void ResetTerrain()
         {
-            float[,] heightMap = new float[terrainManager.HeightmapResolution, terrainManager.HeightmapResolution];
+            float[,] heightMap = new float[TerrainManager.Instance.HeightmapResolution, TerrainManager.Instance.HeightmapResolution];
 
-            for (int x = 0; x < terrainManager.HeightmapResolution; x++)
+            for (int x = 0; x < TerrainManager.Instance.HeightmapResolution; x++)
             {
-                for (int y = 0; y < terrainManager.HeightmapResolution; y++)
+                for (int y = 0; y < TerrainManager.Instance.HeightmapResolution; y++)
                 {
                     heightMap[x, y] = 0;
                 }
             }
-            terrainManager.SetHeightmap(heightMap);
+            TerrainManager.Instance.SetHeightmap(heightMap);
         }
 
-        void OnEnable()
+        void Start()
         {
             //Debug.Log("Initialising Terrain Generator");
-            terrainManager = gameObject.GetOrAddComponent<TerrainManager>();
-            terrainManager.SetTerrainGenerator(this);
-            terrain = terrainManager.Terrain;
-            terrainData = terrainManager.TerrainData;
+            
+            terrain = TerrainManager.Instance.Terrain;
+            terrainData = TerrainManager.Instance.TerrainData;
+            TerrainManager.Instance.SetTerrainGenerator(this);
         }
         void Awake()
         {
@@ -474,9 +518,9 @@ namespace MED10.PCG
 #endif
             for (int i = 0; i < smoothAmount; i++)
             {
-                for (int y = Mathf.Max(0, pointY - (int)(area.y / 2)); y < Mathf.Min(terrainManager.HeightmapResolution, pointY + (int)(area.y / 2)); y++)
+                for (int y = Mathf.Max(0, pointY - (int)(area.y / 2)); y < Mathf.Min(TerrainManager.Instance.HeightmapResolution, pointY + (int)(area.y / 2)); y++)
                 {
-                    for (int x = Mathf.Max(0, pointX - (int)(area.x / 2)); x < Mathf.Min(terrainManager.HeightmapResolution, pointX + (int)(area.x / 2)); x++)
+                    for (int x = Mathf.Max(0, pointX - (int)(area.x / 2)); x < Mathf.Min(TerrainManager.Instance.HeightmapResolution, pointX + (int)(area.x / 2)); x++)
                     {
                         float avgHeight = heightMap[x, y];
                         List<Vector2> neighbors = Utils.GetNeighbors(new Vector2(x, y), (int)area.x, (int)area.y);
@@ -493,7 +537,7 @@ namespace MED10.PCG
                 EditorUtility.DisplayProgressBar("Smoothing Area", "Progress", smoothProgress / smoothAmount);
 #endif
             }
-            terrainManager.SetHeightmap(heightMap);
+            TerrainManager.Instance.SetHeightmap(heightMap);
 #if UNITY_EDITOR
             EditorUtility.ClearProgressBar();
 #endif        

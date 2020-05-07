@@ -3,6 +3,7 @@ using MED10.Architecture.Variables;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static MED10.PCG.TerrainGenerator;
 
 public class StagedArea : MonoBehaviour
 {
@@ -26,11 +27,17 @@ public class StagedArea : MonoBehaviour
     public GameEvent EnteredStagedArea;
     public GameEvent ExitStagedArea;
 
+    public FlattenType flattenType;
+    public FloatVariable progress;
+    public GameEvent candidatesDoneEvent;
+    public GameEvent areaSpawned;
+    public bool candidatesReady;
+    public bool spawned;
+
     private void OnTriggerEnter(Collider other)
     {
         if (!stagedAreaStarted)
         {
-//StagedAreaIndex.Value++;
             stagedAreaStarted = true;
             EnteredStagedArea.Raise();
         }

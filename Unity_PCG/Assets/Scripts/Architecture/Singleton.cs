@@ -10,35 +10,14 @@ namespace MED10.Architecture
     /// <typeparam name="Type">The type of class to function as a singleton. e.g. public class GameManager : Singleton<GameManager></typeparam>
     public abstract class Singleton<Type> : MonoBehaviour where Type : MonoBehaviour
     {
-        private static Type instance;
+        public static Type Instance { get; private set; }
 
-        /// <summary>
-        /// Lazy instantiation of singleton object
-        /// </summary>
-        /// <returns></returns>
-        public static Type Instance()
-        {
-            if (instance == null)
-            {
-                GameObject singletonObject = new GameObject();
-                instance = singletonObject.AddComponent<Type>();
-                singletonObject.name = instance.name;
-                singletonObject.transform.position = Vector3.zero;
-                singletonObject.transform.rotation = Quaternion.identity;
-                return instance;
-            }
-            else
-            {
-                return instance;
-            }
-        }
         protected void Awake()
         {
-            Debug.Log("Singleton Awake");
-            if (instance == null)
+            if (Instance == null)
             {
-                instance = gameObject.GetComponent<Type>();
-
+                Instance = gameObject.GetComponent<Type>();
+                DontDestroyOnLoad(gameObject);
             }
             else
             {

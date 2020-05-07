@@ -1,4 +1,5 @@
-﻿using MED10.Utilities;
+﻿using MED10.Architecture.Events;
+using MED10.Utilities;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
@@ -11,7 +12,6 @@ namespace MED10.PCG
     [RequireComponent(typeof(TerrainManager))]
     public class TerrainPainter : MonoBehaviour
     {
-        private TerrainManager terrainManager;
 
         #region SplatMaps
         public List<Splatmap> splatHeights = new List<Splatmap>()
@@ -60,17 +60,25 @@ namespace MED10.PCG
         public float distanceTravelled = 500f;
 
         #endregion
+        public GameEvent paintingDone;
+        public bool detailsDone, treesDone, splatmapsDone;
 
 
-        private void OnEnable()
+        private void Start()
         {
-            
-            //Debug.Log("Initialising Terrain Painter");
-            terrainManager = gameObject.GetOrAddComponent<TerrainManager>();
-            terrainManager.SetPainter(this);
+            TerrainManager.Instance.SetPainter(this);
         }
 
-
+        private void RaiseEventIfComplete()
+        {
+            if (detailsDone && treesDone && splatmapsDone)
+            {
+                paintingDone.Raise();
+                detailsDone = false;
+                treesDone = false;
+                splatmapsDone = false;
+            }
+        }
         public void SplatMaps()
         {
 #if UNITY_EDITOR
@@ -94,7 +102,7 @@ namespace MED10.PCG
                 spIndex++;
                 Selection.activeObject = this.gameObject;
             }
-            terrainManager.TerrainData.terrainLayers = newSplatPrototypes;
+            TerrainManager.Instance.TerrainData.terrainLayers = newSplatPrototypes;
             Profiler.EndSample();
 #endif
             Profiler.BeginSample("Apply Splatmaps");
@@ -104,17 +112,20 @@ namespace MED10.PCG
 
         private IEnumerator ApplySplatmaps()
         {
-            float[,] heightMap = terrainManager.TerrainData.GetHeights(0, 0, terrainManager.HeightmapResolution,
-                                                              terrainManager.HeightmapResolution);
-            float[,,] splatmapData = new float[terrainManager.TerrainData.alphamapResolution,
-                                               terrainManager.TerrainData.alphamapResolution,
-                                               terrainManager.TerrainData.alphamapLayers];
+            splatmapsDone = false;
+            TerrainData terrainData = TerrainManager.Instance.TerrainData;
+            int resolution = TerrainManager.Instance.HeightmapResolution;
+            float[,] heightMap = terrainData.GetHeights(0, 0, resolution,
+                                                              resolution);
+            float[,,] splatmapData = new float[terrainData.alphamapResolution,
+                                               terrainData.alphamapResolution,
+                                               terrainData.alphamapLayers];
 
-            for (int y = 0; y < terrainManager.TerrainData.alphamapResolution; y++)
+            for (int y = 0; y < terrainData.alphamapResolution; y++)
             {
-                for (int x = 0; x < terrainManager.TerrainData.alphamapResolution; x++)
+                for (int x = 0; x < terrainData.alphamapResolution; x++)
                 {
-                    float[] splat = new float[terrainManager.TerrainData.alphamapLayers];
+                    float[] splat = new float[terrainData.alphamapLayers];
                     for (int i = 0; i < splatHeights.Count; i++)
                     {
                         float noise = Mathf.PerlinNoise(x * splatHeights[i].blendNoiseScale.x,
@@ -125,8 +136,8 @@ namespace MED10.PCG
                         float thisHeightStop = splatHeights[i].maxHeight + offset;
 
                         //alpha and height maps are at 90deg to each other, so swap x and y here
-                        float thisSteepness = terrainManager.TerrainData.GetSteepness(y / (float)terrainManager.TerrainData.alphamapResolution,
-                                                                       x / (float)terrainManager.TerrainData.alphamapResolution);
+                        float thisSteepness = terrainData.GetSteepness(y / (float)terrainData.alphamapResolution,
+                                                                       x / (float)terrainData.alphamapResolution);
                         bool isInHeightBand = heightMap[x, y] >= thisHeightStart
                                                 && heightMap[x, y] <= thisHeightStop;
                         bool isInSteepnessBand = thisSteepness >= splatHeights[i].minSlope
@@ -142,15 +153,18 @@ namespace MED10.PCG
                         splatmapData[x, y, z] = splat[z];
                     }
                 }
-                yield return new WaitForEndOfFrame();
+                yield return null;
             }
             //Debug.Log("Reapplying Ground Textures");
-            terrainManager.TerrainData.SetAlphamaps(0, 0, splatmapData);
+            terrainData.SetAlphamaps(0, 0, splatmapData);
+            splatmapsDone = true;
+            RaiseEventIfComplete();
             yield break;
         }
 
         public void PlantVegetation()
         {
+            treesDone = false;
             //Take the list of tree prefabs from VegetationData object, and convert it into an array of type TreePrototype.
             TreePrototype[] treePrototypes;
             treePrototypes = new TreePrototype[vegetationData.Count];
@@ -164,20 +178,21 @@ namespace MED10.PCG
                 treeIdx++;
             }
             //Assign the tree prototypes to TerrainData
-            terrainManager.TerrainData.treePrototypes = treePrototypes;
+            TerrainData terrainData = TerrainManager.Instance.TerrainData;
+            terrainData.treePrototypes = treePrototypes;
 
             //Create a list of TreeInstance which will contain every tree which is instantiated on the terrain
             List<TreeInstance> allVegetation = new List<TreeInstance>();
 
             //The position data for trees needs to come from the Terrain, and NOT from the heightmap.
             //Iterate over the terrain (x, z) in steps determined by the tree spacing (global variable)
-            for (int z = 0; z < terrainManager.TerrainData.size.z; z += treeSpacing)
+            for (int z = 0; z < terrainData.size.z; z += treeSpacing)
             {
-                for (int x = 0; x < terrainManager.TerrainData.size.x; x += treeSpacing)
+                for (int x = 0; x < terrainData.size.x; x += treeSpacing)
                 {
 
                     // Run the following code separately for each prototype tree
-                    for (int tp = 0; tp < terrainManager.TerrainData.treePrototypes.Length; tp++)
+                    for (int tp = 0; tp < terrainData.treePrototypes.Length; tp++)
                     {
                         // eliminate trees based on density using simple RMG
                         if (UnityEngine.Random.Range(0.0f, 1.0f) > vegetationData[tp].density)
@@ -186,12 +201,13 @@ namespace MED10.PCG
                         }
 
                         //Find the heightmap position and check if this area is suitable for the prototype based on it's height and slope bands
-                        int hmX = (int)Utils.Map(x, 0, terrainManager.TerrainData.size.x, 0, (float)terrainManager.HeightmapResolution);
-                        int hmZ = (int)Utils.Map(z, 0, terrainManager.TerrainData.size.z, 0, (float)terrainManager.HeightmapResolution);
-                        float thisHeight = terrainManager.TerrainData.GetHeight(hmX, hmZ) / terrainManager.TerrainData.size.y;
-                        float steepness = terrainManager.TerrainData.GetSteepness(
-                            x / (float)terrainManager.TerrainData.size.x,
-                            z / (float)terrainManager.TerrainData.size.z);
+                        int resolution = TerrainManager.Instance.HeightmapResolution;
+                        int hmX = (int)Utils.Map(x, 0, terrainData.size.x, 0, (float)resolution);
+                        int hmZ = (int)Utils.Map(z, 0, terrainData.size.z, 0, (float)resolution);
+                        float thisHeight = terrainData.GetHeight(hmX, hmZ) / terrainData.size.y;
+                        float steepness = terrainData.GetSteepness(
+                            x / (float)terrainData.size.x,
+                            z / (float)terrainData.size.z);
                         if ((thisHeight >= vegetationData[tp].minHeight && thisHeight <= vegetationData[tp].maxHeight)
                             && (steepness >= vegetationData[tp].minSlope && steepness <= vegetationData[tp].maxSlope))
                         {
@@ -199,29 +215,29 @@ namespace MED10.PCG
                             Vector3 position;
 
                             ////Default: perfect grid
-                            //position = new Vector3(x / terrainManager.TerrainData.size.x,
+                            //position = new Vector3(x / TerrainManager.Instance.TerrainData.size.x,
                             //        thisHeight,
-                            //        z / terrainManager.TerrainData.size.z),
+                            //        z / TerrainManager.Instance.TerrainData.size.z),
 
                             //Slight random offset
-                            position = new Vector3((x + UnityEngine.Random.Range(-10.0f, 10.0f)) / terrainManager.TerrainData.size.x,
+                            position = new Vector3((x + UnityEngine.Random.Range(-10.0f, 10.0f)) / terrainData.size.x,
                                                     thisHeight,
-                                                    (z + UnityEngine.Random.Range(-10.0f, 10.0f)) / terrainManager.TerrainData.size.z);
+                                                    (z + UnityEngine.Random.Range(-10.0f, 10.0f)) / terrainData.size.z);
 
                             ////Todo: Poisson Disk
-                            //position = new Vector3(x / terrainManager.TerrainData.size.x,
+                            //position = new Vector3(x / TerrainManager.Instance.TerrainData.size.x,
                             //        thisHeight,
-                            //        z / terrainManager.TerrainData.size.z),
+                            //        z / TerrainManager.Instance.TerrainData.size.z),
 
                             Vector3 treeWorldPos = new Vector3(
-                                position.x * terrainManager.TerrainData.size.x,
-                                position.y * terrainManager.TerrainData.size.y,
-                                position.z * terrainManager.TerrainData.size.z)
+                                position.x * terrainData.size.x,
+                                position.y * terrainData.size.y,
+                                position.z * terrainData.size.z)
                                 + this.transform.position;
 
                             //Perform a raycast on the terrain layer to ensure trees will be grounded properly
                             RaycastHit hit;
-                            int layerMask = 1 << terrainManager.TerrainLayer;
+                            int layerMask = 1 << TerrainManager.Instance.TerrainLayer;
                             if (Physics.Raycast(treeWorldPos + Vector3.up * 10, -Vector3.up, out hit, 100, layerMask)
                                 || Physics.Raycast(treeWorldPos - Vector3.up * 10, Vector3.up, out hit, 100, layerMask))
                             {
@@ -239,7 +255,7 @@ namespace MED10.PCG
                                     widthScale = UnityEngine.Random.Range(vegetationData[tp].minScale, vegetationData[tp].maxScale)
                                 };
 
-                                float treeHeight = (hit.point.y - this.transform.position.y) / terrainManager.TerrainData.size.y;
+                                float treeHeight = (hit.point.y - this.transform.position.y) / terrainData.size.y;
                                 instance.position = new Vector3(
                                     instance.position.x,
                                     treeHeight - vegetationData[tp].pivotOffset,
@@ -255,12 +271,14 @@ namespace MED10.PCG
                 }
             }
         TREESDONE:
-            terrainManager.TerrainData.treeInstances = allVegetation.ToArray();
-
+            terrainData.treeInstances = allVegetation.ToArray();
+            treesDone = true;
+            RaiseEventIfComplete();
         }
 
         public void PaintDetails()
         {
+            detailsDone = false;
             DetailPrototype[] detailPrototypes;
             detailPrototypes = new DetailPrototype[details.Count];
             int detailIndex = 0;
@@ -298,21 +316,24 @@ namespace MED10.PCG
 
                 detailIndex++;
             }
-            terrainManager.TerrainData.detailPrototypes = detailPrototypes;
+            TerrainData terrainData = TerrainManager.Instance.TerrainData;
+            terrainData.detailPrototypes = detailPrototypes;
+
             float[,] heightMap = gameObject.GetOrAddComponent<TerrainManager>().GetHeightmap(false);
-            for (int i = 0; i < terrainManager.TerrainData.detailPrototypes.Length; i++)
+            int resolution = TerrainManager.Instance.HeightmapResolution;
+            for (int i = 0; i < terrainData.detailPrototypes.Length; i++)
             {
-                int[,] detailMap = new int[terrainManager.TerrainData.detailResolution, terrainManager.TerrainData.detailResolution]; //perhaps use width & height instead of resolution
-                for (int y = 0; y < terrainManager.TerrainData.detailResolution; y += detailSpacing)
+                int[,] detailMap = new int[terrainData.detailResolution, terrainData.detailResolution]; //perhaps use width & height instead of resolution
+                for (int y = 0; y < terrainData.detailResolution; y += detailSpacing)
                 {
-                    for (int x = 0; x < terrainManager.TerrainData.detailResolution; x += detailSpacing)
+                    for (int x = 0; x < terrainData.detailResolution; x += detailSpacing)
                     {
                         if (UnityEngine.Random.Range(0.0f, 1.0f) > details[i].density)
                         {
                             continue;
                         }
-                        int hmX = (int)Utils.Map(x, 0, terrainManager.TerrainData.detailResolution, 0, (float)terrainManager.HeightmapResolution);
-                        int hmY = (int)Utils.Map(y, 0, terrainManager.TerrainData.detailResolution, 0, (float)terrainManager.HeightmapResolution);
+                        int hmX = (int)Utils.Map(x, 0, terrainData.detailResolution, 0, (float)resolution);
+                        int hmY = (int)Utils.Map(y, 0, terrainData.detailResolution, 0, (float)resolution);
 
                         float thisNoise = Utils.Map(Mathf.PerlinNoise(
                             x * details[i].feather,
@@ -321,9 +342,9 @@ namespace MED10.PCG
                         float heightStart = details[i].minHeight * thisNoise - details[i].overlap * thisNoise;
                         float heightEnd = details[i].maxHeight * thisNoise - details[i].overlap * thisNoise;
                         float thisHeight = heightMap[hmY, hmX]; //XY is flipped for heightmap and detail map
-                        float steepness = terrainManager.TerrainData.GetSteepness(
-                            hmX / (float)terrainManager.TerrainData.size.x,
-                            hmY / (float)terrainManager.TerrainData.size.z);
+                        float steepness = terrainData.GetSteepness(
+                            hmX / (float)terrainData.size.x,
+                            hmY / (float)terrainData.size.z);
 
                         bool inHeightBand = thisHeight >= heightStart && thisHeight <= heightEnd;
                         bool inSlopeBand = steepness >= details[i].minSlope && steepness <= details[i].maxSlope;
@@ -334,8 +355,10 @@ namespace MED10.PCG
                         }
                     }
                 }
-                terrainManager.TerrainData.SetDetailLayer(0, 0, i, detailMap);
+                terrainData.SetDetailLayer(0, 0, i, detailMap);
             }
+            detailsDone = true;
+            RaiseEventIfComplete();
         }
 
         public void GenerateClouds()
@@ -405,7 +428,7 @@ namespace MED10.PCG
 
                     Projector cp = cloudProjector.AddComponent<Projector>();
                     cp.material = cloudShadowMaterial;
-                    cp.farClipPlane = terrainManager.TerrainData.size.y;
+                    cp.farClipPlane = TerrainManager.Instance.TerrainData.size.y;
                     int skyLayerMask = 1 << LayerMask.NameToLayer("Sky");
                     int waterLayerMask = 1 << LayerMask.NameToLayer("Water");
                     cp.ignoreLayers = skyLayerMask | waterLayerMask; //Bitwise OR i.e. 1000 or 0101 == 1101
@@ -442,15 +465,17 @@ namespace MED10.PCG
 
         public void AddShore()
         {
+            TerrainData terrainData = TerrainManager.Instance.TerrainData;
             float[,] heightMap = gameObject.GetOrAddComponent<TerrainManager>().GetHeightmap(false);
             int quadCount = 0;
 
-            for (int y = 0; y < terrainManager.HeightmapResolution; y++)
+            int resolution = TerrainManager.Instance.HeightmapResolution;
+            for (int y = 0; y < resolution; y++)
             {
-                for (int x = 0; x < terrainManager.HeightmapResolution; x++)
+                for (int x = 0; x < resolution; x++)
                 {
                     Vector2 location = new Vector2(x, y);
-                    List<Vector2> neighbors = Utils.GetNeighbors(location, terrainManager.HeightmapResolution, terrainManager.HeightmapResolution);
+                    List<Vector2> neighbors = Utils.GetNeighbors(location, resolution, resolution);
                     foreach (Vector2 n in neighbors)
                     {
                         //Find positions on the height map below the waterline, with a neighbor above the waterline (i.e. coast)
@@ -464,15 +489,15 @@ namespace MED10.PCG
                             // Position the quad at water height
                             go.transform.position = transform.position
                                 + new Vector3(
-                                        y / (float)terrainManager.HeightmapResolution * terrainManager.TerrainData.size.z,
-                                        waterHeight * terrainManager.TerrainData.size.y,
-                                        x / (float)terrainManager.HeightmapResolution * terrainManager.TerrainData.size.x);
+                                        y / (float)resolution * terrainData.size.z,
+                                        waterHeight * terrainData.size.y,
+                                        x / (float)resolution * terrainData.size.x);
 
                             // Rotate quad to face shore
                             go.transform.LookAt(new Vector3(
-                                    n.y / terrainManager.HeightmapResolution * terrainManager.TerrainData.size.z,
-                                    waterHeight * terrainManager.TerrainData.size.y,
-                                    n.x / terrainManager.HeightmapResolution * terrainManager.TerrainData.size.x));
+                                    n.y / resolution * terrainData.size.z,
+                                    waterHeight * terrainData.size.y,
+                                    n.x / resolution * terrainData.size.x));
 
                             // Rotate Quad to lie flat
                             go.transform.Rotate(90, 0, 0);
@@ -531,7 +556,7 @@ namespace MED10.PCG
 
         public void AddWater()
         {
-            //Debug.Log("Setting water plane to height " + waterHeight * terrainManager.TerrainData.size.y);
+            //Debug.Log("Setting water plane to height " + waterHeight * TerrainManager.Instance.TerrainData.size.y);
             // If the water plane already exists, remove it and create a new one.
             GameObject water = GameObject.Find("water");
             if (!water)
@@ -540,13 +565,14 @@ namespace MED10.PCG
                 water.name = "water";
             }
             // Center the plane and set the height
+            TerrainData terrainData = TerrainManager.Instance.TerrainData;
             water.transform.position = transform.position + new Vector3(
-                    terrainManager.TerrainData.size.x / 2,
-                    waterHeight * terrainManager.TerrainData.size.y,
-                    terrainManager.TerrainData.size.z / 2
+                    terrainData.size.x / 2,
+                    waterHeight * terrainData.size.y,
+                    terrainData.size.z / 2
                 );
             // Scale the plane on x and z to fit the terrain
-            water.transform.localScale = new Vector3(terrainManager.TerrainData.size.x, 1, terrainManager.TerrainData.size.z);
+            water.transform.localScale = new Vector3(terrainData.size.x, 1, terrainData.size.z);
         }
 
         /// <summary>
@@ -557,7 +583,8 @@ namespace MED10.PCG
         public IEnumerator RemoveTreesInArea(Vector2 centre, Vector2 area)
         {
             //Debug.Log("Clearing Trees");
-            TreeInstance[] treesInstances = terrainManager.TerrainData.treeInstances;
+            TerrainData terrainData = TerrainManager.Instance.TerrainData;
+            TreeInstance[] treesInstances = terrainData.treeInstances;
             List<TreeInstance> newTreeInstances = new List<TreeInstance>();
 
             //Search the area for TreeInstances
@@ -567,7 +594,7 @@ namespace MED10.PCG
             {
                 numTrees++;
                 //tree.position is between 0 and 1, so scale it to fit the terrain size
-                Vector2 treePosition = new Vector2(tree.position.x * terrainManager.TerrainData.size.x, tree.position.z * terrainManager.TerrainData.size.z);
+                Vector2 treePosition = new Vector2(tree.position.x * terrainData.size.x, tree.position.z * terrainData.size.z);
 
                 bool treeIsInArea =
                     treePosition.x > centre.x - (area.x / 2) && treePosition.x < centre.x + (area.x / 2)
@@ -584,11 +611,11 @@ namespace MED10.PCG
                 }
                 if (numTrees%100 == 0)
                 {
-                    yield return new WaitForEndOfFrame();
+                    yield return null;
                 }
             }
             //Re-Apply Trees to Terrain
-            terrainManager.TerrainData.treeInstances = newTreeInstances.ToArray();
+            terrainData.treeInstances = newTreeInstances.ToArray();
             yield break;
         }
 

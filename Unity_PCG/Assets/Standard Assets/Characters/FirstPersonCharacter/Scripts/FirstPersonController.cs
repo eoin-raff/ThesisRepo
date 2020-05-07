@@ -61,6 +61,10 @@ namespace UnityStandardAssets.Characters.FirstPerson
         private void Update()
         {
             RotateView();
+            if (transform.position.y < 7)
+            {
+                transform.position = new Vector3(transform.position.x, 7, transform.position.z);
+            }
             // the jump state needs to read here to make sure it is not missed
             if (!m_Jump)
             {
