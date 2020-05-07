@@ -92,8 +92,22 @@ public class NarrativeManager : MonoBehaviour
         }
         playerPos = new Vector2(player.transform.position.x, player.transform.position.z);
 
+
+        Vector3 playerToWeenie = targetWeenie.transform.position - player.transform.position;
+        Vector3 startingPoint = player.transform.position;
+        if (nextSA.gameObject.activeSelf)
+        {
+            Vector3 playerToStagedArea = nextSA.transform.position - player.transform.position;
+            Debug.DrawLine(player.transform.position, nextSA.transform.position, Color.magenta);
+            if (Vector3.Angle(playerToWeenie, playerToStagedArea) > 100)
+            {
+                //&& it hasn't been visited
+                nextSA.gameObject.SetActive(false);
+            }
+        }
+
         //Check if We need to spawn a new SA
-        Debug.DrawLine(player.transform.position, targetWeenie.transform.position);
+        Debug.DrawLine(player.transform.position, targetWeenie.transform.position, Color.cyan);
         Debug.DrawRay(player.transform.position, player.transform.forward * 50f);
         if (lookForNextSA)
         {
@@ -102,9 +116,6 @@ public class NarrativeManager : MonoBehaviour
                 List<StagedAreaCandidatePosition> nextSACandidates = StagedAreaCandidates[nextSA];
                 List<StagedAreaCandidatePosition> bestCandidates = new List<StagedAreaCandidatePosition>();
 
-                Vector3 playerToWeenie = targetWeenie.transform.position - player.transform.position;
-
-                Vector3 startingPoint = player.transform.position;
 
                 Ray ray = new Ray(startingPoint, playerToWeenie);
                 foreach (var pos in nextSACandidates)
