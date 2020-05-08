@@ -9,7 +9,8 @@ public class PlayerSpawn : MonoBehaviour
 {
     public GameObject PlayerPrefab;
     public Camera playerCam;
-    public float targetDistance = 100;
+    public float playerToTowerTarget = 100;
+    public float towerToBoatTarget = 100f;
   
     [SerializeField]
     private NarrativeManager narrativeManager;
@@ -71,7 +72,7 @@ public class PlayerSpawn : MonoBehaviour
         //TODO: Include Terraforming here
         narrativeManager.FindWeenieLocation(highestPointWorldSpace, 2);
         Vector3 bestPlayerSpawn = Vector3.zero;
-        float closestDistance = float.MaxValue;
+        float closestToPlayerTarget = float.MaxValue;
         float distanceFromTower = float.MaxValue;
 
         List<Vector3> possibleBoatSpawns = new List<Vector3>();
@@ -89,13 +90,13 @@ public class PlayerSpawn : MonoBehaviour
                 if (Vector3.Distance(playerSpawnHitInfo.point, position) < 1)
                 {
                     float distance = Vector3.Distance(highestPointWorldSpace, position);
-                    float distanceFromTarget = Mathf.Abs(targetDistance - distance);
-                    if (distanceFromTarget < closestDistance)
+                    float distanceFromTarget = Mathf.Abs(playerToTowerTarget - distance);
+                    if (distanceFromTarget < closestToPlayerTarget)
                     {
                         distanceFromTower = distance;
-                        closestDistance = distanceFromTarget;
+                        closestToPlayerTarget = distanceFromTarget;
                         bestPlayerSpawn = position;
-                        Debug.DrawRay(weenieTopOrigin, direction, Color.green, 10f);
+                        //Debug.DrawRay(weenieTopOrigin, direction, Color.green, 2f);
                     }
                 }
             }
@@ -106,31 +107,58 @@ public class PlayerSpawn : MonoBehaviour
                 if (Vector3.Distance(boatSpawnHitInfo.point, position) < 1)
                 {
                     possibleBoatSpawns.Add(boatSpawnHitInfo.point);
-                    Debug.DrawRay(weenieTopOrigin, direction, Color.blue, 5f);
+                    //Debug.DrawRay(weenieTopOrigin, direction, Color.blue, 5f);
                 }
             }
         }
-        float bestBoatDistance = 0;
         Vector3 bestBoatPosition = Vector3.zero;
-
+        float closestToBoatTarget = float.MaxValue;
+        float distanceFromBoat = float.MaxValue;
+        Vector3 playerToTower = highestPointWorldSpace - bestPlayerSpawn;
         foreach (Vector3 position in possibleBoatSpawns)
         {
-            float distanceFromPlayerSpawn = Vector3.Distance(position, bestPlayerSpawn);
-            if (distanceFromPlayerSpawn > bestBoatDistance)
+            //float playerToBoat = Vector2.Angle(bestPlayerSpawn.XZ(), position.XZ());
+            //float towerToBoat = Vector2.Angle(highestPointWorldSpace.XZ(), position.XZ());
+            Vector3 playerToBoat = position - bestPlayerSpawn;
+            float angle =Vector2.Angle(playerToBoat.XZ(), playerToTower.XZ());
+
+            float distance = Vector2.Distance(highestPointWorldSpace.XZ(), position.XZ());
+            float distanceFromTarget = Mathf.Abs(towerToBoatTarget - distance);
+
+            Debug.DrawRay(highestPointWorldSpace, bestPlayerSpawn - highestPointWorldSpace, Color.blue, 10f);
+
+            if (angle < 45 && Vector3.Distance(bestPlayerSpawn, position) > playerToTower.magnitude)
             {
-                bestBoatPosition = position;
-                bestBoatDistance = distanceFromPlayerSpawn;
+                Debug.DrawRay(highestPointWorldSpace, position - highestPointWorldSpace, Color.yellow, 10f);
+                if (distanceFromTarget < closestToBoatTarget)
+                {
+                    distanceFromBoat = distance;
+                    closestToBoatTarget = distanceFromTarget;
+                    bestBoatPosition = position;
+                }
             }
+
+
+            //float distanceFromPlayerSpawn = Vector3.Distance(position, bestPlayerSpawn);
+            //if (distanceFromPlayerSpawn > bestBoatDistance)
+            //{
+            //    bestBoatPosition = position;
+            //    bestBoatDistance = distanceFromPlayerSpawn;
+            //}
         }
-        //Need to clarify which weenie
+        Debug.DrawRay(highestPointWorldSpace, bestBoatPosition - highestPointWorldSpace, Color.yellow, 10f);
         narrativeManager.FindWeenieLocation(bestBoatPosition, 4);
 
         PlayerPrefab.transform.position = bestPlayerSpawn + Vector3.up;
         //TODO: Look at weenie at launch
 //        playerCam.transform.LookAt(highestPointWorldSpace, Vector3.up);
+        yield break;
+    }
+
+    public void SetPlayerActive()
+    {
         PlayerPrefab.SetActive(true);
 
         playerInstantiated.Raise();
-        yield break;
     }
 }

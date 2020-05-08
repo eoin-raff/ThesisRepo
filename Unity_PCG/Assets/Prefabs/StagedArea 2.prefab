@@ -78,12 +78,6 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 21478757124550572, guid: 256ae43d19ded7647b55404fa1485263,
         type: 3}
-      propertyPath: progress
-      value: 
-      objectReference: {fileID: 11400000, guid: a56892bc439a24f41afc421367babd67,
-        type: 2}
-    - target: {fileID: 21478757124550572, guid: 256ae43d19ded7647b55404fa1485263,
-        type: 3}
       propertyPath: size.x
       value: 15
       objectReference: {fileID: 0}

@@ -718,6 +718,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: StagedArea 2
       objectReference: {fileID: 0}
+    - target: {fileID: 3718370691747156962, guid: 25ec0b9d315d28642807b2701bd7be5a,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3802423815650902336, guid: 25ec0b9d315d28642807b2701bd7be5a,
         type: 3}
       propertyPath: candidatesDoneEvent
@@ -996,6 +1001,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: StagedArea 3
       objectReference: {fileID: 0}
+    - target: {fileID: 8119274491204847807, guid: 9cc767dff41eeb74582d7b37298d6614,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8643488505855236637, guid: 9cc767dff41eeb74582d7b37298d6614,
         type: 3}
       propertyPath: candidatesReady
@@ -1007,20 +1017,32 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 11400000, guid: 0efc4814fc8e1924aac9a4f47426cc84,
         type: 2}
+    - target: {fileID: 8643488505855236637, guid: 9cc767dff41eeb74582d7b37298d6614,
+        type: 3}
+      propertyPath: candidatesDoneEvent
+      value: 
+      objectReference: {fileID: 11400000, guid: 5e602ba0958a37141b1a0d6b2b6a42dd,
+        type: 2}
+    - target: {fileID: 8643488505855236637, guid: 9cc767dff41eeb74582d7b37298d6614,
+        type: 3}
+      propertyPath: areaSpawned
+      value: 
+      objectReference: {fileID: 11400000, guid: a6baa57d92832924fb71bdeb52f6b670,
+        type: 2}
     - target: {fileID: 8721213527502147543, guid: 9cc767dff41eeb74582d7b37298d6614,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 376.21832
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8721213527502147543, guid: 9cc767dff41eeb74582d7b37298d6614,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 64.45706
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8721213527502147543, guid: 9cc767dff41eeb74582d7b37298d6614,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 393.76218
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8721213527502147543, guid: 9cc767dff41eeb74582d7b37298d6614,
         type: 3}
@@ -1246,6 +1268,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: StagedArea 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6632348996220453306, guid: 44c8786548440ef4e9aeda26a7e45a1b,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 44c8786548440ef4e9aeda26a7e45a1b, type: 3}
@@ -1510,10 +1537,27 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 11400000, guid: 9096c8f7ff32d474daf64a711eef2fd2,
         type: 2}
+    - target: {fileID: 3609135559456540396, guid: b634be7b84cc1e44b9fbf06a8c07050d,
+        type: 3}
+      propertyPath: candidatesDoneEvent
+      value: 
+      objectReference: {fileID: 11400000, guid: 02c04c1e4f7dd4249bff95eca1ee63be,
+        type: 2}
+    - target: {fileID: 3609135559456540396, guid: b634be7b84cc1e44b9fbf06a8c07050d,
+        type: 3}
+      propertyPath: areaSpawned
+      value: 
+      objectReference: {fileID: 11400000, guid: 06c51617857585245a20d79a2252ecd6,
+        type: 2}
     - target: {fileID: 3839489702128833614, guid: b634be7b84cc1e44b9fbf06a8c07050d,
         type: 3}
       propertyPath: m_Name
       value: StagedArea 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 3839489702128833614, guid: b634be7b84cc1e44b9fbf06a8c07050d,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4387095187941741350, guid: b634be7b84cc1e44b9fbf06a8c07050d,
         type: 3}
@@ -1639,6 +1683,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: StagedArea 5
       objectReference: {fileID: 0}
+    - target: {fileID: 3001193550494992387, guid: f0ffe15841e91244fa28a8b23b66bd3b,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3384670091252144801, guid: f0ffe15841e91244fa28a8b23b66bd3b,
         type: 3}
       propertyPath: candidatesReady
@@ -1649,6 +1698,18 @@ PrefabInstance:
       propertyPath: progress
       value: 
       objectReference: {fileID: 11400000, guid: ee783613a041968408ea265561fdfac6,
+        type: 2}
+    - target: {fileID: 3384670091252144801, guid: f0ffe15841e91244fa28a8b23b66bd3b,
+        type: 3}
+      propertyPath: candidatesDoneEvent
+      value: 
+      objectReference: {fileID: 11400000, guid: 67381dc4ed1d5a04fb84bfd824feb4fd,
+        type: 2}
+    - target: {fileID: 3384670091252144801, guid: f0ffe15841e91244fa28a8b23b66bd3b,
+        type: 3}
+      propertyPath: areaSpawned
+      value: 
+      objectReference: {fileID: 11400000, guid: f4cfc033e99cb1e40a31df5ab165ef45,
         type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f0ffe15841e91244fa28a8b23b66bd3b, type: 3}
@@ -2074,6 +2135,7 @@ GameObject:
   - component: {fileID: 985107146}
   - component: {fileID: 985107145}
   - component: {fileID: 985107148}
+  - component: {fileID: 985107147}
   m_Layer: 0
   m_Name: SpaceTime Manager
   m_TagString: Untagged
@@ -2163,6 +2225,33 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &985107147
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 985107144}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 02e8d0a5d935ff54bbcfc2ba7c87354e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Event: {fileID: 11400000, guid: e4493da0c51af9340861f30f8659a1c0, type: 2}
+  Response:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 985107145}
+        m_MethodName: PrepareForNextSA
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &985107148
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3109,6 +3198,7 @@ GameObject:
   - component: {fileID: 1761035518}
   - component: {fileID: 1761035517}
   - component: {fileID: 1761035519}
+  - component: {fileID: 1761035520}
   m_Layer: 0
   m_Name: PlayerManager
   m_TagString: Untagged
@@ -3167,6 +3257,33 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1761035517}
         m_MethodName: InstantiatePlayer
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &1761035520
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1761035516}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 02e8d0a5d935ff54bbcfc2ba7c87354e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Event: {fileID: 11400000, guid: a6baa57d92832924fb71bdeb52f6b670, type: 2}
+  Response:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1761035517}
+        m_MethodName: SetPlayerActive
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
