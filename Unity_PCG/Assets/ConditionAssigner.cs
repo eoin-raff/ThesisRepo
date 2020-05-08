@@ -1,26 +1,14 @@
-﻿using System.Collections;
+﻿using MED10.PCG;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using static MED10.PCG.TerrainGenerator;
 
 public class ConditionAssigner : MonoBehaviour
 {
-    public int condition;
     public GameObject backgroundImg, logoImg, text;
 
-    public void AssignCondition()
-    {
-        float rnd = Random.value;
-
-        if (rnd > 0.5f)
-        {
-            condition = 1;
-        }
-        else
-        {
-            condition = 0;
-        }
-    }
 
     public void Fader()
     {

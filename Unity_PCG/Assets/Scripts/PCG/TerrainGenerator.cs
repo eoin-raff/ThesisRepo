@@ -487,9 +487,25 @@ namespace MED10.PCG
         }
         void Awake()
         {
+            AssignCondition();
             SetRandomSeed();
         }
 
+
+        public void AssignCondition()
+        {
+            float rnd = Random.value;
+
+            if (rnd > 0.5f)
+            {
+                seedType = SeedType.Random;
+            }
+            else
+            {
+                seedType = SeedType.Fixed;
+            }
+            Debug.Log("Setting condition to " + seedType.ToString());
+        }
         public void SetRandomSeed()
         {
             switch (seedType)

@@ -72,7 +72,7 @@ public class NarrativeManager : MonoBehaviour
 
     public void PrepareForNextSA()
     {
-        if (saNum < stagedAreas.Length - 2)
+        if (saNum < stagedAreas.Length - 1)
         {
             lookForNextSA = true;
 
