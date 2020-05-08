@@ -33,6 +33,7 @@ public class StagedArea : MonoBehaviour
     public GameEvent areaSpawned;
     public bool candidatesReady;
     public bool spawned;
+    public bool DelaySpawn;
 
     private void OnTriggerEnter(Collider other)
     {

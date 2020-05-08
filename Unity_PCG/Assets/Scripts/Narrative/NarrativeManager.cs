@@ -81,12 +81,13 @@ public class NarrativeManager : MonoBehaviour
             lookForNextSA = true;
             timeAtLastSA = Time.time;
             nextSA = stagedAreas[++saNum].GetComponent<StagedArea>();
-            if (saNum == weenieIndices[weenieIndex])
+            if (saNum > weenieIndices[weenieIndex])
             {
                 weenieIndex++;
                 if (weenieIndex < weenieIndices.Length)
                 {
                     targetWeenie = stagedAreas[weenieIndices[weenieIndex]];
+                    EnablePrefab(targetWeenie);
                 }
             }
         }
@@ -240,9 +241,20 @@ public class NarrativeManager : MonoBehaviour
         //SpawnWeenie(position, SAPrefab);
     }
 
-    private static void SpawnStagedArea(Vector3 position, GameObject prefab)
+    private void SpawnStagedArea(Vector3 position, GameObject prefab)
     {
         prefab.transform.position = position;
+        if (!prefab.GetComponent<StagedArea>().DelaySpawn)
+        {
+            EnablePrefab(prefab);
+        }
+    }
+    public void SpawnBoat()
+    {
+        EnablePrefab(stagedAreas[4]);
+    }
+    public void EnablePrefab(GameObject prefab)
+    {
         prefab.SetActive(true);
         prefab.GetComponent<StagedArea>().areaSpawned.Raise();
     }
