@@ -81,13 +81,14 @@ public class NarrativeManager : MonoBehaviour
             bool missed = false;
             for (int i = stagedAreas.Length-1; i >= 0; i--)
             {
-                if (stagedAreas[i].GetComponent<StagedArea>().stagedAreaStarted)
+                if (stagedAreas[i].GetComponent<StagedArea>().stagedAreaStarted && !stagedAreas[i].GetComponent<StagedArea>().stagedAreaEnded)
                 {
                     missed = true;
                     saNum = i;
+                    continue;
                 }
                 stagedAreas[i].GetComponent<StagedArea>().stagedAreaStarted = missed;
-
+                stagedAreas[i].GetComponent<StagedArea>().stagedAreaEnded = missed;
             }
 
             nextSA = stagedAreas[++saNum].GetComponent<StagedArea>();
@@ -154,21 +155,21 @@ public class NarrativeManager : MonoBehaviour
                 foreach (var pos in nextSACandidates)
                 {
                     Vector3 playerToCandidate = pos.worldPosition - player.transform.position;
-                    float distanceFromPath = Vector3.Cross(ray.direction, pos.worldPosition - ray.origin).magnitude;
+                    Vector3 pathToCandidate = Vector3.Cross(ray.direction, pos.worldPosition - ray.origin);
+                    float distanceFromPath = pathToCandidate.magnitude;
+///*                    Debug.DrawRay(pos.worldPosition, pathToCandidate*/, Color.red, 15f);
 
                     if (distanceFromPath < nextSA.minDistanceFromPath && playerToCandidate.magnitude > nextSA.minDistFromPlayer && playerToCandidate.magnitude < nextSA.maxDistFromPlayer && Vector3.Angle(playerToWeenie, playerToCandidate) < nextSA.minAngle)
                     {
-                        if (Physics.Raycast(new Ray(startingPoint, playerToCandidate), out RaycastHit hitinfo))
+                        Ray candidateRay = new Ray(startingPoint, playerToCandidate);
+                        if (Physics.Raycast(candidateRay, out RaycastHit hitinfo))
                         {
                             if (Vector3.Distance(hitinfo.point, pos.worldPosition) > 1)
                             {
                                 //Something obscuring target, could spawn there?
                                 Debug.DrawLine(player.transform.position, pos.worldPosition, Color.green);
                                 bestCandidates.Add(pos);
-                            }
-                            else
-                            {
-                                Debug.DrawLine(player.transform.position, pos.worldPosition, Color.red);
+                                break; //only addng one anyway, definitely could be improved
                             }
                         }
                     }
@@ -491,7 +492,7 @@ public class NarrativeManager : MonoBehaviour
             }
             else
             {
-                Debug.Log("Area already active");
+                Debug.Log(stagedArea.name + " already active");
             }
         }
     }

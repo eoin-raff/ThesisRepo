@@ -754,7 +754,7 @@ PrefabInstance:
     - target: {fileID: 3802423815650902336, guid: 25ec0b9d315d28642807b2701bd7be5a,
         type: 3}
       propertyPath: minDistFromPlayer
-      value: 75
+      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 3802423815650902336, guid: 25ec0b9d315d28642807b2701bd7be5a,
         type: 3}
@@ -1284,6 +1284,11 @@ PrefabInstance:
       propertyPath: maxSlope
       value: 10
       objectReference: {fileID: 0}
+    - target: {fileID: 6581012929609995032, guid: 44c8786548440ef4e9aeda26a7e45a1b,
+        type: 3}
+      propertyPath: minDistFromPlayer
+      value: 50
+      objectReference: {fileID: 0}
     - target: {fileID: 6632348996220453306, guid: 44c8786548440ef4e9aeda26a7e45a1b,
         type: 3}
       propertyPath: m_Name
@@ -1572,7 +1577,7 @@ PrefabInstance:
     - target: {fileID: 3609135559456540396, guid: b634be7b84cc1e44b9fbf06a8c07050d,
         type: 3}
       propertyPath: minDistFromPlayer
-      value: 100
+      value: 75
       objectReference: {fileID: 0}
     - target: {fileID: 3609135559456540396, guid: b634be7b84cc1e44b9fbf06a8c07050d,
         type: 3}
@@ -1593,6 +1598,11 @@ PrefabInstance:
         type: 3}
       propertyPath: size.y
       value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 3609135559456540396, guid: b634be7b84cc1e44b9fbf06a8c07050d,
+        type: 3}
+      propertyPath: minAngle
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 3839489702128833614, guid: b634be7b84cc1e44b9fbf06a8c07050d,
         type: 3}
