@@ -28,7 +28,6 @@ public class NarrativeManager : MonoBehaviour
 
     public int withinSA;                                // How close should the player be to the SA before triggering cinematic sequence
 
-    private Vector3 positionAtLastSA;
     public float[] distanceBetweenSAs;                    // How far should player travel before starting to look for next SA 
 
     //public TerrainManager TerrainManager.Instance;
@@ -45,7 +44,6 @@ public class NarrativeManager : MonoBehaviour
 
     private IEnumerator cinematicCoroutine;
     private int saNum = -1;                                  // Which SA are we at (Can also be used for event in between SAs)
-    private float timeAtLastSA;
     private StagedArea nextSA;
     private GameObject targetWeenie;
     public GameEvent SAStarted;
@@ -77,16 +75,31 @@ public class NarrativeManager : MonoBehaviour
     {
         if (saNum < stagedAreas.Length - 1)
         {
-            positionAtLastSA = player.transform.position;
             lookForNextSA = true;
-            timeAtLastSA = Time.time;
+
+            
+            bool missed = false;
+            for (int i = stagedAreas.Length-1; i >= 0; i--)
+            {
+                if (stagedAreas[i].GetComponent<StagedArea>().stagedAreaStarted && !stagedAreas[i].GetComponent<StagedArea>().stagedAreaEnded)
+                {
+                    missed = true;
+                    saNum = i;
+                    continue;
+                }
+                stagedAreas[i].GetComponent<StagedArea>().stagedAreaStarted = missed;
+                stagedAreas[i].GetComponent<StagedArea>().stagedAreaEnded = missed;
+            }
+
             nextSA = stagedAreas[++saNum].GetComponent<StagedArea>();
-            if (saNum == weenieIndices[weenieIndex])
+
+            if (saNum > weenieIndices[weenieIndex])
             {
                 weenieIndex++;
                 if (weenieIndex < weenieIndices.Length)
                 {
                     targetWeenie = stagedAreas[weenieIndices[weenieIndex]];
+                    EnablePrefab(targetWeenie);
                 }
             }
         }
@@ -110,7 +123,9 @@ public class NarrativeManager : MonoBehaviour
             {
                 Vector3 playerToStagedArea = nextSA.transform.position - player.transform.position;
                 Debug.DrawLine(player.transform.position, nextSA.transform.position, Color.magenta);
-                if (!nextSA.stagedAreaStarted && Vector3.Angle(playerToWeenie, playerToStagedArea) > 100)
+
+                Vector3 SAtoWeenie = (targetWeenie.transform.position - nextSA.transform.position);
+                if (!nextSA.stagedAreaStarted && (Vector3.Angle(playerToWeenie, playerToStagedArea) > 100 || playerToWeenie.sqrMagnitude < SAtoWeenie.sqrMagnitude))
                 {
                     nextSA.gameObject.SetActive(false);
                     lookForNextSA = true;
@@ -140,21 +155,21 @@ public class NarrativeManager : MonoBehaviour
                 foreach (var pos in nextSACandidates)
                 {
                     Vector3 playerToCandidate = pos.worldPosition - player.transform.position;
-                    float distanceFromPath = Vector3.Cross(ray.direction, pos.worldPosition - ray.origin).magnitude;
+                    Vector3 pathToCandidate = Vector3.Cross(ray.direction, pos.worldPosition - ray.origin);
+                    float distanceFromPath = pathToCandidate.magnitude;
+///*                    Debug.DrawRay(pos.worldPosition, pathToCandidate*/, Color.red, 15f);
 
-                    if (distanceFromPath < 20 && playerToCandidate.magnitude > 50 && playerToCandidate.magnitude < 100 && Vector3.Angle(playerToWeenie, playerToCandidate) < 35)
+                    if (distanceFromPath < nextSA.minDistanceFromPath && playerToCandidate.magnitude > nextSA.minDistFromPlayer && playerToCandidate.magnitude < nextSA.maxDistFromPlayer && Vector3.Angle(playerToWeenie, playerToCandidate) < nextSA.minAngle)
                     {
-                        if (Physics.Raycast(new Ray(startingPoint, playerToCandidate), out RaycastHit hitinfo))
+                        Ray candidateRay = new Ray(startingPoint, playerToCandidate);
+                        if (Physics.Raycast(candidateRay, out RaycastHit hitinfo))
                         {
                             if (Vector3.Distance(hitinfo.point, pos.worldPosition) > 1)
                             {
                                 //Something obscuring target, could spawn there?
                                 Debug.DrawLine(player.transform.position, pos.worldPosition, Color.green);
                                 bestCandidates.Add(pos);
-                            }
-                            else
-                            {
-                                Debug.DrawLine(player.transform.position, pos.worldPosition, Color.red);
+                                break; //only addng one anyway, definitely could be improved
                             }
                         }
                     }
@@ -238,9 +253,20 @@ public class NarrativeManager : MonoBehaviour
         //SpawnWeenie(position, SAPrefab);
     }
 
-    private static void SpawnStagedArea(Vector3 position, GameObject prefab)
+    private void SpawnStagedArea(Vector3 position, GameObject prefab)
     {
         prefab.transform.position = position;
+        if (!prefab.GetComponent<StagedArea>().DelaySpawn)
+        {
+            EnablePrefab(prefab);
+        }
+    }
+    public void SpawnBoat()
+    {
+        EnablePrefab(stagedAreas[4]);
+    }
+    public void EnablePrefab(GameObject prefab)
+    {
         prefab.SetActive(true);
         prefab.GetComponent<StagedArea>().areaSpawned.Raise();
     }
@@ -329,7 +355,6 @@ public class NarrativeManager : MonoBehaviour
 
     private void SetCandidatesInDictionary(StagedArea stagedArea, List<StagedAreaCandidatePosition> candidates)
     {
-        Debug.Log("Setting Candidates");
         candidatesReady = true;
         //temp_candidates = candidates_in;
         Debug.Log(string.Format("found {0} candidages for {1}", candidates.Count, stagedArea.name));
@@ -467,7 +492,7 @@ public class NarrativeManager : MonoBehaviour
             }
             else
             {
-                Debug.Log("Area already active");
+                Debug.Log(stagedArea.name + " already active");
             }
         }
     }

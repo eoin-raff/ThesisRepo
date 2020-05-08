@@ -57,11 +57,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1f75615967c06c246914358704986622, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  stagedAreaStarted: 0
+  stagedAreaEnded: 0
   size: {x: 10, y: 10}
   minHeight: 0.03
   maxHeight: 0.2
   minSlope: 0
-  maxSlope: 35
+  maxSlope: 15
   flattenPower: 0.8
   EnteredStagedArea: {fileID: 11400000, guid: 149d64adb31850d47b6e57672378cf36, type: 2}
   ExitStagedArea: {fileID: 11400000, guid: 9a69aaec540773142803a83083803a27, type: 2}
+  flattenType: 0
+  progress: {fileID: 11400000, guid: a56892bc439a24f41afc421367babd67, type: 2}
+  candidatesDoneEvent: {fileID: 11400000, guid: 11b9428691556e7409057642e7b1eab7,
+    type: 2}
+  areaSpawned: {fileID: 11400000, guid: 51ca4daf5b8161341baa593a7e38e806, type: 2}
+  candidatesReady: 0
+  spawned: 0
+  DelaySpawn: 0
+  minDistanceFromPath: 20
+  minDistFromPlayer: 10
+  maxDistFromPlayer: 150
+  minAngle: 35

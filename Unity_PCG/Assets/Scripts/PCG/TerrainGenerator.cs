@@ -97,6 +97,13 @@ namespace MED10.PCG
         public IEnumerator FlattenAreaAroundPoint(int x, int y, float strength, Vector2 area, Vector3 worldPos, GameObject go, FlattenType type, Action<Vector3, GameObject> setPosition)
         {
             Debug.Log("Flattening Area");
+            
+            //Scale the area to be flattened from world space to heighmap space
+
+            float areaHmX = Utils.Map(area.x, 0, TerrainManager.Instance.TerrainData.size.x, 0, TerrainManager.Instance.HeightmapResolution);
+            float areaHmY = Utils.Map(area.y, 0, TerrainManager.Instance.TerrainData.size.z, 0, TerrainManager.Instance.HeightmapResolution);
+            area = new Vector2(areaHmX, areaHmY);
+
             float[,] heightMap = GetHeightMap(false);
             float centerHeight = heightMap[x, y];
             float averageHeight = 0;
