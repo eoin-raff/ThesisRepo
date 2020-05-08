@@ -28,7 +28,6 @@ public class NarrativeManager : MonoBehaviour
 
     public int withinSA;                                // How close should the player be to the SA before triggering cinematic sequence
 
-    private Vector3 positionAtLastSA;
     public float[] distanceBetweenSAs;                    // How far should player travel before starting to look for next SA 
 
     //public TerrainManager TerrainManager.Instance;
@@ -45,7 +44,6 @@ public class NarrativeManager : MonoBehaviour
 
     private IEnumerator cinematicCoroutine;
     private int saNum = -1;                                  // Which SA are we at (Can also be used for event in between SAs)
-    private float timeAtLastSA;
     private StagedArea nextSA;
     private GameObject targetWeenie;
     public GameEvent SAStarted;
@@ -77,10 +75,23 @@ public class NarrativeManager : MonoBehaviour
     {
         if (saNum < stagedAreas.Length - 1)
         {
-            positionAtLastSA = player.transform.position;
             lookForNextSA = true;
-            timeAtLastSA = Time.time;
+
+            
+            bool missed = false;
+            for (int i = stagedAreas.Length-1; i >= 0; i--)
+            {
+                if (stagedAreas[i].GetComponent<StagedArea>().stagedAreaStarted)
+                {
+                    missed = true;
+                    saNum = i;
+                }
+                stagedAreas[i].GetComponent<StagedArea>().stagedAreaStarted = missed;
+
+            }
+
             nextSA = stagedAreas[++saNum].GetComponent<StagedArea>();
+
             if (saNum > weenieIndices[weenieIndex])
             {
                 weenieIndex++;
@@ -145,7 +156,7 @@ public class NarrativeManager : MonoBehaviour
                     Vector3 playerToCandidate = pos.worldPosition - player.transform.position;
                     float distanceFromPath = Vector3.Cross(ray.direction, pos.worldPosition - ray.origin).magnitude;
 
-                    if (distanceFromPath < 20 && playerToCandidate.magnitude > 50 && playerToCandidate.magnitude < 100 && Vector3.Angle(playerToWeenie, playerToCandidate) < 35)
+                    if (distanceFromPath < nextSA.minDistanceFromPath && playerToCandidate.magnitude > nextSA.minDistFromPlayer && playerToCandidate.magnitude < nextSA.maxDistFromPlayer && Vector3.Angle(playerToWeenie, playerToCandidate) < nextSA.minAngle)
                     {
                         if (Physics.Raycast(new Ray(startingPoint, playerToCandidate), out RaycastHit hitinfo))
                         {
