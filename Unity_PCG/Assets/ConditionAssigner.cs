@@ -6,7 +6,6 @@ using UnityEngine.UI;
 public class ConditionAssigner : MonoBehaviour
 {
     public int condition;
-    public GameObject showCon;
     public GameObject backgroundImg, logoImg, text;
 
     public void AssignCondition()
@@ -16,12 +15,10 @@ public class ConditionAssigner : MonoBehaviour
         if (rnd > 0.5f)
         {
             condition = 1;
-            showCon.GetComponent<Text>().text = ("Condition: 1 : " + rnd);
         }
         else
         {
             condition = 0;
-            showCon.GetComponent<Text>().text = ("Condition: 0 : " + rnd);
         }
     }
 
