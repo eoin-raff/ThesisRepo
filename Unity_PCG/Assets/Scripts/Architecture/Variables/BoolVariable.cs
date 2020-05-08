@@ -3,9 +3,8 @@
 namespace MED10.Architecture.Variables
 {
 	[CreateAssetMenu]
-	public class BoolVariable : ScriptableObject
+	public class BoolVariable : VariableObject<bool>
 	{
-		public bool Value;
 	}
 
 }
