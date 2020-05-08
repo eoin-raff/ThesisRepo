@@ -74,3 +74,8 @@ MonoBehaviour:
   areaSpawned: {fileID: 11400000, guid: 51ca4daf5b8161341baa593a7e38e806, type: 2}
   candidatesReady: 0
   spawned: 0
+  DelaySpawn: 0
+  minDistanceFromPath: 20
+  minDistFromPlayer: 10
+  maxDistFromPlayer: 150
+  minAngle: 35

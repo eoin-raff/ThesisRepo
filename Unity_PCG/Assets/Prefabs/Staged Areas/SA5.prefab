@@ -219,6 +219,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 11400002, guid: b99a0a5998b2736429fd2a2fd1d01c5e, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 19800004, guid: b99a0a5998b2736429fd2a2fd1d01c5e, type: 3}
       propertyPath: InitialModule.startRotationX.minMaxState
       value: 3
@@ -322,6 +326,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 11400000, guid: 921a3ff88856fe04ebc86b196fd8cc59, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 19800000, guid: 921a3ff88856fe04ebc86b196fd8cc59, type: 3}
       propertyPath: InitialModule.startSizeY.minMaxState
       value: 3
@@ -337,14 +345,6 @@ PrefabInstance:
     - target: {fileID: 19800000, guid: 921a3ff88856fe04ebc86b196fd8cc59, type: 3}
       propertyPath: InitialModule.startRotationY.minMaxState
       value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 19800000, guid: 921a3ff88856fe04ebc86b196fd8cc59, type: 3}
-      propertyPath: InitialModule.startLifetime.scalar
-      value: 15.27
-      objectReference: {fileID: 0}
-    - target: {fileID: 19800000, guid: 921a3ff88856fe04ebc86b196fd8cc59, type: 3}
-      propertyPath: InitialModule.startLifetime.minScalar
-      value: 12.6
       objectReference: {fileID: 0}
     - target: {fileID: 19800000, guid: 921a3ff88856fe04ebc86b196fd8cc59, type: 3}
       propertyPath: InitialModule.size3D
@@ -365,6 +365,18 @@ PrefabInstance:
     - target: {fileID: 19800000, guid: 921a3ff88856fe04ebc86b196fd8cc59, type: 3}
       propertyPath: InitialModule.maxNumParticles
       value: 615
+      objectReference: {fileID: 0}
+    - target: {fileID: 19800000, guid: 921a3ff88856fe04ebc86b196fd8cc59, type: 3}
+      propertyPath: InitialModule.startLifetime.scalar
+      value: 15.27
+      objectReference: {fileID: 0}
+    - target: {fileID: 19800000, guid: 921a3ff88856fe04ebc86b196fd8cc59, type: 3}
+      propertyPath: InitialModule.startLifetime.minScalar
+      value: 12.6
+      objectReference: {fileID: 0}
+    - target: {fileID: 19800000, guid: 921a3ff88856fe04ebc86b196fd8cc59, type: 3}
+      propertyPath: lengthInSec
+      value: 0.05
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 921a3ff88856fe04ebc86b196fd8cc59, type: 3}

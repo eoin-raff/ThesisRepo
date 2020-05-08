@@ -31,9 +31,15 @@ public class StagedArea : MonoBehaviour
     public FloatVariable progress;
     public GameEvent candidatesDoneEvent;
     public GameEvent areaSpawned;
+    
     public bool candidatesReady;
     public bool spawned;
     public bool DelaySpawn;
+
+    public float minDistanceFromPath;
+    public float minDistFromPlayer;
+    public float maxDistFromPlayer;
+    public float minAngle;
 
     private void OnTriggerEnter(Collider other)
     {
