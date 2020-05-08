@@ -7,7 +7,7 @@ public class ConditionAssigner : MonoBehaviour
 {
     public int condition;
     public GameObject showCon;
-    public GameObject backgroundImg, text1, text2;
+    public GameObject backgroundImg, logoImg, text;
 
     public void AssignCondition()
     {
@@ -28,7 +28,7 @@ public class ConditionAssigner : MonoBehaviour
     public void Fader()
     {
         backgroundImg.GetComponent<Image>().CrossFadeAlpha(0.0f, 2.0f, false);
-        text1.GetComponent<Text>().CrossFadeAlpha(0.0f, 1.0f, false);
-        text2.GetComponent<Text>().CrossFadeAlpha(0.0f, 1.0f, false);
+        text.GetComponent<Text>().CrossFadeAlpha(0.0f, 1.0f, false);
+        logoImg.GetComponent<Image>().CrossFadeAlpha(0.0f, 1.0f, false);
     }
 }

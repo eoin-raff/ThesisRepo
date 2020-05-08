@@ -937,7 +937,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &454077639
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3106,8 +3106,8 @@ MonoBehaviour:
   condition: 0
   showCon: {fileID: 1956991970}
   backgroundImg: {fileID: 2093621783}
-  text1: {fileID: 0}
-  text2: {fileID: 709449994}
+  logoImg: {fileID: 1369126079}
+  text: {fileID: 709449994}
 --- !u!4 &1905818692
 Transform:
   m_ObjectHideFlags: 0
