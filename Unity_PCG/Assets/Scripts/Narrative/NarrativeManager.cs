@@ -46,13 +46,12 @@ public class NarrativeManager : MonoBehaviour
     private int saNum = -1;                                  // Which SA are we at (Can also be used for event in between SAs)
     private StagedArea nextSA;
     private GameObject targetWeenie;
-    public GameEvent SAStarted;
-    public GameEvent SAEnded;
+    public GameEvent GameOver;
 
     Dictionary<StagedArea, List<StagedAreaCandidatePosition>> StagedAreaCandidates;
     private int weenieIndex = 0;
 
-    private void Start()
+    public void Init()
     {
         StagedAreaCandidates = new Dictionary<StagedArea, List<StagedAreaCandidatePosition>>();
         FindStagedAreaCandidates();
@@ -73,13 +72,13 @@ public class NarrativeManager : MonoBehaviour
 
     public void PrepareForNextSA()
     {
-        if (saNum < stagedAreas.Length - 1)
+        if (saNum < stagedAreas.Length - 2)
         {
             lookForNextSA = true;
 
-            
+
             bool missed = false;
-            for (int i = stagedAreas.Length-1; i >= 0; i--)
+            for (int i = stagedAreas.Length - 1; i >= 0; i--)
             {
                 if (stagedAreas[i].GetComponent<StagedArea>().stagedAreaStarted && !stagedAreas[i].GetComponent<StagedArea>().stagedAreaEnded)
                 {
@@ -103,6 +102,10 @@ public class NarrativeManager : MonoBehaviour
                 }
             }
         }
+        else
+        {
+            GameOver.Raise();
+        }
     }
 
     private void Update()
@@ -111,7 +114,15 @@ public class NarrativeManager : MonoBehaviour
         {
             heightmap = TerrainManager.Instance.GetHeightmap(false);
         }
-        Vector3 playerToWeenie = targetWeenie.transform.position - player.transform.position;
+        Vector3 playerToWeenie = Vector3.one;
+        if (targetWeenie)
+        {
+            playerToWeenie = targetWeenie.transform.position - player.transform.position;
+
+            Debug.DrawLine(player.transform.position, targetWeenie.transform.position, Color.cyan);
+            Debug.DrawLine(player.transform.position, stagedAreas[4].transform.position, Color.yellow);
+            Debug.DrawRay(player.transform.position, player.transform.forward * 50f);
+        }
         Vector3 startingPoint = player.transform.position;
 
         // Check if the SA is unlikely to be found
@@ -134,9 +145,6 @@ public class NarrativeManager : MonoBehaviour
         }
 
 
-        Debug.DrawLine(player.transform.position, targetWeenie.transform.position, Color.cyan);
-        Debug.DrawLine(player.transform.position, stagedAreas[4].transform.position, Color.yellow);
-        Debug.DrawRay(player.transform.position, player.transform.forward * 50f);
 
         // Check if We need to spawn a new SA
         // TODO:
@@ -157,7 +165,7 @@ public class NarrativeManager : MonoBehaviour
                     Vector3 playerToCandidate = pos.worldPosition - player.transform.position;
                     Vector3 pathToCandidate = Vector3.Cross(ray.direction, pos.worldPosition - ray.origin);
                     float distanceFromPath = pathToCandidate.magnitude;
-///*                    Debug.DrawRay(pos.worldPosition, pathToCandidate*/, Color.red, 15f);
+                    ///*                    Debug.DrawRay(pos.worldPosition, pathToCandidate*/, Color.red, 15f);
 
                     if (distanceFromPath < nextSA.minDistanceFromPath && playerToCandidate.magnitude > nextSA.minDistFromPlayer && playerToCandidate.magnitude < nextSA.maxDistFromPlayer && Vector3.Angle(playerToWeenie, playerToCandidate) < nextSA.minAngle)
                     {

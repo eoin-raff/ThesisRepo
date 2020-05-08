@@ -7,6 +7,8 @@ namespace MED10.PCG
 {
     public class RuntimeGeneration : MonoBehaviour
     {
+        public bool generateOnStart;
+
         public GameEvent heightmapDone;
 
         public IntVariable seed;
@@ -26,7 +28,11 @@ namespace MED10.PCG
 
         private void Start()
         {
-            Generate();
+            if (generateOnStart)
+            {
+                Generate();
+
+            } 
         }
 
         public void Generate()
