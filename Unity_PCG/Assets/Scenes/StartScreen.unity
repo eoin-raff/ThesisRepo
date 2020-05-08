@@ -937,7 +937,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &454077639
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1449,8 +1449,8 @@ MonoBehaviour:
     you thought so. One day, you weer away from your normal area and see a small
     island on the horizon. It does not show up on any of your sea maps and as you
     approach you get more and more curious about why you have never heard about this
-    island. Right before you get to the shore you see a tall tower in the middle
-    of the island which might reveal more about the island
+    island. You board your dinghy and as you circle the island and approach the shore
+    you see a tall tower that might reveal more about the mysteries of this island...
 --- !u!222 &709449997
 CanvasRenderer:
   m_ObjectHideFlags: 0
