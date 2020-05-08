@@ -533,7 +533,7 @@ MonoBehaviour:
     maxRotation: 360
     density: 0.3
   - remove: 0
-    minHeight: 0.15
+    minHeight: 0.12
     maxHeight: 0.2
     minSlope: 0
     maxSlope: 15
@@ -546,9 +546,9 @@ MonoBehaviour:
     lightColor: {r: 1, g: 1, b: 1, a: 1}
     minRotation: 0
     maxRotation: 360
-    density: 0.2
+    density: 0.3
   - remove: 0
-    minHeight: 0.15
+    minHeight: 0.12
     maxHeight: 0.2
     minSlope: 15
     maxSlope: 35
@@ -561,7 +561,7 @@ MonoBehaviour:
     lightColor: {r: 1, g: 1, b: 1, a: 1}
     minRotation: 0
     maxRotation: 360
-    density: 0.2
+    density: 0.3
   maxTrees: 50000
   treeSpacing: 4
   details:
@@ -733,12 +733,12 @@ PrefabInstance:
     - target: {fileID: 3802423815650902336, guid: 25ec0b9d315d28642807b2701bd7be5a,
         type: 3}
       propertyPath: maxSlope
-      value: 25
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 3802423815650902336, guid: 25ec0b9d315d28642807b2701bd7be5a,
         type: 3}
       propertyPath: minSlope
-      value: 5
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3802423815650902336, guid: 25ec0b9d315d28642807b2701bd7be5a,
         type: 3}
@@ -1240,33 +1240,7 @@ PrefabInstance:
     - target: {fileID: 6581012929609995032, guid: 44c8786548440ef4e9aeda26a7e45a1b,
         type: 3}
       propertyPath: maxSlope
-      value: 15
-      objectReference: {fileID: 0}
-    - target: {fileID: 6581012929609995032, guid: 44c8786548440ef4e9aeda26a7e45a1b,
-        type: 3}
-      propertyPath: minSlope
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 6581012929609995032, guid: 44c8786548440ef4e9aeda26a7e45a1b,
-        type: 3}
-      propertyPath: progress
-      value: 
-      objectReference: {fileID: 11400000, guid: 105e811b10dfacc48bf665c8ec5d882f,
-        type: 2}
-    - target: {fileID: 6581012929609995032, guid: 44c8786548440ef4e9aeda26a7e45a1b,
-        type: 3}
-      propertyPath: flattenPower
-      value: 0.75
-      objectReference: {fileID: 0}
-    - target: {fileID: 6581012929609995032, guid: 44c8786548440ef4e9aeda26a7e45a1b,
-        type: 3}
-      propertyPath: size.x
-      value: 7
-      objectReference: {fileID: 0}
-    - target: {fileID: 6581012929609995032, guid: 44c8786548440ef4e9aeda26a7e45a1b,
-        type: 3}
-      propertyPath: size.y
-      value: 7
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 6632348996220453306, guid: 44c8786548440ef4e9aeda26a7e45a1b,
         type: 3}
@@ -1528,7 +1502,7 @@ PrefabInstance:
     - target: {fileID: 3609135559456540396, guid: b634be7b84cc1e44b9fbf06a8c07050d,
         type: 3}
       propertyPath: minSlope
-      value: 5
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3609135559456540396, guid: b634be7b84cc1e44b9fbf06a8c07050d,
         type: 3}
@@ -1608,17 +1582,17 @@ PrefabInstance:
     - target: {fileID: 2309482379016507243, guid: f0ffe15841e91244fa28a8b23b66bd3b,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 185.45444
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2309482379016507243, guid: f0ffe15841e91244fa28a8b23b66bd3b,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 7.3215714
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2309482379016507243, guid: f0ffe15841e91244fa28a8b23b66bd3b,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 785.02277
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2309482379016507243, guid: f0ffe15841e91244fa28a8b23b66bd3b,
         type: 3}
@@ -2201,7 +2175,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 02e8d0a5d935ff54bbcfc2ba7c87354e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Event: {fileID: 11400000, guid: 9a69aaec540773142803a83083803a27, type: 2}
+  Event: {fileID: 11400000, guid: 149d64adb31850d47b6e57672378cf36, type: 2}
   Response:
     m_PersistentCalls:
       m_Calls:
@@ -3156,7 +3130,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PlayerPrefab: {fileID: 130430412}
   playerCam: {fileID: 1430230225}
-  targetDistance: 400
+  playerToTowerTarget: 500
+  towerToBoatTarget: 250
   narrativeManager: {fileID: 985107145}
   weenieHeight: 25
   playerInstantiated: {fileID: 11400000, guid: e4493da0c51af9340861f30f8659a1c0, type: 2}
