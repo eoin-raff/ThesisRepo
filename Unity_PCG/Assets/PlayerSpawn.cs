@@ -9,6 +9,8 @@ public class PlayerSpawn : MonoBehaviour
 {
     public GameObject PlayerPrefab;
     public Camera playerCam;
+    public GameObject dinghy;
+
     public float playerToTowerTarget = 100;
     public float towerToBoatTarget = 100f;
   
@@ -150,8 +152,10 @@ public class PlayerSpawn : MonoBehaviour
         narrativeManager.FindWeenieLocation(bestBoatPosition, 4);
 
         PlayerPrefab.transform.position = bestPlayerSpawn + Vector3.up;
+        dinghy.transform.position = bestPlayerSpawn + Vector3.up;
+
         //TODO: Look at weenie at launch
-//        playerCam.transform.LookAt(highestPointWorldSpace, Vector3.up);
+        //playerCam.transform.LookAt(highestPointWorldSpace, Vector3.up);
         yield break;
     }
 
