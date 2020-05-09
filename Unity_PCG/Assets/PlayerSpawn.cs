@@ -152,7 +152,7 @@ public class PlayerSpawn : MonoBehaviour
         narrativeManager.FindWeenieLocation(bestBoatPosition, 4);
 
         PlayerPrefab.transform.position = bestPlayerSpawn + Vector3.up;
-        dinghy.transform.position = bestPlayerSpawn + Vector3.up;
+        dinghy.transform.position = bestPlayerSpawn + new Vector3(0.0f, -0.005f, 0.0f);
 
         //TODO: Look at weenie at launch
         //playerCam.transform.LookAt(highestPointWorldSpace, Vector3.up);
