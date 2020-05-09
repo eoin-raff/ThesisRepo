@@ -157,7 +157,7 @@ public class PlayerSpawn : MonoBehaviour
 
     public void SetPlayerActive()
     {
-        PlayerPrefab.SetActive(true);
+        //PlayerPrefab.SetActive(true);
 
         playerInstantiated.Raise();
     }

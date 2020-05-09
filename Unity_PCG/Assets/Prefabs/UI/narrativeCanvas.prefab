@@ -129,7 +129,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 167565708}
+      - m_Target: {fileID: 0}
         m_MethodName: Fader
         m_Mode: 1
         m_Arguments:
@@ -153,7 +153,7 @@ GameObject:
   - component: {fileID: 5420982321195973336}
   - component: {fileID: 5420982321195973335}
   - component: {fileID: 3878587503847663017}
-  - component: {fileID: 167565708}
+  - component: {fileID: 3206208820762939124}
   m_Layer: 5
   m_Name: narrativeCanvas
   m_TagString: Untagged
@@ -282,7 +282,7 @@ MonoBehaviour:
           m_StringArgument: Start Game
           m_BoolArgument: 1
         m_CallState: 2
---- !u!114 &167565708
+--- !u!114 &3206208820762939124
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -291,12 +291,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 5420982321195973334}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d3ad8d37e9b8245998291d902d738cfc, type: 3}
+  m_Script: {fileID: 11500000, guid: 06aace8e417cf49edbd67fb581427270, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   backgroundImg: {fileID: 5420982322785973255}
   logoImg: {fileID: 5420982322428469935}
-  text: {fileID: 5420982321485909786}
+  text1: {fileID: 5420982321485909786}
+  text2: {fileID: 5420982321485909786}
 --- !u!1 &5420982321485909786
 GameObject:
   m_ObjectHideFlags: 0
