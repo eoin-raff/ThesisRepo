@@ -534,9 +534,9 @@ MonoBehaviour:
     density: 0.3
   - remove: 0
     minHeight: 0.12
-    maxHeight: 0.2
+    maxHeight: 0.25
     minSlope: 0
-    maxSlope: 15
+    maxSlope: 40
     mesh: {fileID: 6154447348670770674, guid: 2bfaf4f3a07065740953dc2cff9d7a5c, type: 3}
     pivotOffset: 0
     minScale: 0.7
@@ -562,6 +562,36 @@ MonoBehaviour:
     minRotation: 0
     maxRotation: 360
     density: 0.3
+  - remove: 0
+    minHeight: 0.03
+    maxHeight: 0.15
+    minSlope: 0
+    maxSlope: 25
+    mesh: {fileID: 174999298617368496, guid: b7ab619e76ebedb4d87e6ccac5c1c63f, type: 3}
+    pivotOffset: 0
+    minScale: 0.7
+    maxScale: 1
+    color1: {r: 1, g: 1, b: 1, a: 1}
+    color2: {r: 1, g: 1, b: 1, a: 1}
+    lightColor: {r: 1, g: 1, b: 1, a: 1}
+    minRotation: 0
+    maxRotation: 360
+    density: 0.3
+  - remove: 0
+    minHeight: 0.03
+    maxHeight: 0.3
+    minSlope: 0
+    maxSlope: 25
+    mesh: {fileID: 8928880370376813465, guid: 940ea58ff1ba9f14395f392b96e4ec60, type: 3}
+    pivotOffset: 0
+    minScale: 0.7
+    maxScale: 1
+    color1: {r: 1, g: 1, b: 1, a: 1}
+    color2: {r: 1, g: 1, b: 1, a: 1}
+    lightColor: {r: 1, g: 1, b: 1, a: 1}
+    minRotation: 0
+    maxRotation: 360
+    density: 0.5
   maxTrees: 50000
   treeSpacing: 4
   details:
@@ -601,7 +631,7 @@ MonoBehaviour:
   distanceTravelled: 500
   paintingDone: {fileID: 11400000, guid: e4e912e6735bef74388fc3d6c2c8614f, type: 2}
   detailsDone: 0
-  treesDone: 0
+  treesDone: 1
   splatmapsDone: 0
 --- !u!114 &29482995
 MonoBehaviour:
@@ -4679,7 +4709,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: 9b1fe8c2a8ff1463eb3f8fcea6057531, type: 3}
   m_PlayOnAwake: 1
-  m_Volume: 0.11
+  m_Volume: 0.376
   m_Pitch: 1
   Loop: 1
   Mute: 0
@@ -4775,7 +4805,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: 8347219d8e3cc495c95fbff1799891d4, type: 3}
   m_PlayOnAwake: 1
-  m_Volume: 1
+  m_Volume: 0.906
   m_Pitch: 1
   Loop: 1
   Mute: 0
