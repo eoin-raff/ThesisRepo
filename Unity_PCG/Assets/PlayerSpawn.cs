@@ -71,7 +71,6 @@ public class PlayerSpawn : MonoBehaviour
 
         Vector3 highestPointWorldSpace = new Vector3(posz, posy, posx);
 
-        //TODO: Include Terraforming here
         narrativeManager.FindWeenieLocation(highestPointWorldSpace, 2);
         Vector3 bestPlayerSpawn = Vector3.zero;
         float closestToPlayerTarget = float.MaxValue;

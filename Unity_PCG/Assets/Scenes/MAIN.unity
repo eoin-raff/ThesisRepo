@@ -254,7 +254,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb7fab98c4b52f24b8aebb52db4fbf10, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  seedType: 1
+  seedType: 0
   fixedSeed: 48
   randomHeightRange: {x: 0, y: 0.01}
   heightMapImage: {fileID: 2800000, guid: 899b2d450cd2b624b9141f7c14321f13, type: 3}
@@ -673,7 +673,7 @@ PrefabInstance:
     - target: {fileID: 2709473114098690542, guid: 5ddcc54bdf6b91b41aba62ce427e8d9d,
         type: 3}
       propertyPath: m_Color.a
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3266018313229194823, guid: 5ddcc54bdf6b91b41aba62ce427e8d9d,
         type: 3}
@@ -1379,6 +1379,11 @@ PrefabInstance:
       propertyPath: flattenPower
       value: 0.9
       objectReference: {fileID: 0}
+    - target: {fileID: 3802423815650902336, guid: 25ec0b9d315d28642807b2701bd7be5a,
+        type: 3}
+      propertyPath: maxHeight
+      value: 0.18
+      objectReference: {fileID: 0}
     - target: {fileID: 4193064761408033930, guid: 25ec0b9d315d28642807b2701bd7be5a,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1478,19 +1483,6 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 1686756321}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &130430413
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 130430412}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 50a890d85aa82214582180aab110d6e0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  audioSource: {fileID: 130430418}
 --- !u!114 &130430414
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1507,7 +1499,7 @@ MonoBehaviour:
   Response:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 130430413}
+      - m_Target: {fileID: 130430419}
         m_MethodName: FadeOutAudio
         m_Mode: 1
         m_Arguments:
@@ -1614,6 +1606,19 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &130430419
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 130430412}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 50a890d85aa82214582180aab110d6e0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  audioSource: {fileID: 130430418}
 --- !u!1 &167565707 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 5420982321195973334, guid: 75c286f5530a0ec49b231518dd6c8e20,
