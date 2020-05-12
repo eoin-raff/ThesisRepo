@@ -79,9 +79,10 @@ MonoBehaviour:
   m_Text: "Thank you for playing our game!\n\nWe would now like to ask you some questions
     about your experience. By pressing on the button below you will be redirected
     to a Google Forms questionnaire. You must fill out the entire questionnaire and
-    press send so we can record your data. \n\n(If the button below does not automaticall
-    redirect you to Google Forms, please try pressing spacebar)\n\nYou can close
-    this window after you have opened the questionnaire. "
+    press send so we can record your data. \n\n- If you cannot see your cursor, try
+    pressing ESC\n\n- If the button below does not automatically redirect you to
+    Google Forms, please try pressing spacebar while it is highlighted\n\nYou can
+    close this window after you have opened the questionnaire. "
 --- !u!1 &4964452182080372372
 GameObject:
   m_ObjectHideFlags: 0
