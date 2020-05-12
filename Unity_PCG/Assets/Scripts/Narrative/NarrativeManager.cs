@@ -84,7 +84,15 @@ public class NarrativeManager : MonoBehaviour
                 {
                     missed = true;
                     saNum = i;
-                    continue;
+                    if (saNum == stagedAreas.Length - 1)
+                    {
+                        GameOver.Raise();
+                        return;
+                    }
+                    else
+                    {
+                        continue;
+                    }
                 }
                 stagedAreas[i].GetComponent<StagedArea>().stagedAreaStarted = missed;
                 stagedAreas[i].GetComponent<StagedArea>().stagedAreaEnded = missed;
