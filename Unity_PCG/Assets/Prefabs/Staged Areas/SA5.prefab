@@ -139,7 +139,7 @@ AudioSource:
   MinDistance: 10
   MaxDistance: 250
   Pan2D: 0
-  rolloffMode: 0
+  rolloffMode: 1
   BypassEffects: 0
   BypassListenerEffects: 0
   BypassReverbZones: 0
@@ -235,7 +235,7 @@ AudioSource:
   MinDistance: 50
   MaxDistance: 250
   Pan2D: 0
-  rolloffMode: 0
+  rolloffMode: 1
   BypassEffects: 0
   BypassListenerEffects: 0
   BypassReverbZones: 0
@@ -320,7 +320,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: ab8140673f1d44f12b08b3ecf58395b5, type: 3}
   m_PlayOnAwake: 1
-  m_Volume: 0.355
+  m_Volume: 0.6
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -331,7 +331,7 @@ AudioSource:
   MinDistance: 10
   MaxDistance: 100
   Pan2D: 0
-  rolloffMode: 0
+  rolloffMode: 1
   BypassEffects: 0
   BypassListenerEffects: 0
   BypassReverbZones: 0
