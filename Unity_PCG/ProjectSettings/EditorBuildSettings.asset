@@ -11,7 +11,10 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Scenes/LiveGenerationTest.unity
     guid: 4c0bbee62b15d9d4f974794cdf87cc99
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/refactor_test.unity
     guid: ad903392eb94da94196ed58a395ecb76
+  - enabled: 1
+    path: Assets/Scenes/MAIN.unity
+    guid: 712bdfaa111c7d74bba52619be1ecf65
   m_configObjects: {}
