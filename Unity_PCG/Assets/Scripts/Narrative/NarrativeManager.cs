@@ -51,6 +51,8 @@ public class NarrativeManager : MonoBehaviour
     Dictionary<StagedArea, List<StagedAreaCandidatePosition>> StagedAreaCandidates;
     private int weenieIndex = 0;
 
+    public GameEvent StartBoat;
+
     public void Init()
     {
         StagedAreaCandidates = new Dictionary<StagedArea, List<StagedAreaCandidatePosition>>();
@@ -107,6 +109,7 @@ public class NarrativeManager : MonoBehaviour
                 {
                     targetWeenie = stagedAreas[weenieIndices[weenieIndex]];
                     EnablePrefab(targetWeenie);
+                    StartBoat.Raise();
                 }
             }
         }
