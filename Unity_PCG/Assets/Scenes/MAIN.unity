@@ -254,7 +254,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb7fab98c4b52f24b8aebb52db4fbf10, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  seedType: 0
+  seedType: 1
   fixedSeed: 687
   randomHeightRange: {x: 0, y: 0.01}
   heightMapImage: {fileID: 2800000, guid: 899b2d450cd2b624b9141f7c14321f13, type: 3}
@@ -295,7 +295,7 @@ MonoBehaviour:
   MProughness: 1.75
   MPheightDampener: 1.35
   smoothAmount: 3
-  terrain: {fileID: 0}
+  terrain: {fileID: 29482990}
   terrainData: {fileID: 15600000, guid: 2a158fba47a64d44092107bef6194558, type: 2}
 --- !u!154 &29482989
 TerrainCollider:
@@ -679,6 +679,26 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Color.a
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4978037075943118216, guid: 5ddcc54bdf6b91b41aba62ce427e8d9d,
+        type: 3}
+      propertyPath: m_UiScaleMode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4978037075943118216, guid: 5ddcc54bdf6b91b41aba62ce427e8d9d,
+        type: 3}
+      propertyPath: m_MatchWidthOrHeight
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4978037075943118216, guid: 5ddcc54bdf6b91b41aba62ce427e8d9d,
+        type: 3}
+      propertyPath: m_ReferenceResolution.x
+      value: 1024
+      objectReference: {fileID: 0}
+    - target: {fileID: 4978037075943118216, guid: 5ddcc54bdf6b91b41aba62ce427e8d9d,
+        type: 3}
+      propertyPath: m_ReferenceResolution.y
+      value: 768
       objectReference: {fileID: 0}
     - target: {fileID: 4978037075943118218, guid: 5ddcc54bdf6b91b41aba62ce427e8d9d,
         type: 3}
@@ -1161,6 +1181,26 @@ PrefabInstance:
         type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5420982321195973336, guid: 75c286f5530a0ec49b231518dd6c8e20,
+        type: 3}
+      propertyPath: m_UiScaleMode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5420982321195973336, guid: 75c286f5530a0ec49b231518dd6c8e20,
+        type: 3}
+      propertyPath: m_MatchWidthOrHeight
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5420982321195973336, guid: 75c286f5530a0ec49b231518dd6c8e20,
+        type: 3}
+      propertyPath: m_ReferenceResolution.x
+      value: 1024
+      objectReference: {fileID: 0}
+    - target: {fileID: 5420982321195973336, guid: 75c286f5530a0ec49b231518dd6c8e20,
+        type: 3}
+      propertyPath: m_ReferenceResolution.y
+      value: 768
       objectReference: {fileID: 0}
     - target: {fileID: 5420982321195973338, guid: 75c286f5530a0ec49b231518dd6c8e20,
         type: 3}
@@ -2649,6 +2689,26 @@ PrefabInstance:
       propertyPath: m_Pivot.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3889674683106765334, guid: 94cab54f010f1e24081bdf59b6d86f0f,
+        type: 3}
+      propertyPath: m_UiScaleMode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3889674683106765334, guid: 94cab54f010f1e24081bdf59b6d86f0f,
+        type: 3}
+      propertyPath: m_MatchWidthOrHeight
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3889674683106765334, guid: 94cab54f010f1e24081bdf59b6d86f0f,
+        type: 3}
+      propertyPath: m_ReferenceResolution.x
+      value: 1024
+      objectReference: {fileID: 0}
+    - target: {fileID: 3889674683106765334, guid: 94cab54f010f1e24081bdf59b6d86f0f,
+        type: 3}
+      propertyPath: m_ReferenceResolution.y
+      value: 768
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 94cab54f010f1e24081bdf59b6d86f0f, type: 3}
 --- !u!1001 &736823886
@@ -3386,6 +3446,21 @@ PrefabInstance:
         type: 3}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5764163865086706699, guid: 4a5c3ea08d40e1c43a7d0d7a8f5c23e6,
+        type: 3}
+      propertyPath: m_MatchWidthOrHeight
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5764163865086706699, guid: 4a5c3ea08d40e1c43a7d0d7a8f5c23e6,
+        type: 3}
+      propertyPath: m_ReferenceResolution.x
+      value: 1024
+      objectReference: {fileID: 0}
+    - target: {fileID: 5764163865086706699, guid: 4a5c3ea08d40e1c43a7d0d7a8f5c23e6,
+        type: 3}
+      propertyPath: m_ReferenceResolution.y
+      value: 768
       objectReference: {fileID: 0}
     - target: {fileID: 5764163865779212619, guid: 4a5c3ea08d40e1c43a7d0d7a8f5c23e6,
         type: 3}
