@@ -254,8 +254,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb7fab98c4b52f24b8aebb52db4fbf10, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  seedType: 0
-  fixedSeed: 687
+  seedType: 1
+  fixedSeed: 48
   randomHeightRange: {x: 0, y: 0.01}
   heightMapImage: {fileID: 2800000, guid: 899b2d450cd2b624b9141f7c14321f13, type: 3}
   heightMapScale: {x: 2, y: 0.5, z: 2}
@@ -322,7 +322,7 @@ Terrain:
   m_TreeBillboardDistance: 100
   m_TreeCrossFadeLength: 5
   m_TreeMaximumFullLODCount: 50
-  m_DetailObjectDistance: 3000
+  m_DetailObjectDistance: 5000
   m_DetailObjectDensity: 1
   m_HeightmapPixelError: 5
   m_SplatMapDistance: 1000
@@ -599,7 +599,7 @@ MonoBehaviour:
     minHeight: 0.1
     maxHeight: 1
     minSlope: 0
-    maxSlope: 20
+    maxSlope: 15
     prototype: {fileID: 100000, guid: 015122f6e5a8e7a44996dd4346bd689d, type: 3}
     prototypeTexture: {fileID: 0}
     renderMode: 2
@@ -610,10 +610,10 @@ MonoBehaviour:
     noiseSpread: 0.5
     overlap: 0.01
     feather: 0.05
-    density: 1
+    density: 0.75
     bendFactor: 1
-  maxDetails: 3000
-  detailSpacing: 1
+  maxDetails: 5000
+  detailSpacing: 5
   waterHeight: 0.025
   waterGO: {fileID: 17041823}
   shorelineMaterial: {fileID: 2100000, guid: 901665a29f6bee448bc3f5a56a60348b, type: 2}
@@ -3017,6 +3017,7 @@ GameObject:
   - component: {fileID: 839477607}
   - component: {fileID: 839477606}
   - component: {fileID: 839477605}
+  - component: {fileID: 839477604}
   m_Layer: 0
   m_Name: GenerationManager
   m_TagString: Untagged
@@ -3024,6 +3025,33 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &839477604
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 839477603}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 02e8d0a5d935ff54bbcfc2ba7c87354e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Event: {fileID: 11400000, guid: e4493da0c51af9340861f30f8659a1c0, type: 2}
+  Response:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 17041823}
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &839477605
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3314,24 +3342,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 279927319}
     m_Modifications:
-    - target: {fileID: 5764163865001877992, guid: 4a5c3ea08d40e1c43a7d0d7a8f5c23e6,
-        type: 3}
-      propertyPath: m_Text
-      value: "Thank you for helping us with our Master Thesis. By participating you
-        provide us with valuable information that we need to finish our thesis. \n\nWhat
-        you are about to experience is a short game where you can walk around a virtual
-        environment in which you will encounter different items that are part of
-        the narrative so keep an eye out for details and information. \n\nThe game
-        should not take more than 10 minutes to complete. As the game is over you
-        will be asked to fill out a questionnaire to provide us some insights on
-        how your experience with the game was. The questionnaire will take approximately
-        15 minutes to complete and after that, you are done and we have all the information
-        we need.\n\nWhen you press the button below, you will first be introduced
-        to the narrative of the game for context. You must read this carefully. After
-        reading, you can begin playing the game.\n\nThe experience is better if you
-        wear headphones. \n\nIf you have read and understood everything above, you
-        can now continue!"
-      objectReference: {fileID: 0}
     - target: {fileID: 5764163865086706693, guid: 4a5c3ea08d40e1c43a7d0d7a8f5c23e6,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -3447,25 +3457,10 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 5764163865086706699, guid: 4a5c3ea08d40e1c43a7d0d7a8f5c23e6,
-        type: 3}
-      propertyPath: m_MatchWidthOrHeight
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5764163865086706699, guid: 4a5c3ea08d40e1c43a7d0d7a8f5c23e6,
-        type: 3}
-      propertyPath: m_ReferenceResolution.x
-      value: 1024
-      objectReference: {fileID: 0}
-    - target: {fileID: 5764163865086706699, guid: 4a5c3ea08d40e1c43a7d0d7a8f5c23e6,
-        type: 3}
-      propertyPath: m_ReferenceResolution.y
-      value: 768
-      objectReference: {fileID: 0}
     - target: {fileID: 5764163865779212619, guid: 4a5c3ea08d40e1c43a7d0d7a8f5c23e6,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
-      value: 4
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 5764163865779212619, guid: 4a5c3ea08d40e1c43a7d0d7a8f5c23e6,
         type: 3}
@@ -3495,7 +3490,7 @@ PrefabInstance:
     - target: {fileID: 5764163865779212619, guid: 4a5c3ea08d40e1c43a7d0d7a8f5c23e6,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_MethodName
-      value: AssignCondition
+      value: Raise
       objectReference: {fileID: 0}
     - target: {fileID: 5764163865779212619, guid: 4a5c3ea08d40e1c43a7d0d7a8f5c23e6,
         type: 3}
@@ -3521,7 +3516,8 @@ PrefabInstance:
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_Target
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 11400000, guid: fd46936c44554bc48b75c5a9f4f28138,
+        type: 2}
     - target: {fileID: 5764163865779212619, guid: 4a5c3ea08d40e1c43a7d0d7a8f5c23e6,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[3].m_Target

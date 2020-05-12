@@ -82,7 +82,7 @@ namespace MED10.PCG
         public void SplatMaps()
         {
 #if UNITY_EDITOR
-            Profiler.BeginSample("Assign Splat Maps");
+            Profiler.BeginSample("EDITOR: Assign Splat Maps");
             TerrainLayer[] newSplatPrototypes;
             newSplatPrototypes = new TerrainLayer[splatHeights.Count];
             int spIndex = 0;

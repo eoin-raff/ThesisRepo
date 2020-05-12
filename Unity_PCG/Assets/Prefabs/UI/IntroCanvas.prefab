@@ -388,7 +388,9 @@ MonoBehaviour:
     you press the button below, you will first be introduced to the narrative of
     the game for context. You must read this carefully. After reading, you can begin
     playing the game.\n\nThe experience is best if you wear headphones. \n\nIf you
-    have read and understood everything above, you can now continue!"
+    have read and understood everything above, you can now continue!\n\nPlease note
+    that the initial load may take a long time. If your broswer says the page is
+    unresponsive, try to wait a bit longer as the level is generated."
 --- !u!1 &5764163865086706697
 GameObject:
   m_ObjectHideFlags: 0
