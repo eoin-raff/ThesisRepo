@@ -12,4 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a40c6e3b649687c47b310e48a9ef5ad1, type: 3}
   m_Name: FixedSeed
   m_EditorClassIdentifier: 
-  Value: 0
+  Value: 687
+  FixedValue: 687
