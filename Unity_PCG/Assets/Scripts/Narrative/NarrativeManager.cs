@@ -147,7 +147,10 @@ public class NarrativeManager : MonoBehaviour
                 Debug.DrawLine(player.transform.position, nextSA.transform.position, Color.magenta);
 
                 Vector3 SAtoWeenie = (targetWeenie.transform.position - nextSA.transform.position);
-                if (!nextSA.stagedAreaStarted && (Vector3.Angle(playerToWeenie, playerToStagedArea) > 100 || playerToWeenie.sqrMagnitude + 20 < SAtoWeenie.sqrMagnitude))
+                bool playerOutOfRangeOfSA = playerToStagedArea.magnitude > 25;
+                bool playerPastSAAngle = Vector3.Angle(playerToWeenie, playerToStagedArea) > 100;
+                bool closerToWeenieThanSA = playerToWeenie.sqrMagnitude + 20 < SAtoWeenie.sqrMagnitude;
+                if (!nextSA.stagedAreaStarted && playerOutOfRangeOfSA && (playerPastSAAngle || closerToWeenieThanSA))
                 {
                     nextSA.gameObject.SetActive(false);
                     lookForNextSA = true;
