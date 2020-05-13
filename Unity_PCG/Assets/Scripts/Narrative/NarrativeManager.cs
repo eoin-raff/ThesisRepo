@@ -51,6 +51,8 @@ public class NarrativeManager : MonoBehaviour
     Dictionary<StagedArea, List<StagedAreaCandidatePosition>> StagedAreaCandidates;
     private int weenieIndex = 0;
 
+    public GameEvent StartBoat;
+
     public void Init()
     {
         StagedAreaCandidates = new Dictionary<StagedArea, List<StagedAreaCandidatePosition>>();
@@ -84,7 +86,15 @@ public class NarrativeManager : MonoBehaviour
                 {
                     missed = true;
                     saNum = i;
-                    continue;
+                    if (saNum == stagedAreas.Length - 1)
+                    {
+                        GameOver.Raise();
+                        return;
+                    }
+                    else
+                    {
+                        continue;
+                    }
                 }
                 stagedAreas[i].GetComponent<StagedArea>().stagedAreaStarted = missed;
                 stagedAreas[i].GetComponent<StagedArea>().stagedAreaEnded = missed;
@@ -99,6 +109,7 @@ public class NarrativeManager : MonoBehaviour
                 {
                     targetWeenie = stagedAreas[weenieIndices[weenieIndex]];
                     EnablePrefab(targetWeenie);
+                    StartBoat.Raise();
                 }
             }
         }
@@ -136,20 +147,16 @@ public class NarrativeManager : MonoBehaviour
                 Debug.DrawLine(player.transform.position, nextSA.transform.position, Color.magenta);
 
                 Vector3 SAtoWeenie = (targetWeenie.transform.position - nextSA.transform.position);
-                if (!nextSA.stagedAreaStarted && (Vector3.Angle(playerToWeenie, playerToStagedArea) > 100 || playerToWeenie.sqrMagnitude + 20 < SAtoWeenie.sqrMagnitude))
+                bool playerOutOfRangeOfSA = playerToStagedArea.magnitude > 25;
+                bool playerPastSAAngle = Vector3.Angle(playerToWeenie, playerToStagedArea) > 100;
+                bool closerToWeenieThanSA = playerToWeenie.sqrMagnitude + 20 < SAtoWeenie.sqrMagnitude;
+                if (!nextSA.stagedAreaStarted && playerOutOfRangeOfSA && (playerPastSAAngle || closerToWeenieThanSA))
                 {
                     nextSA.gameObject.SetActive(false);
                     lookForNextSA = true;
                 }
             }
         }
-
-
-
-        // Check if We need to spawn a new SA
-        // TODO:
-        // consider time and distance, e.g.
-        //        lookForNextSA = EnoughTimePassed() && EnoughDistanceTravelled();
 
         if (lookForNextSA)
         {
@@ -194,54 +201,6 @@ public class NarrativeManager : MonoBehaviour
                 CreateStagedArea();
             }
         }
-
-        //TODO: Make sure lookForNextSA flags as true
-        //if (saNum < stagedAreas.Length)
-        //{
-        //    if (lookForNextSA)
-        //    {
-        //        //Debug.Log("looking for SA " + saNum);
-        //        // If enough time has passed since last SA
-        //        if (Time.time - timeAtLastSA >= timeBetweenEvents[saNum])
-        //        {
-        //            //Debug.Log("enough time passed");
-        //            float distance = Vector3.Distance(player.transform.position, positionAtLastSA);
-
-        //            // If you are far enough away from last SA
-        //            if (distance >= distanceBetweenSAs[saNum])
-        //            {
-        //                //Debug.Log("enough distance");
-        //                lookForNextSA = false;
-        //                // SearchForCandidates(playerPos);
-        //            }
-        //        }
-        //    }
-        //}
-
-        //if (Input.GetKeyDown(KeyCode.G))
-        //{
-        //    SearchForCandidates(playerPos);
-        //}
-        //if (candidatesReady)
-        //{
-        //    if (candidates.Count > 0)
-        //    {
-        //        Debug.Log("Assessing Candidates");
-        //        AssessCandidates();
-        //    }
-        //    else
-        //    {
-        //        Debug.Log("No Candidates");
-        //        SearchForCandidates(playerPos);
-        //    }
-
-        //}
-        //if (foundPosition)
-        //{
-        //    foundPosition = false;
-        //    Debug.Log("Spawning SA " + saNum);
-        //    CreateStagedArea();
-        //}
     }
 
     internal void FindWeenieLocation(Vector3 position, int weenieIdx)
@@ -284,17 +243,11 @@ public class NarrativeManager : MonoBehaviour
         InstantiateStagedArea(nextStagedAreaSpawnPosition);
         foundPosition = false;
     }
-    //private void AssessCandidates()
-    //{
-    //    candidatesReady = false;
-    //    foundPosition = false;
-    //    StartCoroutine(FindBestPosition(temp_candidates, new Vector4(5, 1, 1, 2).normalized, SetStagedAreaPosition));
-    //}
+
     public void SearchForCandidates(StagedArea stagedArea)
     {
         temp_candidates = new List<StagedAreaCandidatePosition>();
         candidatesReady = false;
-        //TODO: Get Values from SAs
         Debug.Log("Searching for Candidates for " + stagedArea.name);
         StartCoroutine(AssessSpawnPointsWithCallback(stagedArea, SetCandidatesInDictionary));
     }

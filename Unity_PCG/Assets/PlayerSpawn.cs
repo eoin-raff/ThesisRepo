@@ -9,6 +9,8 @@ public class PlayerSpawn : MonoBehaviour
 {
     public GameObject PlayerPrefab;
     public Camera playerCam;
+    public GameObject dinghy;
+
     public float playerToTowerTarget = 100;
     public float towerToBoatTarget = 100f;
   
@@ -69,7 +71,6 @@ public class PlayerSpawn : MonoBehaviour
 
         Vector3 highestPointWorldSpace = new Vector3(posz, posy, posx);
 
-        //TODO: Include Terraforming here
         narrativeManager.FindWeenieLocation(highestPointWorldSpace, 2);
         Vector3 bestPlayerSpawn = Vector3.zero;
         float closestToPlayerTarget = float.MaxValue;
@@ -150,14 +151,16 @@ public class PlayerSpawn : MonoBehaviour
         narrativeManager.FindWeenieLocation(bestBoatPosition, 4);
 
         PlayerPrefab.transform.position = bestPlayerSpawn + Vector3.up;
+        dinghy.transform.position = bestPlayerSpawn + new Vector3(0.0f, -0.005f, 0.0f);
+
         //TODO: Look at weenie at launch
-//        playerCam.transform.LookAt(highestPointWorldSpace, Vector3.up);
+        //playerCam.transform.LookAt(highestPointWorldSpace, Vector3.up);
         yield break;
     }
 
     public void SetPlayerActive()
     {
-        PlayerPrefab.SetActive(true);
+        //PlayerPrefab.SetActive(true);
 
         playerInstantiated.Raise();
     }
