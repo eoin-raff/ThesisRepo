@@ -2,6 +2,8 @@
 ## Eoin Rafferty & Thomas Lund
 ### Spring 2020
 https://raffba.itch.io/med10
+<iframe frameborder="0" src="https://itch.io/embed-upload/2254303?color=333333" allowfullscreen="" width="980" height="688"><a href="https://raffba.itch.io/med10">Play Thesis Project on itch.io</a></iframe>
+
 # Demo Project
 [Demo Scene](https://eoinraff.github.io/ThesisRepo/Demo_Terrain/index.html)
 
