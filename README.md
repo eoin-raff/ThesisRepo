@@ -1,3 +1,7 @@
+# Medialogy Master Thesis
+## Eoin Rafferty & Thomas Lund
+### Spring 2020
+https://raffba.itch.io/med10
 # Demo Project
 [Demo Scene](https://eoinraff.github.io/ThesisRepo/Demo_Terrain/index.html)
 
