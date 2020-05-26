@@ -4,8 +4,9 @@
 
 ## Project Video
 <iframe src="https://drive.google.com/file/d/1K5Rve6hOwuGFSZAupMir3-89kuMh25su/preview" width="640" height="480"></iframe>
+
 ## Prototype
-<iframe frameborder="0" src="https://itch.io/embed-upload/2254303?color=333333" allowfullscreen=""width="640" height="480"><a href="https://raffba.itch.io/med10">Play Thesis Project on itch.io</a></iframe>
+<iframe frameborder="0" src="https://itch.io/embed-upload/2254303?color=333333" allowfullscreen="" width="640" height="480"><a href="https://raffba.itch.io/med10">Play Thesis Project on itch.io</a></iframe>
 
 The prototype of this project can be accessed on [Itch.io](https://raffba.itch.io/med10)
 
