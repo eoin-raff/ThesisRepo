@@ -9,7 +9,7 @@ Welcome to the repository for our Master Thesis. You can access the project code
 The prototype of this project can be accessed on [Itch.io](https://raffba.itch.io/med10), where it is presented with some intructions. 
 
 ### Electronic Appendices:
-Extra Materials are provided on [Google Drive](https://drive.google.com/drive/u/0/folders/1M7cFUiR2_rvnYHbxR0kgU0RFzhr33qD8)
+Extra Materials such as questionnaires and raw data from the evaluation are provided on [Google Drive](https://drive.google.com/drive/u/0/folders/1M7cFUiR2_rvnYHbxR0kgU0RFzhr33qD8)
 
 ### Additional Notebooks
 Some of the code, particularly the data analysis, was written in Python using jupyter notebook. Some of these notebooks can be seen below.
