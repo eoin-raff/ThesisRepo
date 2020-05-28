@@ -1,27 +1,21 @@
 # Medialogy Master Thesis
 ## Eoin Rafferty & Thomas Lund
-### Spring 2020
+Welcome to the repository for our Master Thesis. You can access the project code through the "view in GitHub" button at the top of this page. Below you will find some supplementary materials.
 
-## Project Video
+### AV Presentation
 <iframe src="https://drive.google.com/file/d/1K5Rve6hOwuGFSZAupMir3-89kuMh25su/preview" width="640" height="480"></iframe>
 
-## Prototype
-The prototype of this project can be accessed on [Itch.io](https://raffba.itch.io/med10), where it is presented with some intructions. Alternatively, it can be played in the embedded window below:
+### Playable Prototype
+The prototype of this project can be accessed on [Itch.io](https://raffba.itch.io/med10), where it is presented with some intructions. 
 
-<iframe frameborder="0" src="https://itch.io/embed-upload/2254303?color=333333" allowfullscreen="" width="640" height="480"><a href="https://raffba.itch.io/med10">Play Thesis Project on itch.io</a></iframe>
-
-## Electronic Appendices:
+### Electronic Appendices:
 Extra Materials are provided on [Google Drive](https://drive.google.com/drive/u/0/folders/1M7cFUiR2_rvnYHbxR0kgU0RFzhr33qD8)
 
-## Additional Notebooks
-[Heightmap GAN](https://github.com/EoinRaff/ThesisRepo/blob/master/Heightmap_GAN.ipynb) - an early attempt to modify a GAN for face generation to generate Heightmaps.
+### Additional Notebooks
+Some of the code, particularly the data analysis, was written in Python using jupyter notebook. Some of these notebooks can be seen below.
 
 [Data Analysis](https://github.com/EoinRaff/ThesisRepo/blob/master/Evaluation.ipynb)
 
 [Visualisation of Fractal Dimension](https://github.com/EoinRaff/ThesisRepo/blob/master/Utils/Heightmap%20Analysis/heightmap_analysis.ipynb)
 
-# Early Implementation
-[Demo Scene](https://eoinraff.github.io/ThesisRepo/Demo_Terrain/index.html)
-
-[Online Generation 1st Prototype](https://eoinraff.github.io/ThesisRepo/OnlineGeneration/index.html)
-
+[Heightmap GAN](https://github.com/EoinRaff/ThesisRepo/blob/master/Heightmap_GAN.ipynb) - an early attempt to modify a GAN for face generation to generate Heightmaps.
